@@ -1,0 +1,15 @@
+{
+  "name": "airline-video-streaming",
+  "version": "1.0.0",
+  "main": " device) ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "A video streaming platform similar to those available onboard certain aircraft (stream to your own device)",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}

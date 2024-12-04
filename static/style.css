@@ -1,0 +1,36 @@
+/*
+    Brand Guideline Source
+    https://strapi.wasmenia.com/uploads/Etihad_Airlines_Guideline_5a7d17b7d6.pdf
+*/
+body{
+    background-color: #2c0e1d;
+    background-attachment: fixed; 
+    font-family:Verdana;
+    color: #eae8e1;
+    margin:0;
+    padding: 0px;
+}
+h1{
+    text-align: center;
+}
+.topbar {
+    margin: 0px;
+    padding: 10px 20px 10px 20px;
+    background-color: #c4921b;
+    display: flex;
+}
+.cell{
+    margin: 0;
+}
+.circle {
+    float: right;
+    display: grid;
+    width: 50px;
+    height: 50px;
+    background-color: inherit;
+    border-radius: 50%;
+    place-items: center;
+}
+.container{
+    padding: 10px;
+}
