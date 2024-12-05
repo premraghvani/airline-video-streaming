@@ -34,3 +34,21 @@ h1{
 .container{
     padding: 10px;
 }
+.filmcategories{
+    display: flex;
+}
+.filmcategories h2{
+    margin: 5px;
+}
+.film{
+    width: 250px;
+    margin:2px;
+    border:#c4921b 3px solid;
+    padding: 5px;
+}
+.film img{
+    width: 100%;
+}
+.film:hover{
+    background-color: #c4921b;
+}
