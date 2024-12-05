@@ -1,11 +1,13 @@
 // function to select movie, close menu and open the movie
-function selectMovie(){
-
+function selectMovie(id){
+    document.getElementById("libraries").style.display = "none";
+    document.getElementById("content").style.display = "block";
 }
 
 // function to go back to menu, saving any timestamps
 function goBack(){
-
+    document.getElementById("libraries").style.display = "block";
+    document.getElementById("content").style.display = "none";
 }
 
 // function to check the connection and update page accordingly

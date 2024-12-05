@@ -32,7 +32,7 @@ module.exports = {
             let categoryFilms = "";
             for(var ii = 0; ii < filmsInCategories[cat].length; ii++){
                 let thisFilm = filmsInCategories[cat][ii];
-                categoryFilms += `<div class="film">
+                categoryFilms += `<div class="film" onclick="selectMovie(${thisFilm.id})">
                     <img src="/fetchthumbnail?id=${thisFilm.id}">
                     <p>${thisFilm.title}</p>
                 </div>`
