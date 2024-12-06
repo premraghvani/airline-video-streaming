@@ -2,20 +2,26 @@
 function selectMovie(id){
     // attempts to retrieve metadata
     fetch(`/film/fetchmetadata?id=${id}`)
-        .then((response) => response.json())
-        .then((json) => console.log(json));
-
-
-    document.getElementById("libraries").style.display = "none";
-    document.getElementById("content").style.display = "block";
-
-    // adds on metadata
-    document.getElementById("")
-
-    /*<h2 id="filmTitle">Title</h2>
-            <p id="filmDescription">Description</p>
-            <h3 id="filmYearGenre">Year | Genre</h3>
-            <p id="filmCast">Director | Cast</p>*/
+        .then((response) => {
+            if(response.status != 200){
+                return false
+            } else {
+                return response.json()
+            }  
+        }).then((json)=>{
+            if(json==false){
+                return
+            } else {
+                // show movie block
+                document.getElementById("libraries").style.display = "none";
+                document.getElementById("content").style.display = "block";
+                // add its metadata on the screen
+                document.getElementById("filmTitle").innerHTML = json.title;
+                document.getElementById("filmDescription").innerHTML = json.description;
+                document.getElementById("filmYearGenre").innerHTML = `${json.year} | ${json.genre}`;
+                document.getElementById("filmCast").innerHTML = `Directed by ${json.director}<br>Cast: ${json.cast}`;
+            }
+        })
 }
 
 // function to go back to menu, saving any timestamps
