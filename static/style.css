@@ -76,3 +76,7 @@ h1{
 .back:hover{
     background-color: #c4921b;
 }
+video {
+    width: auto;
+    height:60%;
+}

@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-// checks if the connection is online
+// retrieves thumbnail
 module.exports = {
     page: "/film/fetchthumbnail",
     method: "GET",

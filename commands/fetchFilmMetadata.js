@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-// checks if the connection is online
+// retrieves metadata
 module.exports = {
     page: "/film/fetchmetadata",
     method: "GET",

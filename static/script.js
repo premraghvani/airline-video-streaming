@@ -20,6 +20,12 @@ function selectMovie(id){
                 document.getElementById("filmDescription").innerHTML = json.description;
                 document.getElementById("filmYearGenre").innerHTML = `${json.year} | ${json.genre}`;
                 document.getElementById("filmCast").innerHTML = `Directed by ${json.director}<br>Cast: ${json.cast}`;
+
+                // adds video
+                var source = document.createElement('source');
+                source.src = `film/fetchvideo?id=${id}`;
+                source.type = "video/mp4"
+                document.getElementById("filmVideo").appendChild(source);
             }
         })
 }
@@ -28,6 +34,8 @@ function selectMovie(id){
 function goBack(){
     document.getElementById("libraries").style.display = "block";
     document.getElementById("content").style.display = "none";
+    document.getElementById("filmVideo").innerHTML = "";
+    document.getElementById("filmVideo").load()
 }
 
 // function to check the connection and update page accordingly
