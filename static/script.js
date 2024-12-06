@@ -1,7 +1,21 @@
 // function to select movie, close menu and open the movie
 function selectMovie(id){
+    // attempts to retrieve metadata
+    fetch(`/film/fetchmetadata?id=${id}`)
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+
+
     document.getElementById("libraries").style.display = "none";
     document.getElementById("content").style.display = "block";
+
+    // adds on metadata
+    document.getElementById("")
+
+    /*<h2 id="filmTitle">Title</h2>
+            <p id="filmDescription">Description</p>
+            <h3 id="filmYearGenre">Year | Genre</h3>
+            <p id="filmCast">Director | Cast</p>*/
 }
 
 // function to go back to menu, saving any timestamps
@@ -11,7 +25,7 @@ function goBack(){
 }
 
 // function to check the connection and update page accordingly
-function checkConnection() {
+function checkConnection() { 
     return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
         xhr.timeout = 500;

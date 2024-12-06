@@ -2,7 +2,7 @@ const fs = require("fs");
 
 // checks if the connection is online
 module.exports = {
-    page: "/fetchthumbnail",
+    page: "/film/fetchthumbnail",
     method: "GET",
     execute: (req, res) => {
         // sets response to jpeg
