@@ -2,52 +2,63 @@ const fs = require("fs");
 
 // inspiratoin: https://blog.logrocket.com/build-video-streaming-server-node/
 
+// http statuses relevant (https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) are 206 for partial content, 404 not found, 400 no range headers (so bad request), 416 (range not satisfiable), 500 (server messed somet else up)
+
 // retrieve video
 module.exports = {
     page: "/film/fetchvideo",
     method: "GET",
     execute: (req, res) => {
-        // sets response to jpeg
-        res.set("Content-Type", "video/mp4");
+        const id = req.query.id;
+        const videoPath = `./assets/videos/${id}.mp4`;
 
-        // checks if file exists, for the json
-        let id = req.query.id;
-        let fileExists = fs.existsSync(`./assets/metadata/${id}.json`);
-
-        // sends error should it not exist
-        if(!fileExists){
-            res.status(404).send("");
+        // check if video file exist
+        if (!fs.existsSync(videoPath)) {
+            return res.status(404).send("Not found");
         }
 
-        // header range, needed to send the correct next parts
+        // get the range from headers
         const range = req.headers.range;
-        if(!range){
-            res.status(400).send("Error: requires range headers")
+        if (!range) {
+            return res.status(400).send("Requires range header");
         }
-        
-        // retrieves video
-        const pathToVideo = `./assets/videos/${id}.mp4`;
-        const videoSize = fs.statSync(pathToVideo).size;
 
-        // chunks
-        const chunkSize = 0.5*10**6 // 500 KB chunk size
-        const start = Number(range.replace(/\D/g, ""));
-        const end = Math.min(start + chunkSize, videoSize - 1);
+        // retrieve video file size
+        const videoSize = fs.statSync(videoPath).size;
 
-        // breakpoint
-        if(start==end){return;}
+        // parse range
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : Math.min(start + 0.5 * 10 ** 6 - 1, videoSize - 1); // default to 500KB chunk size, iff end not specified
 
-        // response headers
+        // validate range
+        if (start >= videoSize || end >= videoSize || start > end) {
+            return res.status(416).send(`not satisfiable, min range: 0, max range: ${videoSize-1}`);
+        }
+
+        // prepare headers
         const headers = {
             "Content-Range": `bytes ${start}-${end}/${videoSize}`,
             "Accept-Ranges": "bytes",
-            "Content-Length": end-start,
+            "Content-Length": end - start + 1,
             "Content-Type": "video/mp4",
         };
         res.writeHead(206, headers);
 
-        // gets the 2MB max chunk and sends it
-        const videoStream = fs.createReadStream(pathToVideo, { start, end });
-        videoStream.pipe(res);
-    }
+        // create video stream and handle events
+        const videoStream = fs.createReadStream(videoPath, { start, end });
+
+        videoStream.on("open", () => {
+            videoStream.pipe(res);
+        });
+
+        videoStream.on("error", (err) => {
+            res.status(500).send("Error streaming video - sorry, we messed up");
+        });
+
+        // terminates safely
+        res.on("close", () => {
+            videoStream.destroy();
+        });
+    },
 };
