@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "A video streaming platform similar to those available onboard certain aircraft (stream to your own device)",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.21.1",
     "nodemon": "^3.1.7"
   }

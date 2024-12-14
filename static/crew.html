@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crew Panel | Airline Streaming Service</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="topbar" style="background-color: #ddc8a1; color: #2c0e1d">
+            <div class="cell" style="width: 25%;">
+                <p><b>CREW PANEL</b></p>
+            </div>
+            <div class="cell" style="text-align: center; width: 50%;">
+                <p>{{flightNum}}, {{originCode}} to {{destinationCode}}</p>
+            </div>
+            <div class="cell" style="width: 25%;">
+                <div class="circle" id="status">??</div>
+            </div>
+        </div>
+        <div id="auth" class="container">
+            <h1>Authentication</h1>
+            <p style="text-align: center;">Please authenticate yourself - using either the crew password (which is attached somewhere physically), or the administrator password</p>
+            <form id="authenticationForm" action="/authenticate" method="post">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter password">
+                <input type="submit" value="Send">
+            </form>
+        </div>
+    </body>
+</html>
+<script src="script.js"></script>

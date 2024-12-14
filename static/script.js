@@ -50,11 +50,11 @@ function checkConnection() {
         xhr.send();
     }).then((connected) => {
         let current = document.getElementById("status");
-        if (connected && current.innerHTML !== ":)") {
-            current.innerHTML = ":)";
+        if (connected && current.innerHTML !== "ON") {
+            current.innerHTML = "ON";
             current.style = "background-color: #5e7d34;";
-        } else if (!connected && current.innerHTML !== ":(") {
-            current.innerHTML = ":(";
+        } else if (!connected && current.innerHTML !== "OFF") {
+            current.innerHTML = "OFF";
             current.style = "background-color: #80003c;";
         }
     });

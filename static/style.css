@@ -80,3 +80,25 @@ video {
     width: auto;
     height:60%;
 }
+form{
+    width: 500px;
+    max-width: 95%;
+    margin:auto;
+    text-align: center;
+}
+input{
+    width: 100%;
+    margin-top: 4px;
+    padding: 10px;
+    border: #c4921b 3px solid;
+    background-color: inherit;
+    color: inherit;
+    box-sizing: border-box;
+}
+input[type=submit]{
+    width: 100%;
+    background-color: #c4921b;
+}
+input[type=submit]:hover{
+    background-color: #2c0e1d;
+}
