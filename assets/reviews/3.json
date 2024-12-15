@@ -2,6 +2,13 @@
     {
         "timestamp": 1734301797,
         "flight":"EK 018",
-        "review":"Wow! This really had me clutching my seat, so tense, such a good movie!"
+        "review":"Wow! This really had me clutching my seat, so tense, such a good movie!",
+        "approved":true
+    },
+    {
+        "timestamp": 1734301800,
+        "flight":"EK 018",
+        "review":"i hate this airline, ryanair is better",
+        "approved":false
     }
 ]
