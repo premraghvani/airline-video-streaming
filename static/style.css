@@ -98,7 +98,7 @@ h1{
 .back:hover{
     background-color: #c4921b;
 }
-form{
+#authenticationForm{
     width: 500px;
     max-width: 95%;
     margin:auto;
@@ -119,6 +119,14 @@ input[type=submit]{
 }
 input[type=submit]:hover{
     background-color: #2c0e1d;
+}
+textarea{
+    margin-top: 4px;
+    padding: 10px;
+    border: #c4921b 3px solid;
+    background-color: #eae8e1;
+    color: #2c0e1d;
+    box-sizing: border-box;
 }
 #videoContainer{
     width: auto;

@@ -1,5 +1,3 @@
-// todo: JEST, ESLINT, splitting this file an dserver for tests.
-
 const express = require("express")
 const app = express()
 const fs = require("fs");

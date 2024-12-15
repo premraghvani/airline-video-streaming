@@ -37,13 +37,15 @@ function showItems(){
       }).then((response) => response.json())
       .then((json) => {
         if(json.approval == true){
-            document.getElementById("password").value = "";
-            let expiry = new Date(json.expiry*1000)
-            document.cookie = `token=${json.token}; expires=${expiry}`
-            showItems();
+          document.getElementById("auth").style.display = "none";
+          document.getElementById("crewPanel").style.display = "block";
+          if(json.level == "admin"){
+            document.getElementById("adminPanel").style.display = "block";
+          }
         } else {
-            document.getElementById("password").value = "";
-            alert("Incorrect Password")
+            return;
         }
       });
 }
+
+showItems()

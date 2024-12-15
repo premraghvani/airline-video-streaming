@@ -1,3 +1,5 @@
+let currentMovie = 0;
+
 // function to select movie, close menu and open the movie
 function selectMovie(id){
     // attempts to retrieve metadata
@@ -30,6 +32,7 @@ function selectMovie(id){
                 document.getElementById("filmVideo").appendChild(source);
             }
         })
+    currentMovie = id;
 }
 
 // function to go back to menu, saving any timestamps
@@ -37,8 +40,7 @@ function goBack(){
     document.getElementById("libraries").style.display = "block";
     document.getElementById("content").style.display = "none";
     document.getElementById("categoryLibrary").style.display = "none";
-    document.getElementById("filmVideo").innerHTML = "";
-    document.getElementById("filmVideo").load()
+    disconnectFilm()
 }
 
 // function to check the connection and update page accordingly
@@ -69,9 +71,7 @@ setInterval(checkConnection, 2000);
 
 // open a category's library
 function openCategory(cat){
-    // unloads film
-    document.getElementById("filmVideo").innerHTML = "";
-    document.getElementById("filmVideo").load()
+    disconnectFilm()    
     // attempts to get category films
     fetch(`/film/fetchcategoryfilms?category=${cat}`)
         .then((response) => {
@@ -104,4 +104,30 @@ function openCategory(cat){
                 document.getElementById("categoryLibrary").innerHTML = body;
             }
         })
+}
+
+// disconnects a film
+function disconnectFilm(){
+    document.getElementById("filmVideo").innerHTML = "";
+    document.getElementById("filmVideo").load();
+    currentMovie = 0;
+    if(document.getElementById("filmReviews").style.display != "none"){
+        toggleFilmReviews()
+    }
+}
+
+// toggles film reviews
+function toggleFilmReviews(){
+    let reviewsBox = document.getElementById("filmReviews");
+    let button = document.getElementById("filmReviewsToggle");
+    let writeReviewId = document.getElementById("movieIdReview");
+    if(reviewsBox.style.display == "none"){
+        reviewsBox.style.display = "block";
+        button.innerHTML = "Hide Film Reviews";
+        writeReviewId.value =  currentMovie;
+    } else {
+        reviewsBox.style.display = "none";
+        button.innerHTML = "Show Film Reviews (Spoiler Alert!)"
+        writeReviewId.value = "";
+    }
 }
