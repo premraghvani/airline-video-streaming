@@ -7,7 +7,7 @@ module.exports = {
     method: "POST",
     execute: (req, res) => {
         // finds password
-        const rawBody = req.body;
+        let rawBody = req.body;
         if(!rawBody){rawBody = "{}"}
         let body = JSON.parse(rawBody.toString());
         let password = body.password;

@@ -44,7 +44,7 @@
             <button id="filmReviewsToggle" class="category" onclick="toggleFilmReviews()">Show Film Reviews (Spoiler Alert!)</button>
             <div id="filmReviews" style="display: none;">
                 <h3>Write a Review</h3>
-                <form action="/reviews/submit" method="post">
+                <form action="/review/submit" method="post" id="filmReviewForm">
                     <label for="review">Your Review</label><br>
                     <textarea id="review" name="review" cols="80" rows="5" style="width: 500px; max-width: 100%;"></textarea>
                     <input name="movieId" id="movieIdReview" type="hidden" readonly value="">

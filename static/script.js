@@ -118,16 +118,65 @@ function disconnectFilm(){
 
 // toggles film reviews
 function toggleFilmReviews(){
-    let reviewsBox = document.getElementById("filmReviews");
-    let button = document.getElementById("filmReviewsToggle");
-    let writeReviewId = document.getElementById("movieIdReview");
+    const reviewsBox = document.getElementById("filmReviews");
+    const button = document.getElementById("filmReviewsToggle");
+    const writeReviewId = document.getElementById("movieIdReview");
+    const filmReviewContent = document.getElementById("filmReviewContent");
+
+    // if there is no review box open
     if(reviewsBox.style.display == "none"){
         reviewsBox.style.display = "block";
         button.innerHTML = "Hide Film Reviews";
         writeReviewId.value =  currentMovie;
+
+        // fetches the reviews
+        fetch(`/review/fetch?id=${currentMovie}`)
+        .then((response) => {
+            if(response.status != 200){
+                filmReviewContent.innerHTML = "<i>No Reviews</i>"
+                return false;
+            } else {
+                return response.json()
+            }  
+        }).then((json)=>{
+            if(json.length == 0){
+                filmReviewContent.innerHTML = "<i>No Reviews</i>"
+                return
+            } else {
+                // generates the content
+                let reviewContent = "";
+                for(var i = 0; i < json.length; i++){
+                    let review = json[i];
+                    reviewContent += `<div class="review">
+                        <blockquote class="reviewItem">${review.review}</blockquote>
+                        <p class="reviewCaption">Reviewed on flight ${review.flight} about ${relativeTime(review.timestamp)} ago</p>
+                    </div>`
+                }
+                // embeds the review
+                filmReviewContent.innerHTML = reviewContent;
+            }
+        })
+
+    // if there is a review box
     } else {
         reviewsBox.style.display = "none";
         button.innerHTML = "Show Film Reviews (Spoiler Alert!)"
         writeReviewId.value = "";
+    }
+}
+
+// relative timestamp, e.g. finds how far ago something was
+function relativeTime(timeThen){
+    const d = new Date();
+    let timeNow = Math.floor(d.getTime() / 1000);
+    let timeDiff = timeNow - timeThen;
+    if(timeDiff < 120){
+        return `${timeDiff} second(s)`
+    } else if(timeDiff < 120*60){
+        return `${Math.round(timeDiff / 60)} minute(s)`
+    } else if(timeDiff < 72*60*60){
+        return `${Math.round(timeDiff / 60 / 60)} hour(s)`
+    } else {
+        return `${Math.round(timeDiff / 60 / 60 / 24)} day(s)`
     }
 }
