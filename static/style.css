@@ -18,6 +18,12 @@ h1{
     padding: 10px 20px 10px 20px;
     background-color: #c4921b;
     display: flex;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0px 5px 10px #eae8e1;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 .cell{
     margin: 0;
@@ -33,12 +39,28 @@ h1{
 }
 .container{
     padding: 10px;
+    margin-top: 75px;
 }
 .filmcategories{
     display: flex;
 }
 .filmcategories h2{
     margin: 5px;
+}
+.category{
+    width: 400px;
+    max-width: 100%;
+    margin:2px;
+    border:none;
+    padding: 25px;
+    border:#c4921b 3px solid;
+    border-radius: 10px;
+    font-weight: bold;
+    background-color: inherit;
+    color: inherit
+}
+.category:hover{
+    background-color: #c4921b;
 }
 .film{
     width: 350px;
@@ -76,10 +98,6 @@ h1{
 .back:hover{
     background-color: #c4921b;
 }
-video {
-    width: auto;
-    height:60%;
-}
 form{
     width: 500px;
     max-width: 95%;
@@ -101,4 +119,40 @@ input[type=submit]{
 }
 input[type=submit]:hover{
     background-color: #2c0e1d;
+}
+#videoContainer{
+    width: auto;
+    height: 60vh;
+    height: auto;
+    max-height: 60%;
+    margin: 0 auto;
+    display: flex;
+}
+#filmVideo{
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+@media screen and (max-width: 1000px) {
+    p {
+        font-size: 2rem;
+    }
+    h1 {
+        font-size: 4rem;
+    }
+
+    h2 {
+        font-size: 3.5rem;
+    }
+    h3 {
+        font-size: 3rem;
+    }
+    .container{
+        margin-top: 100px;
+    }
+    .category{
+        font-size: 2rem;
+    }
 }

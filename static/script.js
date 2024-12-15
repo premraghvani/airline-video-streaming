@@ -15,11 +15,13 @@ function selectMovie(id){
                 // show movie block
                 document.getElementById("libraries").style.display = "none";
                 document.getElementById("content").style.display = "block";
+                document.getElementById("categoryLibrary").style.display = "none";
                 // add its metadata on the screen
                 document.getElementById("filmTitle").innerHTML = json.title;
                 document.getElementById("filmDescription").innerHTML = json.description;
                 document.getElementById("filmYearGenre").innerHTML = `${json.year} | ${json.genre}`;
                 document.getElementById("filmCast").innerHTML = `Directed by ${json.director}<br>Cast: ${json.cast}`;
+                document.getElementById("backFilm").setAttribute( "onClick", `openCategory("${json.genre}")`);
 
                 // adds video
                 var source = document.createElement('source');
@@ -34,6 +36,7 @@ function selectMovie(id){
 function goBack(){
     document.getElementById("libraries").style.display = "block";
     document.getElementById("content").style.display = "none";
+    document.getElementById("categoryLibrary").style.display = "none";
     document.getElementById("filmVideo").innerHTML = "";
     document.getElementById("filmVideo").load()
 }
@@ -63,3 +66,42 @@ function checkConnection() {
 // check connection with the server every 2 seconds
 checkConnection()
 setInterval(checkConnection, 2000);
+
+// open a category's library
+function openCategory(cat){
+    // unloads film
+    document.getElementById("filmVideo").innerHTML = "";
+    document.getElementById("filmVideo").load()
+    // attempts to get category films
+    fetch(`/film/fetchcategoryfilms?category=${cat}`)
+        .then((response) => {
+            if(response.status != 200){
+                return false
+            } else {
+                return response.json()
+            }  
+        }).then((json)=>{
+            if(json.length == 0){
+                return
+            } else {
+                // show the category block
+                document.getElementById("libraries").style.display = "none";
+                document.getElementById("categoryLibrary").style.display = "block";
+                document.getElementById("content").style.display = "none";
+
+                // generates the body
+                let body = `<br><button class="back" onclick="goBack()">Back</button><br><h2>${cat.toUpperCase()} MOVIES</h2><p>Have an explore of our ${cat.toLowerCase()} movie collection! Please don't hesitate to ask your cabin crew today for anything small, such as popcorn, to make your experience more comfortable! (We aren't Ryanair, we will give you good popcorn)</p><div style="display:flex;">`;
+                for(var i = 0; i < json.length; i++){
+                    let film = json[i];
+                    body += `<div class="film" onclick="selectMovie(${film.id})">
+                        <img src="/film/fetchthumbnail?id=${film.id}">
+                        <p>${film.title}</p>
+                    </div>`
+                }
+                body += "</div>"
+
+                // embeds the video
+                document.getElementById("categoryLibrary").innerHTML = body;
+            }
+        })
+}

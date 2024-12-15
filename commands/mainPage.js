@@ -25,29 +25,14 @@ module.exports = {
         }
         let categories = Object.keys(filmsInCategories).sort();
 
-        // adds "skip to category"
+        // adds category buttons
         let filmsHtml = "";
-        filmsHtml += "<div id=\"skipto\"><h2>Skip straight to a category</h2><ul>"
+        filmsHtml += "<div><h2>What do you fancy watching?</h2>"
         for(i in categories){
             let category = categories[i]
-            filmsHtml += `<li><a href="#filmcat-${category}">${category.toUpperCase()}</a></li>`
+            filmsHtml += `<button class="category" onclick="openCategory('${category}')">${category.toUpperCase()}</button> `
         }
-        filmsHtml += "</ul></div>"
-
-        // arranges into the HTML
-        for(var i = 0; i < categories.length; i++){
-            let cat = categories[i];
-            let categoryFilms = "";
-            for(var ii = 0; ii < filmsInCategories[cat].length; ii++){
-                let thisFilm = filmsInCategories[cat][ii];
-                categoryFilms += `<div class="film" onclick="selectMovie(${thisFilm.id})">
-                    <img src="/film/fetchthumbnail?id=${thisFilm.id}">
-                    <p>${thisFilm.title}</p>
-                </div>`
-            }
-
-            filmsHtml += `<h2>${cat.toUpperCase()}</h2><div id="filmcat-${cat}" class="filmcategories">${categoryFilms}</div>`
-        }
+        filmsHtml += "</div>"
 
         // puts this into the html before sending
         body = body.replaceAll(`{{libraries}}`,filmsHtml)
