@@ -8,10 +8,12 @@ module.exports = {
     execute: (req, res) => {
         // finds password
         const rawBody = req.body;
-        let submission = queryStringToJson(rawBody.toString("utf-8"))
-        let password = submission.password;
+        if(!rawBody){rawBody = "{}"}
+        let body = JSON.parse(rawBody.toString());
+        let password = body.password;
         if(!password){
-            res.status(400).send("Must specify password")
+            res.status(400).send(`{"error":"specify password"}`);
+            return;
         }
 
         let finalBody = {
@@ -24,29 +26,14 @@ module.exports = {
         // compares
         let passwordList = require("../assets/passwordsTokens.json")
         if(bcrypt.compareSync(password,passwordList.crew)){
-
+            finalBody = generateToken("crew");
         } else if(bcrypt.compareSync(password,passwordList.admin)){
-
+            finalBody = generateToken("admin");
         }
 
-        // sends body
-        res.set("Content-Type", "application/json");
-        res.send(JSON.stringify(finalBody));
+        res.set("Content-Type", "application/json").send(JSON.stringify(finalBody));
     }
 };
-
-//webform to json
-function queryStringToJson(queryString) {
-    const pairs = queryString.split('&');
-    const json = {};
-
-    pairs.forEach(pair => {
-        const [key, value] = pair.split('=');
-        json[key] = isNaN(value) ? decodeURIComponent(value) : Number(value);
-    });
-
-    return json;
-}
 
 // generates a token
 function generateToken(level){
@@ -61,12 +48,22 @@ function generateToken(level){
     }
 
     // compares to make sure it does not already exist
-    let passwordList = require("../assets/passwordsTokens.json")
+    let passwordList = JSON.parse(fs.readFileSync("./assets/passwordsTokens.json").toString())
     for(var i = 0; i < passwordList.tokens.length; i++){
-        if(passwordList[i].token == token){
+        if(passwordList.tokens[i].token == token){
             return generateToken() // recursive function - generates until a valid non-duplicate token exists
         }
     }
+
+    // removes expired keys (because we are nice like that)
+    let okayTokens = [];
+    for(var i = 0; i < passwordList.tokens.length; i++){
+        let now = Math.floor(d.getTime() / 1000);
+        if(passwordList.tokens[i].expiry > now){
+            okayTokens.push(passwordList[i])
+        }
+    }
+    passwordList.tokens = okayTokens.splice();
 
     // puts into password tokens
     passwordList.tokens.push({
@@ -74,12 +71,13 @@ function generateToken(level){
         expiry,
         level
     });
-    fs.writeFileSync("../assets/passwordTokens.json",JSON.stringify(passwordList));
+    fs.writeFileSync("./assets/passwordsTokens.json",JSON.stringify(passwordList));
 
     // return case
     return{
         token,
         expiry,
-        level
+        level,
+        approval:true
     }
 }
