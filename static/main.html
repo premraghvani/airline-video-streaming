@@ -6,54 +6,61 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <!--top-->
         <div class="topbar">
-            <div class="cell" style="width: 25%;">
-                <p><b>Streambox</b></p>
-            </div>
-            <div class="cell" style="text-align: center; width: 50%;" id="flightInfo">
-                <p>{{flightNum}}, {{originCode}} to {{destinationCode}}</p>
-            </div>
-            <div class="cell" style="width: 25%;">
-                <div class="circle" id="status">??</div>
-            </div>
+            <strong style="font-size: 2em;">Streambox</strong>
+            <span style="font-size: 0.5em;">
+                <br>
+                {{flightNum}} {{originCode}}-{{destinationCode}} | Service Availability: <span id="availabilityStatus" style="color: #880;" id="availability">I don't know</span>
+            </span>
         </div>
-        <div id="libraries" class="container">
+        <!--Categories-->
+        <div class="container" id="libraries">
             <h1>Welcome Onboard</h1>
             <p style="text-align: center;">We hope that you enjoy your flight to {{destination}}, and we also hope that you enjoy the selection of video that we have onboard today.</p>
-            {{libraries}}
+            <h2 style="text-align: center;">What would you like to watch?</h2>
+            <div class="genreButtons">
+                {{genres}}
+            </div>
         </div>
-
-        <div id="categoryLibrary" class="container" style="display: none;"></div>
-
-        <div id="content" class="container" style="display: none;">
-            <br>
-            <button class="back" id="backFilm" onclick="goBack()">Back</button><br>
-            <div style="padding: 5px;">
-                
-                <!--Video buttons from plyr, https://github.com/sampotts/plyr - imported and saved locally instead of being loaded from CDN, ChatGPT found the library for me-->
-                <div id="videoContainer">
+        <!--genre selection-->
+        <div class="container" id="categoryLibrary" style="display: none;">
+            <button class="back" id="backMain" onclick="goBack()">Back</button>
+            <div id="movieTop"></div>
+            <div class="movieContainer" id="movieContainer">
+                {{movies}}
+            </div>
+        </div>
+        <!--movie-->
+        <div class="container" style="display: none;" id="content">
+            <button class="back" id="backFilm" onclick="goBack()">Back</button>
+            <div class="movieView">
+                <div class="videoContainer">
                     <video id="filmVideo" playsinline controls>
                     </video>
-                </div>     
-
+                </div>
             </div>
-            <h2 id="filmTitle">Title</h2>
-            <p id="filmDescription">Description</p>
-            <h3 id="filmYearGenre">Year | Genre</h3>
-            <p id="filmCast">Director | Cast</p>
-            <button id="filmReviewsToggle" class="category" onclick="toggleFilmReviews()">Show Film Reviews (Spoiler Alert!)</button>
-            <div id="filmReviews" style="display: none;">
-                <h3>Write a Review</h3>
-                <form action="/review/submit" method="post" id="filmReviewForm">
-                    <label for="review">Your Review</label><br>
-                    <textarea id="review" name="review" cols="80" rows="5" style="width: 500px; max-width: 100%;"></textarea>
-                    <input name="movieId" id="movieIdReview" type="hidden" readonly value="">
-                    <br>
-                    <input type="submit" value="Send Review" style="width: 500px; max-width: 100%;"><br>
-                    <label>Reviews will be sent for moderation, and will not immediately appear.</label>
-                </form>
-                <h3>Reviews</h3>
-                <div id="filmReviewContent"></div>
+            <h2 id="filmTitle">{{title}}</h2>
+            <p id="filmDescription">{{description}}</p>
+            <p id="filmYearGenre">{{year}} | {{genre}}</p>
+            <p id="filmCast">{{director}} | {{sast}}</p>
+            <button id="filmReviewsToggle" class="back" style="width: 400px; font-size: 1.5em;" onclick="toggleFilmReviews()">Show Film Reviews (Spoiler Alert!)</button>
+        </div>
+        <!--Reviews-->
+        <div class="container" id="filmReviews" style="display: none;">
+            <h3>Write a Review</h3>
+            <form action="/review/submit" method="post" id="filmReviewForm">
+                <label for="review">Your Review</label><br>
+                <textarea id="review" name="review" cols="80" rows="5" style="width: 100%"></textarea>
+                <input name="movieId" id="movieIdReview" type="hidden" readonly value="">
+                <br>
+                <input type="submit" value="Send Review" style="width: 100%;"><br>
+                <label>Reviews will be sent for moderation, and will not immediately appear.</label>
+            </form>
+
+            <h3>Reviews</h3>
+            <div class="reviews" id="filmReviewContent">
+                {{reviews}}
             </div>
         </div>
     </body>

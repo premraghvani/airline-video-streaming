@@ -26,16 +26,17 @@ module.exports = {
         let categories = Object.keys(filmsInCategories).sort();
 
         // adds category buttons
-        let filmsHtml = "";
-        filmsHtml += "<div><h2>What do you fancy watching?</h2>"
+        let filmsHtml = ""
         for(i in categories){
-            let category = categories[i]
-            filmsHtml += `<button class="category" onclick="openCategory('${category}')">${category.toUpperCase()}</button> `
+            let category = categories[i].toLowerCase().split("")
+            category[0] = category[0].toUpperCase()
+            category = category.join("")
+            filmsHtml += `<button onclick="openCategory('${category}')">${category}</button> `
         }
-        filmsHtml += "</div>"
+        filmsHtml += ""
 
         // puts this into the html before sending
-        body = body.replaceAll(`{{libraries}}`,filmsHtml)
+        body = body.replaceAll(`{{genres}}`,filmsHtml)
 
         res.set("Content-Type", "text/html");
         res.send(body);

@@ -1,110 +1,117 @@
-/*
-    Brand Guideline Source
-    https://strapi.wasmenia.com/uploads/Etihad_Airlines_Guideline_5a7d17b7d6.pdf
-*/
+/* Main Body Styling */
 body{
     background-color: #2c0e1d;
-    background-attachment: fixed; 
     font-family:Verdana;
-    color: #eae8e1;
+    color: #2c0e1d;
     margin:0;
-    padding: 0px;
+    padding: 0;
+    line-height: 1.6;
 }
 h1{
     text-align: center;
 }
+
+/* Containers and cells within */
+.container{
+    display: block;
+    background-color: #eae8e1;
+    box-shadow: 4px 4px 8px #c4921b;
+    border-radius: 8px;
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 1000px;
+}
+
+/*Top Bar specifics */
 .topbar {
-    margin: 0px;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 0;
     background-color: #c4921b;
-    display: flex;
-    position: fixed;
+    color:#eae8e1;
+    position: sticky;
     top: 0;
     width: 100%;
+    font-size:1.6em;
     box-shadow: 0px 5px 10px #eae8e1;
-    overflow: hidden;
-    box-sizing: border-box;
     z-index: 10;
+    text-align: center;
 }
-.cell{
-    margin: 0;
+
+/* Film Categories */
+.genreButtons{
+    display:flex;
+    justify-content: center;
+    gap:10px;
+    flex-wrap: wrap;
 }
-.circle {
-    float: right;
-    display: grid;
-    width: 50px;
-    height: 50px;
-    background-color: inherit;
-    border-radius: 50%;
-    place-items: center;
-}
-.container{
-    padding: 10px;
-    margin-top: 75px;
-}
-.filmcategories{
-    display: flex;
-}
-.filmcategories h2{
-    margin: 5px;
-}
-.category{
-    width: 400px;
-    max-width: 100%;
-    margin:2px;
-    border:none;
-    padding: 25px;
-    border:#c4921b 3px solid;
-    border-radius: 10px;
-    font-weight: bold;
-    background-color: inherit;
-    color: inherit
-}
-.category:hover{
+.genreButtons button{
     background-color: #c4921b;
+    color:#eae8e1;
+    border:none;
+    border-radius: 5px;
+    font-size: 2em;
+    padding:10px 20px;
+}
+.genreButtons button:hover{
+    background-color: #2c0e1d;
+}
+
+/* Film libraries Containers */
+.movieContainer{
+    display: flex;
+    flex-direction: row;
+    width:100%;
+    overflow:hidden;
+    flex-wrap:wrap;
 }
 .film{
-    width: 350px;
-    margin:2px;
-    border:#c4921b 3px solid;
-    padding: 5px;
+    flex: 0 0 240px;
+    text-align: center;
+    border: #c4921b 5px solid;
+    border-radius: 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    padding:0;
+    box-sizing: border-box;
 }
 .film img{
     width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
 }
 .film:hover{
     background-color: #c4921b;
-}
-#skipto ul{
-    list-style-type: circle;
-}
-#skipto a{
-    color: #c4921b;
-    text-decoration: none;
-}
-#skipto a:hover{
     color:#eae8e1
 }
+.film p{
+    margin-bottom: 10px;
+    margin-top: 0;
+    max-width: 100%;
+    padding:3px;
+    text-wrap: break-word;
+    font-size:1.5em;
+}
+
+/* back button*/
 .back{
-    background-color: #2c0e1d;
-    width:100px;
-    padding:10px;
+    background-color: #c4921b;
+    font-size: 2em;
+    width:150px;
+    padding:15px;
     border:none;
     border-radius: 10px;
     margin-bottom: 10px;
     color: #eae8e1;
     text-decoration: solid;
-    border:#c4921b 3px solid;
+    display: block;
 }
 .back:hover{
-    background-color: #c4921b;
+    background-color: #2c0e1d;
 }
-#authenticationForm{
-    width: 500px;
-    max-width: 95%;
-    margin:auto;
-    text-align: center;
-}
+
+/* forms */
 input{
     width: 100%;
     margin-top: 4px;
@@ -113,10 +120,15 @@ input{
     background-color: inherit;
     color: inherit;
     box-sizing: border-box;
+    font-size: 1.5em;
+    border-radius: 10px;
 }
 input[type=submit]{
     width: 100%;
     background-color: #c4921b;
+    font-size: 1.5em;
+    border:none;
+    color: #eae8e1
 }
 input[type=submit]:hover{
     background-color: #2c0e1d;
@@ -124,51 +136,42 @@ input[type=submit]:hover{
 textarea{
     margin-top: 4px;
     padding: 10px;
+    border-radius: 10px;
     border: #c4921b 3px solid;
     background-color: #eae8e1;
     color: #2c0e1d;
+    font-size: 1.5em;
     box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
-#videoContainer{
-    width: auto;
-    height: 60vh;
-    height: auto;
-    max-height: 60%;
-    margin: 0 auto;
-    display: flex;
-}
+
+/* video of the film */
 #filmVideo {
-    max-width: 100%;
-    height: auto;
-    max-height: 100%;
-    object-fit: contain;
-    position: relative;
-    z-index: 1;
+    width: 100%;
+}
+.movieView h2{
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.5em;
+}
+.movieView p{
+    text-align: justify;
+    margin: 5px 0;
 }
 
-@media screen and (max-width: 1000px) {
-    p {
-        font-size: 2rem;
-    }
-    h1 {
-        font-size: 4rem;
-    }
-
-    h2 {
-        font-size: 3.5rem;
-    }
-    h3 {
-        font-size: 3rem;
-    }
-    .container{
-        margin-top: 100px;
-    }
-    .category{
-        font-size: 2rem;
-    }
-}
-
+/* reviews */
 .reviewCaption{
-    font-size: small;
+    font-size: 0.5em;
+    color: #c4921b;
 }
-blockquote {border-left: 3px solid #ccc;margin: 1.5em 10px;padding: 0.5em 10px;} blockquote p {display: inline-block;} 
+blockquote {
+    border-left: 3px solid #c4921b;
+    font-size: 1em;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+}
+blockquote p {
+    display: inline-block;
+} 
+
+/* adjustments for max 1000px width screens, makes text bigger */

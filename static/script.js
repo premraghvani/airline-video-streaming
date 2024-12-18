@@ -54,13 +54,13 @@ function checkConnection() {
         xhr.open("GET", "/isonline", true);
         xhr.send();
     }).then((connected) => {
-        let current = document.getElementById("status");
-        if (connected && current.innerHTML !== "ON") {
-            current.innerHTML = "ON";
-            current.style = "background-color: #5e7d34;";
-        } else if (!connected && current.innerHTML !== "OFF") {
-            current.innerHTML = "OFF";
-            current.style = "background-color: #80003c;";
+        let current = document.getElementById("availabilityStatus");
+        if (connected && current.innerHTML !== "Available") {
+            current.innerHTML = "Available";
+            current.style = "color: #080;";
+        } else if (!connected && current.innerHTML !== "Unavailable") {
+            current.innerHTML = "Unavailable";
+            current.style = "color: #800;";
         }
     });
 }
@@ -90,18 +90,19 @@ function openCategory(cat){
                 document.getElementById("content").style.display = "none";
 
                 // generates the body
-                let body = `<br><button class="back" onclick="goBack()">Back</button><br><h2>${cat.toUpperCase()} MOVIES</h2><p>Have an explore of our ${cat.toLowerCase()} movie collection! Please don't hesitate to ask your cabin crew today for anything small, such as popcorn, to make your experience more comfortable! (We aren't Ryanair, we will give you good popcorn)</p><div style="display:flex;">`;
+                let top = `<h2>${cat.toUpperCase()} MOVIES</h2><p>Have an explore of our ${cat.toLowerCase()} movie collection! Please don't hesitate to ask your cabin crew today for anything small, such as popcorn, to make your experience more comfortable! (We aren't Ryanair, we will give you good popcorn)</p>`;
+                let body = "";
                 for(var i = 0; i < json.length; i++){
                     let film = json[i];
                     body += `<div class="film" onclick="selectMovie(${film.id})">
-                        <img src="/film/fetchthumbnail?id=${film.id}">
+                        <img src="/film/fetchthumbnail?id=${film.id}" alt="Thumbnail for ${film.title}">
                         <p>${film.title}</p>
-                    </div>`
+                    </div> `
                 }
-                body += "</div>"
 
                 // embeds the video
-                document.getElementById("categoryLibrary").innerHTML = body;
+                document.getElementById("movieContainer").innerHTML = body;
+                document.getElementById("movieTop").innerHTML = top;
             }
         })
 }
@@ -170,13 +171,15 @@ function relativeTime(timeThen){
     const d = new Date();
     let timeNow = Math.floor(d.getTime() / 1000);
     let timeDiff = timeNow - timeThen;
-    if(timeDiff < 120){
-        return `${timeDiff} second(s)`
+    if(timeDiff == 1){
+
+    } else if(timeDiff < 120 && timeDiff > 1){
+        return "1 second"
     } else if(timeDiff < 120*60){
-        return `${Math.round(timeDiff / 60)} minute(s)`
-    } else if(timeDiff < 72*60*60){
-        return `${Math.round(timeDiff / 60 / 60)} hour(s)`
+        return `${Math.round(timeDiff / 60)} minutes`
+    } else if(timeDiff < 48*60*60){
+        return `${Math.round(timeDiff / 60 / 60)} hours`
     } else {
-        return `${Math.round(timeDiff / 60 / 60 / 24)} day(s)`
+        return `${Math.round(timeDiff / 60 / 60 / 24)} days`
     }
 }
