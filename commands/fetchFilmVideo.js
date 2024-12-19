@@ -6,9 +6,9 @@ const fs = require("fs");
 
 // retrieve video
 module.exports = {
-    page: "/film/fetchvideo",
+    page: "/film/individual/video",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         const id = req.query.id;
         const videoPath = `./assets/videos/${id}.mp4`;
 
@@ -60,5 +60,6 @@ module.exports = {
         res.on("close", () => {
             videoStream.destroy();
         });
+        return;
     },
 };

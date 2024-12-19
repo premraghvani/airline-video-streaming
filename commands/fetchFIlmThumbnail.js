@@ -2,9 +2,9 @@ const fs = require("fs");
 
 // retrieves thumbnail
 module.exports = {
-    page: "/film/fetchthumbnail",
+    page: "/film/individual/thumbnail",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         // sets response to jpeg
         res.set("Content-Type", "image/jpeg");
 
@@ -21,5 +21,6 @@ module.exports = {
         }
 
         res.send(content);
+        return;
     }
 };

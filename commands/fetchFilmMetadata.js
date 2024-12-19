@@ -1,25 +1,26 @@
-const fs = require("fs");
+const {readDatabase} = require("../commonFunctions/databaseRead");
 
 // retrieves metadata
 module.exports = {
-    page: "/film/fetchmetadata",
+    page: "/film/individual/metadata",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         // sets response to json
         res.set("Content-Type", "application/json");
 
-        // checks if file exists
-        let id = req.query.id;
-        let fileExists = fs.existsSync(`./assets/metadata/${id}.json`);
+        // retrieves data
+        let data = await readDatabase("metadata",req.query.id)
 
-        if(fileExists){
+        // response depending on if it exists
+        if(data == false){
+            // does not exist
+            res.status(404);
+            res.send({});
+        } else {
             // sends data if it exists
             res.status(200);
-            let data = fs.readFileSync(`./assets/metadata/${id}.json`).toString();
             res.send(data);
-        } else {
-            res.status(404);
-            res.send({})
         }
+        return;
     }
 };

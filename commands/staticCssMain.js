@@ -4,9 +4,10 @@ const fs = require("fs");
 module.exports = {
     page: "/style.css",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         let body = fs.readFileSync("./static/style.css").toString();
         res.set("Content-Type", "text/css");
         res.send(body);
+        return;
     }
 };

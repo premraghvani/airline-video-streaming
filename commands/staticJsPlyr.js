@@ -4,9 +4,10 @@ const fs = require("fs");
 module.exports = {
     page: "/plyr.js",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         let body = fs.readFileSync("./static/plyr-3.7.8.js").toString();
         res.set("Content-Type", "text/javascript");
         res.send(body);
+        return;
     }
 };

@@ -1,10 +1,10 @@
-const fs = require("fs");
+const {readDatabase} = require("../commonFunctions/databaseRead")
 
-// checks if the connection is online
+// checks if the connection is online, and returns messages
 module.exports = {
-    page: "/isonline",
+    page: "/message/fetch",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         res.set("Content-Type", "application/json");
 
         // date now
@@ -12,7 +12,7 @@ module.exports = {
         const timeNow = Math.floor(d.getTime() / 1000)
         
         // gets messages in last 20 seconds
-        let messagesTmp = require("../assets/messages.json");
+        let messagesTmp = await readDatabase("main","messages")
         let messages = [];
         for(var i = 0; i < messagesTmp.length; i++){
             let q = messagesTmp[i];
@@ -21,6 +21,7 @@ module.exports = {
             }
         }
 
-        res.send(`{\"alive\":true,\"messages\":${JSON.stringify(messages)}}`);
+        res.send(JSON.stringify({alive:true,messages}));
+        return;
     }
 };

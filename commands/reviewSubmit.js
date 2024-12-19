@@ -1,10 +1,11 @@
-const fs = require("fs");
+const {readDatabase} = require("../commonFunctions/databaseRead");
+const {writeDatabase} = require("../commonFunctions/databaseWrite");
 
 // review a film - add it for approval
 module.exports = {
-    page: "/review/submit",
+    page: "/review/send",
     method: "POST",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         // finds data
         let rawBody = req.body;
         if(!rawBody){rawBody = "{}"}
@@ -23,15 +24,15 @@ module.exports = {
         }
 
         // checks if move exists
-        let fileExists = fs.existsSync(`./assets/reviews/${body.movieId}.json`)
-        if(!fileExists){
+        let reviews = await readDatabase("reviews",body.movieId); 
+        if(reviews == false){
             res.status(404).send("Movie does not exist");
             return;
         }
 
         // makes review
         const d = new Date();
-        let flightInfo = require("../assets/flightData.json")
+        let flightInfo = await readDatabase("main","flightData");
         let reviewBody = {
             timestamp: Math.floor(d.getTime() / 1000),
             flight:flightInfo.flightNum,
@@ -40,11 +41,11 @@ module.exports = {
         }
 
         // adds to file
-        let reviewFile = JSON.parse(fs.readFileSync(`./assets/reviews/${body.movieId}.json`).toString());
-        reviewFile.push(reviewBody);
-        fs.writeFileSync(`./assets/reviews/${body.movieId}.json`,JSON.stringify(reviewFile));
+        reviews.push(reviewBody);
+        await writeDatabase("reviews",body.movieId,reviews)
 
         // confirms
         res.status(202).send("Accepted for Moderation");
+        return;
     }
 };

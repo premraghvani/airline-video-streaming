@@ -1,20 +1,21 @@
-const fs = require("fs");
+const {readDatabase} = require("../commonFunctions/databaseRead");
 
 // retrieves reviews
 module.exports = {
     page: "/review/fetch",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         // sets response to json
         res.set("Content-Type", "application/json");
 
-        // checks if file exists
-        let id = req.query.id;
-        let fileExists = fs.existsSync(`./assets/reviews/${id}.json`);
-
-        if(fileExists){
-            // filters out non-allowed
-            let rawData = JSON.parse(fs.readFileSync(`./assets/reviews/${id}.json`).toString());
+        // fetches reviews
+        let rawData = await readDatabase("reviews",req.query.id);
+        
+        if(rawData == false){
+            res.status(404);
+            res.send({});
+        } else {
+            // filters out non-approved
             let filteredData = [];
             for(var i = 0; i < rawData.length; i++){
                 let review = rawData[i];
@@ -25,9 +26,7 @@ module.exports = {
             // sends data if it exists
             res.status(200);
             res.send(filteredData);
-        } else {
-            res.status(404);
-            res.send({})
         }
+        return;
     }
 };

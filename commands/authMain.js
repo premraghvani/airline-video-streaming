@@ -1,11 +1,13 @@
-const fs = require("fs");
 const bcrypt = require("bcryptjs");
+const {readDatabase} = require("../commonFunctions/databaseRead")
+const {writeDatabase} = require("../commonFunctions/databaseWrite")
 
-// authenticates a person
+
+// authenticates a person using password, returns token if valid
 module.exports = {
     page: "/authenticate",
     method: "POST",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         // finds password
         let rawBody = req.body;
         if(!rawBody){rawBody = "{}"}
@@ -24,19 +26,20 @@ module.exports = {
         }
 
         // compares
-        let passwordList = require("../assets/passwordsTokens.json")
+        let passwordList = await readDatabase("main","passwordsTokens")
         if(bcrypt.compareSync(password,passwordList.crew)){
-            finalBody = generateToken("crew");
+            finalBody = await generateToken("crew");
         } else if(bcrypt.compareSync(password,passwordList.admin)){
-            finalBody = generateToken("admin");
+            finalBody = await generateToken("admin");
         }
 
         res.set("Content-Type", "application/json").send(JSON.stringify(finalBody));
+        return;
     }
 };
 
 // generates a token
-function generateToken(level){
+async function generateToken(level){
     const d = new Date();
     let expiry = Math.floor(d.getTime() / 1000) + 60*60 // expires after 60 minutes
     
@@ -48,10 +51,10 @@ function generateToken(level){
     }
 
     // compares to make sure it does not already exist
-    let passwordList = JSON.parse(fs.readFileSync("./assets/passwordsTokens.json").toString())
+    let passwordList = await readDatabase("main","passwordsTokens")
     for(var i = 0; i < passwordList.tokens.length; i++){
         if(passwordList.tokens[i].token == token){
-            return generateToken() // recursive function - generates until a valid non-duplicate token exists
+            return await generateToken() // recursive function - generates until a valid non-duplicate token exists
         }
     }
 
@@ -71,7 +74,7 @@ function generateToken(level){
         expiry,
         level
     });
-    fs.writeFileSync("./assets/passwordsTokens.json",JSON.stringify(passwordList));
+    await writeDatabase("main","passwordsTokens",passwordList)
 
     // return case
     return{

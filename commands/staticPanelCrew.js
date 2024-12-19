@@ -4,7 +4,7 @@ const fs = require("fs");
 module.exports = {
     page: "/crew",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         let body = fs.readFileSync("./static/crew.html").toString();
 
         // gets flight details, and puts into body
@@ -15,5 +15,6 @@ module.exports = {
 
         res.set("Content-Type", "text/html");
         res.send(body);
+        return;
     }
 };

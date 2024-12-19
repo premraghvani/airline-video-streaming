@@ -4,7 +4,7 @@ let lastRead = 0;
 // function to select movie, close menu and open the movie
 function selectMovie(id){
     // attempts to retrieve metadata
-    fetch(`/film/fetchmetadata?id=${id}`)
+    fetch(`/film/individual/metadata?id=${id}`)
         .then((response) => {
             if(response.status != 200){
                 return false
@@ -28,7 +28,7 @@ function selectMovie(id){
 
                 // adds video
                 var source = document.createElement('source');
-                source.src = `film/fetchvideo?id=${id}`;
+                source.src = `film/individual/video?id=${id}`;
                 source.type = "video/mp4"
                 document.getElementById("filmVideo").appendChild(source);
             }
@@ -50,7 +50,7 @@ function checkConnection() {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 500);
 
-    fetch(`/isonline`,{signal:controller.signal})
+    fetch(`/message/fetch`,{signal:controller.signal})
         .then((response) => {
             clearTimeout(timeout);
             if (response.status !== 200) {
@@ -102,7 +102,7 @@ setInterval(checkConnection, 2000);
 function openCategory(cat){
     disconnectFilm()    
     // attempts to get category films
-    fetch(`/film/fetchcategoryfilms?category=${cat}`)
+    fetch(`/film/categoryfilter/fetch?category=${cat}`)
         .then((response) => {
             if(response.status != 200){
                 return false
@@ -124,7 +124,7 @@ function openCategory(cat){
                 for(var i = 0; i < json.length; i++){
                     let film = json[i];
                     body += `<div class="film" onclick="selectMovie(${film.id})">
-                        <img src="/film/fetchthumbnail?id=${film.id}" alt="Thumbnail for ${film.title}">
+                        <img src="/film/individual/thumbnail?id=${film.id}" alt="Thumbnail for ${film.title}">
                         <p>${film.title}</p>
                     </div> `
                 }
@@ -203,9 +203,9 @@ function relativeTime(timeThen){
     let timeNow = Math.floor(d.getTime() / 1000);
     let timeDiff = timeNow - timeThen;
     if(timeDiff == 1){
-
-    } else if(timeDiff < 120 && timeDiff > 1){
         return "1 second"
+    } else if(timeDiff < 120){
+        return `${Math.round(timeDiff)} seconds`
     } else if(timeDiff < 120*60){
         return `${Math.round(timeDiff / 60)} minutes`
     } else if(timeDiff < 48*60*60){
@@ -222,7 +222,7 @@ function submitReviews(event){
     let review = document.getElementById("review").value;
     let movieId = document.getElementById("movieIdReview").value;
     
-    fetch("/review/submit", {
+    fetch("/review/send", {
         method: "POST",
         body: JSON.stringify({review,movieId}),
         headers: {

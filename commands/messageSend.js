@@ -1,10 +1,11 @@
-const fs = require("fs");
+const {readDatabase} = require("../commonFunctions/databaseRead");
+const {writeDatabase} = require("../commonFunctions/databaseWrite");
 
 // canin crew to send a message
 module.exports = {
     page: "/message/send",
     method: "POST",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         // finds data
         let rawBody = req.body;
         console.log(req.cookies.token)
@@ -25,7 +26,7 @@ module.exports = {
 
         // adds message
         const d = new Date();
-        let messageList = require("../assets/messages.json")
+        let messageList = await readDatabase("main","messages")
         let messageBody = {
             timestamp: Math.floor(d.getTime() / 1000),
             message:body.message
@@ -33,9 +34,10 @@ module.exports = {
         messageList.push(messageBody)
 
         // adds to file
-        fs.writeFileSync(`./assets/messages.json`,JSON.stringify(messageList));
+        await writeDatabase("main","messages",messageList)
 
         // confirms
         res.status(200).send("Accepted");
+        return;
     }
 };

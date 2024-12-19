@@ -4,9 +4,10 @@ const fs = require("fs");
 module.exports = {
     page: "/script.js",
     method: "GET",
-    execute: (req, res) => {
+    execute: async(req, res) => {
         let body = fs.readFileSync("./static/script.js").toString();
         res.set("Content-Type", "text/javascript");
         res.send(body);
+        return;
     }
 };
