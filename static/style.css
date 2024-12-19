@@ -174,4 +174,34 @@ blockquote p {
     display: inline-block;
 } 
 
-/* adjustments for max 1000px width screens, makes text bigger */
+/* modal */
+.modal{
+    display: none;
+    position:fixed;
+    z-index:1;
+    padding-top:200px;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    overflow: auto;
+    background-color: #c4921b;
+    background-color: rgba(196,146,27,0.4);
+}
+.modalContent{
+    background-color: #eae8e1;
+    margin:auto;
+    padding:20x;
+    border:#c4921b 3px solid;
+    width:80%;
+}
+.close{
+    color:#2c0e1d;
+    float:right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover, .close:focus{
+    color:#c4921b;
+    cursor: pointer;
+}

@@ -20,3 +20,4 @@ The default passwords for the crew panel are:
 - Samuel Martins (https://blog.logrocket.com/build-video-streaming-server-node/), for suggestions on how to actually read the file, and highlighting the importance of the range header for videos
 - Mozilla (https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), for providing the HTTP status codes I have used
 - Etihad Airways (https://strapi.wasmenia.com/uploads/Etihad_Airlines_Guideline_5a7d17b7d6.pdf), for the brand guidelines, which I have inspired this project on (I don't know the colour schemes which work best so I used theres)
+- w3schools (https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal), for modal ideas

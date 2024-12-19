@@ -6,6 +6,13 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <!--modal-->
+        <div id="modal" class="modal">
+            <div class="modalContent">
+                <span class="close" id="closeBtn">&times;</span>
+                <p id="modalText">---</p>
+            </div>
+        </div>
         <!--top-->
         <div class="topbar">
             <strong style="font-size: 2em;">Streambox</strong>
@@ -54,7 +61,7 @@
                 <textarea id="review" name="review" cols="80" rows="5" style="width: 100%"></textarea>
                 <input name="movieId" id="movieIdReview" type="hidden" readonly value="">
                 <br>
-                <input type="submit" value="Send Review" style="width: 100%;"><br>
+                <input type="submit" value="Send Review" style="width: 100%;" id="reviewsend"><br>
                 <label>Reviews will be sent for moderation, and will not immediately appear.</label>
             </form>
 

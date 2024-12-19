@@ -111,6 +111,8 @@ function openCategory(cat){
 function disconnectFilm(){
     document.getElementById("filmVideo").innerHTML = "";
     document.getElementById("filmVideo").load();
+    document.getElementById("review").value = "";
+    document.getElementById("movieIdReview").value = "";
     currentMovie = 0;
     if(document.getElementById("filmReviews").style.display != "none"){
         toggleFilmReviews()
@@ -182,4 +184,38 @@ function relativeTime(timeThen){
     } else {
         return `${Math.round(timeDiff / 60 / 60 / 24)} days`
     }
+}
+
+// submit reviews form
+document.getElementById("reviewsend").addEventListener("click", submitReviews, false);
+function submitReviews(event){
+    event.preventDefault();
+    let review = document.getElementById("review").value;
+    let movieId = document.getElementById("movieIdReview").value;
+    
+    fetch("/review/submit", {
+        method: "POST",
+        body: JSON.stringify({review,movieId}),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then((response) => {
+        document.getElementById("review").value = "";
+        document.getElementById("movieIdReview").value = "";
+        if(response.status == 202){
+            modalAlert("Successfully submitted review!")
+        } else {
+            modalAlert("Error in submitting review: ",response)
+        }
+      });
+}
+
+// modal alert
+function modalAlert(msg){
+    let modal = document.getElementById("modal");
+    let closeButton = document.getElementById("closeBtn");
+    document.getElementById("modalText").innerHTML = msg;
+    modal.style.display = "block";
+    closeButton.onclick = function(){modal.style.display = "none"}
+    window.onclick = function(event){if(event.target == modal){modal.style.display="none";}}
 }
