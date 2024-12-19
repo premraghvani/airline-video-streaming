@@ -1,9 +1,9 @@
 // validates a person
-const {readDatabase} = require("./database");
+const {readDb} = require("./database");
 
 // validation func
 async function validate(token){
-    let passwordList = await readDatabase("main","passwordsTokens");
+    let passwordList = await readDb("main","passwordsTokens");
     let finalBody = {
         approval: false,
         level:"",
