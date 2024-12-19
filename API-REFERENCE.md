@@ -22,6 +22,7 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | --- | --- | --- |
 | /message/fetch | GET | Gets all messages made in the recent 30 seconds from crew, as well as checking if a connection is still active between server and client |
 | /message/send | POST | Restricted to staff - sends a message to all users who are subscribed to the `/message/fetch GET` |
+| !!/film/category/fetch | GET | A list of all categories which exist |
 | /film/categoryfilter/fetch | GET | Fetches a list of all movies in a specified category |
 | /film/individual/metadata | GET | Gets the data for a specified movie |
 | /film/individual/thumbnail | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
@@ -31,6 +32,7 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | !!/review/fetch/all | GET | Fetches all reviews for a movie, including those which are not approved |
 | /review/send | POST | Sends a review of a movie, which is to be approved |
 | !!/review/approvals | POST | To approve, or to delete, any reviews. |
+| !!/flight | GET | The flight's current data |
 | !!/flight/data | POST | Updates the flight's data |
 | /authenticate | POST | Authenticates a password on log in |
 | !!/authenticate/new | POST | Changes a password |
@@ -38,17 +40,19 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 
 ## Extra Details on API
 This will only apply to services which aren't in the "statics" section.
-Please note that the code examples are exclusively in pseudocode. The following command example:
+Please note that the code examples are in a JavaScript example, where we assume the following command is true:
 ```js
 await fetchData(endpoint,method,payload,reqHeaders)
 ```
-will act as an API call, where the data is returned, and:
+This will act as an API call, where the data is returned, and:
 - `endpoint` is the HTTP endpoint
 - `method` is the method used, either `get` for `GET`, or `post` for `POST`
 - `payload` which may be blank, but is a JSON with the request
 - `reqHeaders` which may be blank, but is any different request headers. This is a JSON with the key being the header name, and value being its content.
 
 This can be adapted to whatever is used in your programming language to make requests, e.g. axios.
+
+Assume that the code examples are running in an async environment.
 
 The expectation is that the payload to POST requests are only in application/json (or are left blank), and any information for GET requests are given as a querystring.
 
@@ -121,6 +125,6 @@ This API will only accept the cases where, for the body:
 Types of responses
 | HTTP Status Code | Description | 
 | --- | --- |
-| 200 | We recieved your request, and correctly updated the message database as described |
+| 200 | We recieved your request, and correctly updated the message database as prescribed |
 | 400 | You did not provide a message, or it was not in the format as requested |
 | 403 | There is no token provided, or it is invalid (could be expired) |

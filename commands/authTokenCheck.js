@@ -1,5 +1,4 @@
-const fs = require("fs");
-const {validate} = require("../commonFunctions/validation")
+const {validate} = require("../commonFunctions/validation");
 
 // verifies a token
 module.exports = {

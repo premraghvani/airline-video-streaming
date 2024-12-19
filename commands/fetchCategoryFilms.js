@@ -1,4 +1,4 @@
-const {readDatabase} = require("../commonFunctions/databaseRead");
+const {readDb} = require("../commonFunctions/database");
 
 // retrieves all films in a category
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
         }
 
         // gets directory
-        const films = await readDatabase("main","index");
+        const films = await readDb("main","index");
         let inCategory = [];
         for(var i = 0; i < films.length; i++){
             let q = films[i];

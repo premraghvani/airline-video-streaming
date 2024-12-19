@@ -1,5 +1,5 @@
 // validates a person
-const {readDatabase} = require("../commonFunctions/databaseRead");
+const {readDatabase} = require("./database");
 
 // validation func
 async function validate(token){

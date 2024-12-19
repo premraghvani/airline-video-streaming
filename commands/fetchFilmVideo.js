@@ -1,9 +1,5 @@
 const fs = require("fs");
 
-// inspiratoin: https://blog.logrocket.com/build-video-streaming-server-node/
-
-// http statuses relevant (https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) are 206 for partial content, 404 not found, 400 no range headers (so bad request), 416 (range not satisfiable), 500 (server messed somet else up)
-
 // retrieve video
 module.exports = {
     page: "/film/individual/video",

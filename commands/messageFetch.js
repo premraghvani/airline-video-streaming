@@ -1,4 +1,4 @@
-const {readDatabase} = require("../commonFunctions/databaseRead")
+const {readDb} = require("../commonFunctions/database");
 
 // checks if the connection is online, and returns messages
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         const timeNow = Math.floor(d.getTime() / 1000)
         
         // gets messages
-        let messagesTmp = await readDatabase("main","messages")
+        let messagesTmp = await readDb("main","messages")
 
         // checks if there exists the messages
         if(messagesTmp == false){

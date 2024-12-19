@@ -1,5 +1,4 @@
-const {readDatabase} = require("../commonFunctions/databaseRead");
-const {writeDatabase} = require("../commonFunctions/databaseWrite");
+const {readDb, writeDb} = require("../commonFunctions/database");
 const {validate} = require("../commonFunctions/validation")
 
 // canin crew to send a message
@@ -32,7 +31,7 @@ module.exports = {
 
         // adds message
         const d = new Date();
-        let messageList = await readDatabase("main","messages")
+        let messageList = await readDb("main","messages")
         let messageBody = {
             timestamp: Math.floor(d.getTime() / 1000),
             message:body.message
@@ -40,7 +39,7 @@ module.exports = {
         messageList.push(messageBody)
 
         // adds to file
-        await writeDatabase("main","messages",messageList)
+        await writeDb("main","messages",messageList)
 
         // confirms
         res.status(200).send(JSON.stringify({message:"Success!"}));

@@ -1,5 +1,4 @@
-const {readDatabase} = require("../commonFunctions/databaseRead");
-const {writeDatabase} = require("../commonFunctions/databaseWrite");
+const {readDb, writeDb} = require("../commonFunctions/database");
 
 // review a film - add it for approval
 module.exports = {
@@ -24,7 +23,7 @@ module.exports = {
         }
 
         // checks if move exists
-        let reviews = await readDatabase("reviews",body.movieId); 
+        let reviews = await readDb("reviews",body.movieId); 
         if(reviews == false){
             res.status(404).send("Movie does not exist");
             return;
@@ -32,7 +31,7 @@ module.exports = {
 
         // makes review
         const d = new Date();
-        let flightInfo = await readDatabase("main","flightData");
+        let flightInfo = await readDb("main","flightData");
         let reviewBody = {
             timestamp: Math.floor(d.getTime() / 1000),
             flight:flightInfo.flightNum,
@@ -42,7 +41,7 @@ module.exports = {
 
         // adds to file
         reviews.push(reviewBody);
-        await writeDatabase("reviews",body.movieId,reviews)
+        await writeDb("reviews",body.movieId,reviews)
 
         // confirms
         res.status(202).send("Accepted for Moderation");

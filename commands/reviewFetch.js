@@ -1,4 +1,4 @@
-const {readDatabase} = require("../commonFunctions/databaseRead");
+const {readDb} = require("../commonFunctions/database");
 
 // retrieves reviews
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         res.set("Content-Type", "application/json");
 
         // fetches reviews
-        let rawData = await readDatabase("reviews",req.query.id);
+        let rawData = await readDb("reviews",req.query.id);
         
         if(rawData == false){
             res.status(404);

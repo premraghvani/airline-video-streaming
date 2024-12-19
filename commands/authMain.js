@@ -1,7 +1,5 @@
 const bcrypt = require("bcryptjs");
-const {readDatabase} = require("../commonFunctions/databaseRead")
-const {writeDatabase} = require("../commonFunctions/databaseWrite")
-
+const {readDb, writeDb} = require("../commonFunctions/database");
 
 // authenticates a person using password, returns token if valid
 module.exports = {
@@ -26,7 +24,7 @@ module.exports = {
         }
 
         // compares
-        let passwordList = await readDatabase("main","passwordsTokens")
+        let passwordList = await readDb("main","passwordsTokens")
         if(bcrypt.compareSync(password,passwordList.crew)){
             finalBody = await generateToken("crew");
         } else if(bcrypt.compareSync(password,passwordList.admin)){
@@ -51,7 +49,7 @@ async function generateToken(level){
     }
 
     // compares to make sure it does not already exist
-    let passwordList = await readDatabase("main","passwordsTokens")
+    let passwordList = await readDb("main","passwordsTokens")
     for(var i = 0; i < passwordList.tokens.length; i++){
         if(passwordList.tokens[i].token == token){
             return await generateToken() // recursive function - generates until a valid non-duplicate token exists
@@ -74,7 +72,7 @@ async function generateToken(level){
         expiry,
         level
     });
-    await writeDatabase("main","passwordsTokens",passwordList)
+    await writeDb("main","passwordsTokens",passwordList)
 
     // return case
     return{

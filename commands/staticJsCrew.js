@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-// simply serves the script.js
+// simply serves the scriptCrew.js
 module.exports = {
     page: "/scriptCrew.js",
     method: "GET",

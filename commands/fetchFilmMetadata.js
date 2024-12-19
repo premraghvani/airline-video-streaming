@@ -1,4 +1,4 @@
-const {readDatabase} = require("../commonFunctions/databaseRead");
+const {readDb} = require("../commonFunctions/database");
 
 // retrieves metadata
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         res.set("Content-Type", "application/json");
 
         // retrieves data
-        let data = await readDatabase("metadata",req.query.id)
+        let data = await readDb("metadata",req.query.id)
 
         // response depending on if it exists
         if(data == false){
