@@ -11,6 +11,10 @@ async function validate(token){
         expiry:0
     }
 
+    if(!token){
+        return finalBody;
+    }
+
     if(!passwordList){
         return finalBody;
     }

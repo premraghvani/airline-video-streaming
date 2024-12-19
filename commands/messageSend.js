@@ -1,5 +1,6 @@
 const {readDatabase} = require("../commonFunctions/databaseRead");
 const {writeDatabase} = require("../commonFunctions/databaseWrite");
+const {validate} = require("../commonFunctions/validation")
 
 // canin crew to send a message
 module.exports = {
@@ -8,7 +9,12 @@ module.exports = {
     execute: async(req, res) => {
         // finds data
         let rawBody = req.body;
-        console.log(req.cookies.token)
+        let validateUser = await validate(req.cookies.token);
+        if(validateUser.approval == false){
+            res.status(403).send("Must be validated")
+            return;
+        }
+
         if(!rawBody){rawBody = "{}"}
         let body = JSON.parse(rawBody.toString());
 
