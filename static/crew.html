@@ -5,6 +5,13 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <!--modal-->
+        <div id="modal" class="modal">
+            <div class="modalContent">
+                <span class="close" id="closeBtn">&times;</span>
+                <p id="modalText">---</p>
+            </div>
+        </div>
         <!--top-->
         <div class="topbar">
             <strong style="font-size: 2em;">Crew Panel</strong>
@@ -26,6 +33,17 @@
         <!--crew-->
         <div id="crewPanel" class="container" style="display: none;">
             <h2>Crew Settings</h2>
+            <h4>Send Message to Passengers</h4>
+            <form id="messageForm" action="/message/send" method="post">
+                <label for="message">Message</label>
+                <textarea id="messageToSend" name="message" cols="80" rows="5" style="width: 100%"></textarea>
+                <input type="submit" value="Send" id="messagesend">
+            </form>
+            <p>Pre-written messages:</p>
+            <button onclick="prewritten(1)">Welcome</button>
+            <button onclick="prewritten(2)">Arrival</button>
+            <button onclick="prewritten(3)">Goodbye</button>
+            <button onclick="prewritten(4)">Meals</button>
         </div>
         <!--admin-->
         <div id="adminPanel" class="container" style="display: none;">

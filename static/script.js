@@ -232,10 +232,12 @@ function submitReviews(event){
         document.getElementById("review").value = "";
         document.getElementById("movieIdReview").value = "";
         if(response.status == 202){
-            modalAlert("Successfully submitted review!")
-        } else {
-            modalAlert("Error in submitting review: ",response)
+            modalAlert("Successfully submitted review!");
+            return;
         }
+        return response.json();
+      }).then((json)=>{
+        console.log(json)
       });
 }
 
