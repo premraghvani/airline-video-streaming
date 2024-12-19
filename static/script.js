@@ -45,11 +45,15 @@ function goBack(){
 }
 
 // function to check the connection and update page accordingly, and messages
-function checkConnection() { 
+function checkConnection() {
     let current = document.getElementById("availabilityStatus");
-    fetch(`/isonline`)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 500);
+
+    fetch(`/isonline`,{signal:controller.signal})
         .then((response) => {
-            if(response.status != 200){
+            clearTimeout(timeout);
+            if (response.status !== 200) {
                 if (current.innerHTML !== "Unavailable") {
                     current.innerHTML = "Unavailable";
                     current.style = "color: #800;";
@@ -59,27 +63,35 @@ function checkConnection() {
                     current.innerHTML = "Available";
                     current.style = "color: #080;";
                 }
-            }  
-            return response.json()
-        }).then((json)=>{
-            if(json.messages.length == 0){
-                return
+            }
+            return response.json();
+        })
+        .then((json) => {
+            if (json.messages.length === 0) {
+                return;
             } else {
-                // displays messages
+                // Displays messages
                 let messageToShow = [];
-                for(var i = 0; i < json.messages.length; i++){
-                    if(lastRead < json.messages[i].timestamp){
+                for (var i = 0; i < json.messages.length; i++) {
+                    if (lastRead < json.messages[i].timestamp) {
                         messageToShow.push(json.messages[i].message);
                         lastRead = json.messages[i].timestamp;
                     }
                 }
 
-                // actually shows if any
-                if(messageToShow.length > 0){
-                    modalAlert(`<b>Message from Crew:</b><br><br>${messageToShow.join("<br>")}`)
+                // Actually shows if any
+                if (messageToShow.length > 0) {
+                    modalAlert(`<b>Message from Crew:</b><br><br>${messageToShow.join("<br>")}`);
                 }
             }
         })
+        .catch((error) => {
+            console.error("Error fetching connection status:", error);
+            if (current.innerHTML !== "Unavailable") {
+                current.innerHTML = "Unavailable";
+                current.style = "color: #800;";
+            }
+        });
 }
 
 // check connection with the server every 2 seconds

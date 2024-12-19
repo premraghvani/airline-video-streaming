@@ -5,17 +5,15 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="topbar" style="background-color: #ddc8a1; color: #2c0e1d">
-            <div class="cell" style="width: 25%;">
-                <p><b>CREW PANEL</b></p>
-            </div>
-            <div class="cell" style="text-align: center; width: 50%;" id="flightInfo">
-                <p>{{flightNum}}, {{originCode}} to {{destinationCode}}</p>
-            </div>
-            <div class="cell" style="width: 25%;" id="statusCell">
-                <div class="circle" id="status">??</div>
-            </div>
+        <!--top-->
+        <div class="topbar">
+            <strong style="font-size: 2em;">Crew Panel</strong>
+            <span style="font-size: 0.5em;">
+                <br>
+                {{flightNum}} {{originCode}}-{{destinationCode}} | Service Availability: <span id="availabilityStatus" style="color: #880;" id="availability">I don't know</span>
+            </span>
         </div>
+        <!--Authentication-->
         <div id="auth" class="container">
             <h1>Authentication</h1>
             <p style="text-align: center;">Please authenticate yourself - using either the crew password (which is attached somewhere physically), or the administrator password</p>
@@ -25,13 +23,14 @@
                 <input type="submit" value="Send" id="passwordsend">
             </form>
         </div>
+        <!--crew-->
         <div id="crewPanel" class="container" style="display: none;">
             <h2>Crew Settings</h2>
         </div>
+        <!--admin-->
         <div id="adminPanel" class="container" style="display: none;">
             <h2>Admin Settings</h2>
         </div>
-
     </body>
 </html>
 <script src="script.js"></script>
