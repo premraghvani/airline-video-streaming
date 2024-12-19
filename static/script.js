@@ -1,4 +1,5 @@
 let currentMovie = 0;
+let lastRead = 0;
 
 // function to select movie, close menu and open the movie
 function selectMovie(id){
@@ -43,26 +44,42 @@ function goBack(){
     disconnectFilm()
 }
 
-// function to check the connection and update page accordingly
+// function to check the connection and update page accordingly, and messages
 function checkConnection() { 
-    return new Promise((resolve) => {
-        const xhr = new XMLHttpRequest();
-        xhr.timeout = 500;
-        xhr.onload = () => resolve(true);
-        xhr.onerror = () => resolve(false);
-        xhr.ontimeout = () => resolve(false);
-        xhr.open("GET", "/isonline", true);
-        xhr.send();
-    }).then((connected) => {
-        let current = document.getElementById("availabilityStatus");
-        if (connected && current.innerHTML !== "Available") {
-            current.innerHTML = "Available";
-            current.style = "color: #080;";
-        } else if (!connected && current.innerHTML !== "Unavailable") {
-            current.innerHTML = "Unavailable";
-            current.style = "color: #800;";
-        }
-    });
+    let current = document.getElementById("availabilityStatus");
+    fetch(`/isonline`)
+        .then((response) => {
+            if(response.status != 200){
+                if (current.innerHTML !== "Unavailable") {
+                    current.innerHTML = "Unavailable";
+                    current.style = "color: #800;";
+                }
+            } else {
+                if (current.innerHTML !== "Available") {
+                    current.innerHTML = "Available";
+                    current.style = "color: #080;";
+                }
+            }  
+            return response.json()
+        }).then((json)=>{
+            if(json.messages.length == 0){
+                return
+            } else {
+                // displays messages
+                let messageToShow = [];
+                for(var i = 0; i < json.messages.length; i++){
+                    if(lastRead < json.messages[i].timestamp){
+                        messageToShow.push(json.messages[i].message);
+                        lastRead = json.messages[i].timestamp;
+                    }
+                }
+
+                // actually shows if any
+                if(messageToShow.length > 0){
+                    modalAlert(`<b>Message from Crew:</b><br><br>${messageToShow.join("<br>")}`)
+                }
+            }
+        })
 }
 
 // check connection with the server every 2 seconds
