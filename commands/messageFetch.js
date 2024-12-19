@@ -11,17 +11,24 @@ module.exports = {
         const d = new Date();
         const timeNow = Math.floor(d.getTime() / 1000)
         
-        // gets messages in last 20 seconds
+        // gets messages
         let messagesTmp = await readDatabase("main","messages")
+
+        // checks if there exists the messages
+        if(messagesTmp == false){
+            res.status(500).send({"error":"Couldn't find the messages, sorry."})
+        }
+
+        // filters for last 30 seconds
         let messages = [];
         for(var i = 0; i < messagesTmp.length; i++){
             let q = messagesTmp[i];
-            if(q.timestamp >= (timeNow - 20)){
+            if(q.timestamp >= (timeNow - 30)){
                 messages.push(q);
             }
         }
 
-        res.send(JSON.stringify({alive:true,messages}));
+        res.status(200).send(JSON.stringify({alive:true,messages}));
         return;
     }
 };

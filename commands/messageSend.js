@@ -11,7 +11,7 @@ module.exports = {
         let rawBody = req.body;
         let validateUser = await validate(req.cookies.token);
         if(validateUser.approval == false){
-            res.status(403).send("Must be validated")
+            res.status(403).send(JSON.stringify({error:"Must be authenticated"}))
             return;
         }
 
@@ -19,14 +19,14 @@ module.exports = {
         let body = JSON.parse(rawBody.toString());
 
         if(!body.message){
-            res.status(400).send("Specify message");
+            res.status(400).send(JSON.stringify({error:"Please write a message"}));
             return;
         }
 
         // checks review against regex
         const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
         if(reviewRegex.test(body.review) == false){
-            res.status(400).send("Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only");
+            res.status(400).send(JSON.stringify({error:"Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"}));
             return;
         }
 
@@ -43,7 +43,7 @@ module.exports = {
         await writeDatabase("main","messages",messageList)
 
         // confirms
-        res.status(200).send("Accepted");
+        res.status(200).send(JSON.stringify({message:"Success!"}));
         return;
     }
 };
