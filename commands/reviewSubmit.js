@@ -21,7 +21,7 @@ module.exports = {
 
         // checks review against regex
         const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
-        if(reviewRegex.test(body.review) == false){
+        if(reviewRegex.test(body.review) === false){
             res.status(400).send(JSON.stringify({error:"Review must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"}));
             return;
         }

@@ -11,7 +11,7 @@ module.exports = {
         const videoPath = `./assets/videos/${id}.mp4`;
 
         // checks if id is valid
-        if(!id || /^[0-9]+$/.test(id) == false){
+        if(!id || /^[0-9]+$/.test(id) === false){
             res.status(400).send("Invalid ID");
             return;
         }

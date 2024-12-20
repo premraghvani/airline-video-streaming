@@ -9,7 +9,7 @@ module.exports = {
         // finds data
         let rawBody = req.body;
         let validateUser = await validate(req.cookies.token);
-        if(validateUser.approval == false){
+        if(validateUser.approval === false){
             res.status(403).send(JSON.stringify({error:"Must be authenticated"}))
             return;
         }
@@ -24,7 +24,7 @@ module.exports = {
 
         // checks review against regex
         const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
-        if(reviewRegex.test(body.review) == false){
+        if(reviewRegex.test(body.review) === false){
             res.status(400).send(JSON.stringify({error:"Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"}));
             return;
         }

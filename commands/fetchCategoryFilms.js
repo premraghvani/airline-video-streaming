@@ -10,7 +10,7 @@ module.exports = {
 
         // gets the categories stuff
         let category = req.query.category;
-        if(!category || /^[A-Za-z]+$/.test(category) == false){
+        if(!category || /^[A-Za-z]+$/.test(category) === false){
             res.status(400).send("[]");
             return;
         } else {

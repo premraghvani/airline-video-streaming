@@ -21,7 +21,7 @@ module.exports = {
         // returns a default thumbnail as a failure
         } else if(fs.existsSync(`./assets/thumbnails/0.jpg`)){
             res.status(404)
-            if(!id || /^[0-9]+$/.test(id) == false){
+            if(!id || /^[0-9]+$/.test(id) === false){
                 res.status(400)
             }
             content = fs.readFileSync("./assets/thumbnails/0.jpg")

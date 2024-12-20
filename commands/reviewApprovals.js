@@ -28,7 +28,7 @@ module.exports = {
 
         // checks if movie exists
         let reviews = await readDb("reviews",body.movieId); 
-        if(reviews == false){
+        if(reviews === false){
             res.status(404).send(JSON.stringify({error:"Movie does not exist"}));
             return;
         }

@@ -10,7 +10,7 @@ module.exports = {
 
         // checks input
         let id = req.query.id;
-        if(!id || /^[0-9]+$/.test(id) == false){
+        if(!id || /^[0-9]+$/.test(id) === false){
             res.status(400).send({error:"Invalid id"});
             return;
         }
@@ -19,7 +19,7 @@ module.exports = {
         let data = await readDb("metadata",id)
 
         // response depending on if it exists
-        if(data == false){
+        if(data === false){
             // does not exist
             res.status(404);
             res.send({});

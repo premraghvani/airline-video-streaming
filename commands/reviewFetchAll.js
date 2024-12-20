@@ -11,7 +11,7 @@ module.exports = {
 
         // checks input
         let id = req.query.id;
-        if(!id || /^[0-9]+$/.test(id) == false){
+        if(!id || /^[0-9]+$/.test(id) === false){
             res.status(400).send({error:"Invalid id"});
             return;
         }
@@ -25,7 +25,7 @@ module.exports = {
 
         // fetches reviews
         let rawData = await readDb("reviews",id);
-        if(rawData == false){
+        if(rawData === false){
             res.status(404).send({error:"Movie does not exist"});
             return;
         }

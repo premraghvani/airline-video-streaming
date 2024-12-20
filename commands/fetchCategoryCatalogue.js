@@ -12,7 +12,7 @@ module.exports = {
         let films = require("../assets/index.json");
 
         // error case
-        if(films == false){
+        if(films === false){
             res.status(500).send({"error":"Couldn't find the films in the system, sorry."});
             return;
         }

@@ -15,7 +15,7 @@ module.exports = {
         let messagesTmp = await readDb("main","messages")
 
         // checks if there exists the messages
-        if(messagesTmp == false){
+        if(messagesTmp === false){
             res.status(500).send({"error":"Couldn't find the messages, sorry."});
             return;
         }
