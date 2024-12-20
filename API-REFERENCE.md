@@ -20,24 +20,24 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 
 | Endpoint | Method | Description |
 | --- | --- | --- |
-| /message/fetch | GET | Gets all messages made in the recent 30 seconds from crew, as well as checking if a connection is still active between server and client |
-| /message/send | POST | Restricted to staff - sends a message to all users who are subscribed to the `/message/fetch GET` |
-| /film/category/fetch | GET | A list of all categories which exist |
-| /film/categoryfilter/fetch | GET | Fetches a list of all movies in a specified category |
-| /film/individual/metadata | GET | Gets the data for a specified movie |
-| /film/individual/thumbnail | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
-| /film/individual/video | GET | Returns `video/mp4` on success, or `text/txt` on failure, the film content (or an error) |
-| !!/film/individual/new | POST | Creates a new film in the database |
-| !!/film/individual/delete | POST | Deletes a film |
-| /review/fetch | GET | Fetches all reviews for a movie, as long as they are approved |
-| /review/fetch/all | GET | Fetches all reviews for a movie, including those which are not approved |
-| /review/send | POST | Sends a review of a movie, which is to be approved |
-| /review/approvals | POST | To approve, or to delete, any reviews. |
-| /flight | GET | The flight's current data |
-| !!/flight/data | POST | Updates the flight's data |
-| /authenticate | POST | Authenticates a password on log in |
-| !!/authenticate/new | POST | Changes a password |
-| /authenticate/token | POST | Checks a token's entitlements |
+| [/message/fetch](#messagefetch-get) | GET | Gets all messages made in the recent 30 seconds from crew, as well as checking if a connection is still active between server and client |
+| [/message/send](#messagesend-post) | POST | Restricted to staff - sends a message to all users who are subscribed to the `/message/fetch GET` |
+| [/film/category/fetch](#filmcategoryfetch-get) | GET | A list of all categories which exist |
+| [/film/categoryfilter/fetch](#fimcategoryfilterfetch-get) | GET | Fetches a list of all movies in a specified category |
+| [/film/individual/metadata](#filmindividualmetadata-get) | GET | Gets the data for a specified movie |
+| [/film/individual/thumbnail](#filmindividualthumbnail-get) | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
+| [/film/individual/video](#filmindividualvideo-get) | GET | Returns `video/mp4` on success, or `text/txt` on failure, the film content (or an error) |
+| !![/film/individual/new](#filmindividualnew-post) | POST | Creates a new film in the database |
+| !![/film/individual/delete](#filmindividualdelete-post) | POST | Deletes a film |
+| [/review/fetch](#reviewfetch-get) | GET | Fetches all reviews for a movie, as long as they are approved |
+| [/review/fetch/all](#reviewfetchall-get) | GET | Fetches all reviews for a movie, including those which are not approved |
+| [/review/send](#reviewsend-post) | POST | Sends a review of a movie, which is to be approved |
+| [/review/approvals](#reviewapprovals-post) | POST | To approve, or to delete, any reviews. |
+| [/flight](#flight-get) | GET | The flight's current data |
+| !![/flight/data](#flightdata-post) | POST | Updates the flight's data |
+| [/authenticate](#authenticate-post) | POST | Authenticates a password on log in |
+| !![/authenticate/new](#authenticatenew-post) | POST | Changes a password |
+| [/authenticate/token](#authenticatetoken-post) | POST | Checks a token's entitlements |
 
 ## Extra Details on API
 
@@ -128,11 +128,9 @@ console.log(request.body)
 Expected response on success:
 
 ```json
-[
-    {
-        "message":"Success!"
-    }
-]
+{
+    "message":"Success!"
+}
 ```
 
 This API will only accept the cases where, for the body:
@@ -588,8 +586,8 @@ This API will give an object in its response on success, with the object contain
 | --- | --- | --- |
 | origin | String: /^[A-Za-z0-9 ]+$/ | The flight's origin (city name) |
 | destination | String: /^[A-Za-z0-9 ]+$/ | The flight's destination (city name) |
-| originCode | String: /^[A-Z]{3}$/ | The flight's origin (IATA code) |
-| destinationCode | String: /^[A-Z]{3}$/ | The flight's destination (IATA code) |
+| originCode | String: /^[A-Za-z]{3}$/ | The flight's origin (IATA code) |
+| destinationCode | String: /^[A-Za-z]{3}$/ | The flight's destination (IATA code) |
 | flightNum | String: /^[A-Za-z0-9 ]+$/ | The flight number |
 
 Types of responses:
@@ -601,6 +599,53 @@ Types of responses:
 ## /flight/data POST
 
 > This API is restricted to those with a valid crew or admin token
+
+This is the way for a member of staff to update a flight's information
+
+```js
+// request
+let body = {
+    "origin": "London Heathrow",
+    "destination": "Doha",
+    "originCode": "LHR",
+    "destinationCode": "DOH",
+    "flightNum": "QR 004"
+}
+let headers = {
+    "Cookie":"token={{token}}"
+}
+let request = await fetchData("/flight/data", "post", body, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+  "message":"Success!"
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| origin | String: /^[A-Za-z0-9 ]+$/ | The flight's origin (city name) |
+| destination | String: /^[A-Za-z0-9 ]+$/ | The flight's destination (city name) |
+| originCode | String: /^[A-Z]{3}$/ | The flight's origin (IATA code) |
+| destinationCode | String: /^[A-Z]{3}$/ | The flight's destination (IATA code) |
+| flightNum | String: /^[A-Za-z0-9 ]+$/ | The flight number |
+
+Please note that all items in the request are optional. If they are not provided, the previous data is kept.
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and correctly updated the flight as prescribed |
+| 400 | Something in the body is not in the correct format |
+| 403 | There is no token provided, or it is invalid (could be expired) |
+| 500 | We couldn't find the flight database - server messed up |
 
 ## /authenticate POST
 
