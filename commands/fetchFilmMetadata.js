@@ -8,8 +8,15 @@ module.exports = {
         // sets response to json
         res.set("Content-Type", "application/json");
 
+        // checks input
+        let id = req.query.id;
+        if(!id || /^[0-9]+$/.test(id) == false){
+            res.status(400).send({error:"Invalid id"});
+            return;
+        }
+
         // retrieves data
-        let data = await readDb("metadata",req.query.id)
+        let data = await readDb("metadata",id)
 
         // response depending on if it exists
         if(data == false){

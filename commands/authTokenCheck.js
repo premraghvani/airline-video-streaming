@@ -15,6 +15,6 @@ module.exports = {
 
         let validation = await validate(token)
 
-        res.set("Content-Type", "application/json").send(JSON.stringify(validation));
+        res.status(200).set("Content-Type", "application/json").send(JSON.stringify(validation));
     }
 };

@@ -5,18 +5,28 @@ module.exports = {
     page: "/film/individual/video",
     method: "GET",
     execute: async(req, res) => {
+        res.set("Content-Type", "text/txt");
+
         const id = req.query.id;
         const videoPath = `./assets/videos/${id}.mp4`;
 
+        // checks if id is valid
+        if(!id || /^[0-9]+$/.test(id) == false){
+            res.status(400).send("Invalid ID");
+            return;
+        }
+
         // check if video file exist
         if (!fs.existsSync(videoPath)) {
-            return res.status(404).send("Not found");
+            res.status(404).send("Not Found")
+            return;
         }
 
         // get the range from headers
         const range = req.headers.range;
         if (!range) {
-            return res.status(400).send("Requires range header");
+            res.status(400).send("Range Headers Error");
+            return;
         }
 
         // retrieve video file size
@@ -25,11 +35,12 @@ module.exports = {
         // parse range
         const parts = range.replace(/bytes=/, "").split("-");
         const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : Math.min(start + 0.5 * 10 ** 6 - 1, videoSize - 1); // default to 500KB chunk size, iff end not specified
+        const end = Math.min(start + 0.5 * 10 ** 6 - 1, videoSize - 1); // default to 500KB chunk size, iff end not specified
 
         // validate range
         if (start >= videoSize || end >= videoSize || start > end) {
-            return res.status(416).send(`not satisfiable, min range: 0, max range: ${videoSize-1}`);
+            res.status(416).send(`not satisfiable, min range: 0, max range: ${videoSize-1}`);
+            return;
         }
 
         // prepare headers
@@ -49,7 +60,9 @@ module.exports = {
         });
 
         videoStream.on("error", (err) => {
+            res.set("Content-Type", "text/txt");
             res.status(500).send("Error streaming video - sorry, we messed up");
+            return;
         });
 
         // terminates safely

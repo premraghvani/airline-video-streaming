@@ -7,8 +7,10 @@ module.exports = {
     execute: async(req, res) => {
         // sets response to json
         res.set("Content-Type", "application/json");
+
+        // gets the categories stuff
         let category = req.query.category;
-        if(!category){
+        if(!category || /^[A-Za-z]+$/.test(category) == false){
             res.status(400).send("[]");
             return;
         } else {
@@ -25,7 +27,14 @@ module.exports = {
             }
         }
 
-        res.status(200).send(JSON.stringify(inCategory));
+        // sets status code accordingly
+        if(inCategory.length == 0){
+            res.status(404);
+        } else {
+            res.status(200);
+        }
+
+        res.send(JSON.stringify(inCategory));
         return;
     }
 };

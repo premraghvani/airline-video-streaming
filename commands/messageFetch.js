@@ -16,7 +16,8 @@ module.exports = {
 
         // checks if there exists the messages
         if(messagesTmp == false){
-            res.status(500).send({"error":"Couldn't find the messages, sorry."})
+            res.status(500).send({"error":"Couldn't find the messages, sorry."});
+            return;
         }
 
         // filters for last 30 seconds
