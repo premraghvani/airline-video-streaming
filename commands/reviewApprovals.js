@@ -42,7 +42,7 @@ module.exports = {
         // finds all valid UUIDs for approvals
         for(var i = 0; i < body.approvals.length; i++){
             let q = body.approvals[i];
-            if(uuidRegex.test(q) == true){
+            if(uuidRegex.test(q) === true){
                 decisionsToMake[q] = "approve"
             }
         }
@@ -50,7 +50,7 @@ module.exports = {
         // finds all valid UUIDs for deletions
         for(var i = 0; i < body.deletion.length; i++){
             let q = body.deletion[i];
-            if(uuidRegex.test(q) == true){
+            if(uuidRegex.test(q) === true){
                 decisionsToMake[q] = "delete"
             }
         }
