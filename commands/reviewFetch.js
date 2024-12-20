@@ -8,12 +8,20 @@ module.exports = {
         // sets response to json
         res.set("Content-Type", "application/json");
 
+        // checks input
+        let id = req.query.id;
+        if(!id || /^[0-9]+$/.test(id) == false){
+            res.status(400).send({error:"Invalid id"});
+            return;
+        };
+
         // fetches reviews
         let rawData = await readDb("reviews",req.query.id);
         
+        // validates there exists reviews, if there does, filters them
         if(rawData == false){
             res.status(404);
-            res.send({});
+            res.send({error:"Movie does not exist"});
         } else {
             // filters out non-approved
             let filteredData = [];

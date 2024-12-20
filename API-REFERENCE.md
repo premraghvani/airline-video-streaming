@@ -30,7 +30,7 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | !!/film/individual/new | POST | Creates a new film in the database |
 | !!/film/individual/delete | POST | Deletes a film |
 | /review/fetch | GET | Fetches all reviews for a movie, as long as they are approved |
-| !!/review/fetch/all | GET | Fetches all reviews for a movie, including those which are not approved |
+| /review/fetch/all | GET | Fetches all reviews for a movie, including those which are not approved |
 | /review/send | POST | Sends a review of a movie, which is to be approved |
 | !!/review/approvals | POST | To approve, or to delete, any reviews. |
 | !!/flight | GET | The flight's current data |

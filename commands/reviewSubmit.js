@@ -1,31 +1,35 @@
 const {readDb, writeDb} = require("../commonFunctions/database");
+const { v4: uuidv4 } = require("uuid")
 
 // review a film - add it for approval
 module.exports = {
     page: "/review/send",
     method: "POST",
     execute: async(req, res) => {
+        // sets response to json
+        res.set("Content-Type", "application/json");
+
         // finds data
         let rawBody = req.body;
         if(!rawBody){rawBody = "{}"}
         let body = JSON.parse(rawBody.toString());
 
         if(!body.review || !body.movieId){
-            res.status(400).send("Specify review content and movie ID");
+            res.status(400).send(JSON.stringify({error:"Specify review content and movie ID"}));
             return;
         }
 
         // checks review against regex
         const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
         if(reviewRegex.test(body.review) == false){
-            res.status(400).send("Review must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only");
+            res.status(400).send(JSON.stringify({error:"Review must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"}));
             return;
         }
 
-        // checks if move exists
+        // checks if movie exists
         let reviews = await readDb("reviews",body.movieId); 
-        if(reviews == false){
-            res.status(404).send("Movie does not exist");
+        if(reviews === false){
+            res.status(404).send(JSON.stringify({error:"Movie does not exist"}));
             return;
         }
 
@@ -36,7 +40,8 @@ module.exports = {
             timestamp: Math.floor(d.getTime() / 1000),
             flight:flightInfo.flightNum,
             review:body.review,
-            approved:false
+            approved:false,
+            id: uuidv4()
         }
 
         // adds to file
@@ -44,7 +49,7 @@ module.exports = {
         await writeDb("reviews",body.movieId,reviews)
 
         // confirms
-        res.status(202).send("Accepted for Moderation");
+        res.status(202).send(JSON.stringify({suuccess:"Accepted for Moderation"}));
         return;
     }
 };
