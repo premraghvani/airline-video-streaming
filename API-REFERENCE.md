@@ -32,7 +32,7 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | /review/fetch | GET | Fetches all reviews for a movie, as long as they are approved |
 | /review/fetch/all | GET | Fetches all reviews for a movie, including those which are not approved |
 | /review/send | POST | Sends a review of a movie, which is to be approved |
-| !!/review/approvals | POST | To approve, or to delete, any reviews. |
+| /review/approvals | POST | To approve, or to delete, any reviews. |
 | !!/flight | GET | The flight's current data |
 | !!/flight/data | POST | Updates the flight's data |
 | /authenticate | POST | Authenticates a password on log in |
@@ -326,7 +326,7 @@ let movie = 1
 let headers = {
     "Range":"bytes={{start}}-"
 }
-let request = await fetchData(`/film/individual/video?id=${id}`, "get", "", headers)
+let request = await fetchData(`/film/individual/video?id=${id}`, "get", null, headers)
 
 // response (assuming success, headers only)
 console.log(request.headers)
@@ -367,15 +367,198 @@ Types of responses:
 
 ## /review/fetch GET
 
+This is a way to get all approved reviews of a given movie.
+
+```js
+// request
+let movieId = "3"
+let request = await fetchData(`/review/fetch?id=${movieId}`, "get")
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+[
+  {
+    "timestamp": 1734301797,
+    "flight": "EK 018",
+    "review": "Wow! This really had me clutching my seat, so tense, such a good movie!",
+    "approved": true,
+    "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+  }
+]
+```
+
+The API will expect the following items in the querystring:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | String: /^[0-9]+$/ | Movie's ID |
+
+This API will give an array of objects in its response on success, with the objects containing the following:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | String: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ | The unique UUID of the review |
+| flight | String: /^[A-Za-z0-9 ]+$/ | The flight number this review was reviewed on |
+| timestamp | Integer: integer > 0 | The timestamp of the review, in unix (seconds from 01/JNR/1970 00:00 UTC+0) |
+| review | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The review's content |
+| approved | Boolean | Whether or not the review has been approved |
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We have successfully given you the approved reviews |
+| 400 | You haven't specified the movie ID, either at all or in the correct format |
+| 404 | The movie does not exist (hence the reviews don't) |
+
 ## /review/fetch/all GET
 
 > This API is restricted to those with a valid admin token
 
+This is a way to get all reviews made of a given movie.
+
+```js
+// request
+let movieId = "3"
+let headers = {
+    "Cookie":"token={{token}}"
+}
+let request = await fetchData(`/review/fetch/all?id=${movieId}`, "get", null, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+[
+  {
+    "timestamp": 1734301797,
+    "flight": "EK 018",
+    "review": "Wow! This really had me clutching my seat, so tense, such a good movie!",
+    "approved": true,
+    "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+  },
+  {
+    "timestamp": 1734301800,
+    "flight": "EK 018",
+    "review": "i hate this airline, ryanair is better",
+    "approved": false,
+    "id": "ab1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+  }
+]
+```
+
+The API will expect the following items in the querystring:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | String: /^[0-9]+$/ | Movie's ID |
+
+This API will give an array of objects in its response on success, with the objects containing the following:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | String: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ | The unique UUID of the review |
+| flight | String: /^[A-Za-z0-9 ]+$/ | The flight number this review was reviewed on |
+| timestamp | Integer: integer > 0 | The timestamp of the review, in unix (seconds from 01/JNR/1970 00:00 UTC+0) |
+| review | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The review's content |
+| approved | Boolean | Whether or not the review has been approved |
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We have successfully given you the approved reviews |
+| 400 | You haven't specified the movie ID, either at all or in the correct format |
+| 403 | You haven't authenticated yourself with an admin's token |
+| 404 | The movie does not exist (hence the reviews don't) |
+
 ## /review/send POST
+
+This is the way to post a review about a movie.
+
+```js
+// request
+let body = {
+    "review":"Testing 1 2 3",
+    "movieId":"1"
+}
+let request = await fetchData("/message/send", "post", body)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+    "message":"Accepted for Moderation"
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| review | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The actual message body |
+| movieId | String: /^[0-9]+$/ | The movie's ID |
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 202 | We recieved your request, and have taken it, but it is to be moderated manually |
+| 400 | You did not provide a review and/or movie ID, or it was not in the format as requested |
+| 404 | The movie corresponding to the ID given does not exist |
 
 ## /review/approvals POST
 
 > This API is restricted to those with a valid admin token
+
+This is the way to approve and/or delete review(s) about a movie. You must do at least one of approvals or deletions, but can do both in the same transaction.
+
+```js
+// request
+let body = {
+    "movieId":"1",
+    "approvals":[
+        "1c80d54c-267e-4db1-9fa5-b38a4fa6591c"
+    ]
+    "deletion":[
+        "93a3fc5f-f584-4bcb-8d42-96d32a00b336"
+    ]
+}
+let headers = {
+    "Cookie": "token={{token}}"
+}
+let request = await fetchData("/message/send", "post", body, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+  "success": "Changes made"
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| movieId | String: /^[0-9]+$/ | The movie's ID |
+| deletion | Array of strings: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ | An array containing all IDs for reviews on the movie, those reviews being the ones you want to permanently delete |
+| approvals | Array of strings: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ | An array containing all IDs for reviews on the movie, those reviews being the ones you want to approve of |
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have taken action as prescribed |
+| 400 | You did not provide a any review to either delete or approve, and/or movie ID, or it was not in the format as requested |
+| 403 | You have not authenticated yourself as an admin |
+| 404 | The movie corresponding to the ID given does not exist (thus reviews do not exist) |
 
 ## /flight GET
 
