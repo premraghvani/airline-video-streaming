@@ -33,7 +33,7 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | /review/fetch/all | GET | Fetches all reviews for a movie, including those which are not approved |
 | /review/send | POST | Sends a review of a movie, which is to be approved |
 | /review/approvals | POST | To approve, or to delete, any reviews. |
-| !!/flight | GET | The flight's current data |
+| /flight | GET | The flight's current data |
 | !!/flight/data | POST | Updates the flight's data |
 | /authenticate | POST | Authenticates a password on log in |
 | !!/authenticate/new | POST | Changes a password |
@@ -561,6 +561,42 @@ Types of responses:
 | 404 | The movie corresponding to the ID given does not exist (thus reviews do not exist) |
 
 ## /flight GET
+
+This is a way to get the flight's data.
+
+```js
+let request = await fetchData(`/flight`, "get")
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+    "origin": "Manchester",
+    "destination": "Dubai",
+    "originCode": "MAN",
+    "destinationCode": "DXB",
+    "flightNum": "EK 018"
+}
+```
+
+This API will give an object in its response on success, with the object containing the following:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| origin | String: /^[A-Za-z0-9 ]+$/ | The flight's origin (city name) |
+| destination | String: /^[A-Za-z0-9 ]+$/ | The flight's destination (city name) |
+| originCode | String: /^[A-Z]{3}$/ | The flight's origin (IATA code) |
+| destinationCode | String: /^[A-Z]{3}$/ | The flight's destination (IATA code) |
+| flightNum | String: /^[A-Za-z0-9 ]+$/ | The flight number |
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We have successfully given you the flight info |
+| 500 | We couldn't get you the flight info |
 
 ## /flight/data POST
 
