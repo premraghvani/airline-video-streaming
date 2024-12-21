@@ -34,9 +34,9 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | [/review/send](#reviewsend-post) | POST | Sends a review of a movie, which is to be approved |
 | [/review/approvals](#reviewapprovals-post) | POST | To approve, or to delete, any reviews. |
 | [/flight](#flight-get) | GET | The flight's current data |
-| !![/flight/data](#flightdata-post) | POST | Updates the flight's data |
+| [/flight/data](#flightdata-post) | POST | Updates the flight's data |
 | [/authenticate](#authenticate-post) | POST | Authenticates a password on log in |
-| !![/authenticate/new](#authenticatenew-post) | POST | Changes a password |
+| [/authenticate/change](#authenticatechange-post) | POST | Changes a password (crew or admin) |
 | [/authenticate/token](#authenticatetoken-post) | POST | Checks a token's entitlements |
 
 ## Extra Details on API
@@ -649,7 +649,7 @@ Types of responses:
 
 ## /authenticate POST
 
-## /authenticate/new POST
+## /authenticate/change POST
 
 > This API is restricted to those with a valid admin token
 

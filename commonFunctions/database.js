@@ -3,6 +3,11 @@ const fs = require("fs")
 
 // to read
 async function readDb(tableName,key) {
+    // fail safe: no items specified
+    if(!tableName || !key){
+        return false;
+    }
+
     // gets a json path
     let path = ""
     if(tableName == "main"){
@@ -23,6 +28,11 @@ async function readDb(tableName,key) {
 
 // to write
 async function writeDb(tableName,key,body) {
+    // fail safe: no items specified
+    if(!tableName || !key || !body){
+        return false;
+    }
+
     // makes a json path
     let path = ""
     if(tableName == "main"){

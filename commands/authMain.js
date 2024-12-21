@@ -60,7 +60,7 @@ async function generateToken(level){
     let okayTokens = [];
     for(var i = 0; i < passwordList.tokens.length; i++){
         let now = Math.floor(d.getTime() / 1000);
-        if(passwordList.tokens[i].expiry > now){
+        if(passwordList.tokens[i].expiry < now){
             okayTokens.push(passwordList[i])
         }
     }
