@@ -35,7 +35,7 @@ module.exports = {
         // parse range
         const parts = range.replace(/bytes=/, "").split("-");
         const start = parseInt(parts[0], 10);
-        const end = Math.min(start + 0.5 * 10 ** 6 - 1, videoSize - 1); // default to 500KB chunk size, iff end not specified
+        const end = Math.min(start + 2 * 10 ** 6 - 1, videoSize - 1); // default to 500KB chunk size, iff end not specified
 
         // validate range
         if (start >= videoSize || end >= videoSize || start > end) {

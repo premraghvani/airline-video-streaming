@@ -27,7 +27,8 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | [/film/individual/metadata](#filmindividualmetadata-get) | GET | Gets the data for a specified movie |
 | [/film/individual/thumbnail](#filmindividualthumbnail-get) | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
 | [/film/individual/video](#filmindividualvideo-get) | GET | Returns `video/mp4` on success, or `text/txt` on failure, the film content (or an error) |
-| !![/film/individual/new](#filmindividualnew-post) | POST | Creates a new film in the database |
+| !![/film/individual/new/metadata](#filmindividualnewmetadata-post) | POST | Creates a new film in the database |
+| !![/film/individual/new/multimedia](#filmindividualnewmultimedia-post) | POST | Uploads film's multimedia |
 | !![/film/individual/delete](#filmindividualdelete-post) | POST | Deletes a film |
 | [/review/fetch](#reviewfetch-get) | GET | Fetches all reviews for a movie, as long as they are approved |
 | [/review/fetch/all](#reviewfetchall-get) | GET | Fetches all reviews for a movie, including those which are not approved |
@@ -310,11 +311,11 @@ Types of responses:
 
 This is a way to get the actual video content of a given movie. The movie ID is passed in as a querystring. 
 
-> This API will give a `video/mp4` response, instead of the usual `application/json` response for all successful responses, and `text/txt` on failures. You must also be careful about headers, as the system will only give at most 500KB of the video in the body, you must re-request, amending the range headers to construct the entire video.
+> This API will give a `video/mp4` response, instead of the usual `application/json` response for all successful responses, and `text/txt` on failures. You must also be careful about headers, as the system will only give at most 2 MB of the video in the body, you must re-request, amending the range headers to construct the entire video.
 
-In the example below, `{{start}}` is a required integer to indicate the start of the range. In your initial request, this could be 0. There is a dash in the header since the Range header does suggest you put an end, but the system already calculates the end, which is the minimum endpoint of the end of the movie, or 500KB from the start (the start byte is included in the calculation). However, if your `{{start}}` is greater than the video size, it will be rejected.
+In the example below, `{{start}}` is a required integer to indicate the start of the range. In your initial request, this could be 0. There is a dash in the header since the Range header does suggest you put an end, but the system already calculates the end, which is the minimum endpoint of the end of the movie, or 2 MB from the start (the start byte is included in the calculation). However, if your `{{start}}` is greater than the video size, it will be rejected.
 
-In this system, 500 KB means 500 * 10^3 Bytes.
+In this system, 2 MB means 2 * 10^6 Bytes.
 
 In the example below, assume `{{start}}` to be 0.
 
@@ -340,6 +341,8 @@ Response headers:
 }
 ```
 
+Please note that the above example was for when only 500 KB could be sent back (500,000 bytes). In reality, this will be 2 MB (2,000,000 bytes).
+
 The way Content-Range works, means that the format of the response is: `bytes {{start}}-{{end}}/{{size}}`
 
 Where `{{start}}` is the start byte, `{{end}}` is the end byte, and `{{size}}` is the size of the entire video. On the last packet of information, the `{{end}}` will be 1 byte less than `{{size}}`.
@@ -355,13 +358,59 @@ Types of responses:
 
 *This will however be the response even if the entire video is less than 500KB, but your checks where `{{end}}+1 == {{size}}` is true should catch this as the end anyways.
 
-## /film/individual/new POST
+## /film/individual/new/metadata POST
 
 > This API is restricted to those with a valid admin token
+
+## /film/individual/new/multimedia POST
+
+> This API is restricted to those with a valid admin token. Please also beware of the headers that you use - they are described here.
 
 ## /film/individual/delete POST
 
 > This API is restricted to those with a valid admin token
+
+This is the way for an admin to delete a film
+
+```js
+// request
+let body = {
+    "id": "1",
+    "title": "Can goes on a Journey"
+}
+let headers = {
+    "Cookie":"token={{token}}"
+}
+let request = await fetchData("/film/individual/delete", "post", body, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+  "message":"Success!"
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | String: /^[0-9]+$/ | The id of the movie you want to delete |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The title of the movie you want to delete |
+
+Please note that the title is also required, as a protection measure (especially if you are making requests via cURL).
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have deleted the movie |
+| 400 | Something in the body is not in the correct format or not included |
+| 403 | There is no token provided, or it is invalid (could be expired, or crew only) |
+| 404 | We couldn't find the movie in question |
+| 406 | The movie ID and title do not match up |
 
 ## /review/fetch GET
 
@@ -681,7 +730,7 @@ This API will only accept the cases where, for the body:
 This API will give an object in its response on success, with the object containing the following:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| token | String: /^[a-f0-9]{64}+$/ | The approved token, which is what {{token}} is |
+| token | String: /^[a-f0-9]{64}$/ | The approved token, which is what {{token}} is |
 | expiry | Integer: integer > 0 | The unix time (seconds from 01/JNR/1970 00:00 UTC+0) in which the token expires. By default, this is an hour from when the server processed the request |
 | level | String: "crew" or "admin" | The level of authorisation |
 | approval | Boolean | Whether or not this token is allowed |
@@ -768,7 +817,7 @@ Expected response on success:
 This API will give an object in its response on success, with the object containing the following:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| token | String: /^[a-f0-9]{64}+$/ | The approved token, which is what {{token}} is |
+| token | String: /^[a-f0-9]{64}$/ | The approved token, which is what {{token}} is |
 | expiry | Integer: integer > 0 | The unix time (seconds from 01/JNR/1970 00:00 UTC+0) in which the token expires. By default, this is an hour from when the server processed the request |
 | level | String: "crew" or "admin" | The level of authorisation |
 | approval | Boolean | Whether or not this token is allowed |

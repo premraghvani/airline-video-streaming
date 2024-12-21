@@ -7,9 +7,13 @@ module.exports = {
     method: "POST",
     execute: async(req, res) => {
         // finds password
-        let rawBody = req.body;
-        if(!rawBody){rawBody = "{}"}
-        let body = JSON.parse(rawBody.toString());
+        let body;
+        try {
+            body = JSON.parse(req.body.toString())
+        } catch(err){
+            body = {}
+        }
+        
         let password = body.password;
         if(!password){
             res.status(400).send(`{"error":"specify password"}`);

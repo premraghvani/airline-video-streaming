@@ -7,15 +7,18 @@ module.exports = {
     method: "POST",
     execute: async(req, res) => {
         // finds data
-        let rawBody = req.body;
+        let body;
+        try {
+            body = JSON.parse(req.body.toString())
+        } catch(err){
+            body = {}
+        }
+
         let validateUser = await validate(req.cookies.token);
         if(validateUser.approval === false){
             res.status(403).send(JSON.stringify({error:"Must be authenticated"}))
             return;
         }
-
-        if(!rawBody){rawBody = "{}"}
-        let body = JSON.parse(rawBody.toString());
 
         // gets the flight data
         let flightData = await readDb("main","flightData");

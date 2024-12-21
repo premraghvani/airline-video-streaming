@@ -10,9 +10,12 @@ module.exports = {
         res.set("Content-Type", "application/json");
 
         // finds data
-        let rawBody = req.body;
-        if(!rawBody){rawBody = "{}"}
-        let body = JSON.parse(rawBody.toString());
+        let body;
+        try {
+            body = JSON.parse(req.body.toString())
+        } catch(err){
+            body = {}
+        }
 
         if(!body.review || !body.movieId){
             res.status(400).send(JSON.stringify({error:"Specify review content and movie ID"}));

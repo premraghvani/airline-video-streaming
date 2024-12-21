@@ -7,15 +7,18 @@ module.exports = {
     method: "POST",
     execute: async(req, res) => {
         // finds data
-        let rawBody = req.body;
         let validateUser = await validate(req.cookies.token);
         if(validateUser.approval === false){
             res.status(403).send(JSON.stringify({error:"Must be authenticated"}))
             return;
         }
 
-        if(!rawBody){rawBody = "{}"}
-        let body = JSON.parse(rawBody.toString());
+        let body;
+        try {
+            body = JSON.parse(req.body.toString())
+        } catch(err){
+            body = {}
+        }
 
         if(!body.message){
             res.status(400).send(JSON.stringify({error:"Please write a message"}));

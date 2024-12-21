@@ -8,9 +8,12 @@ module.exports = {
     method: "POST",
     execute: async(req, res) => {
         // finds password
-        let rawBody = req.body;
-        if(!rawBody){rawBody = "{}"}
-        let body = JSON.parse(rawBody.toString());
+        let body;
+        try {
+            body = JSON.parse(req.body.toString())
+        } catch(err){
+            body = {}
+        }
 
         // input validation
         let password = body.password;
