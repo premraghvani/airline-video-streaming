@@ -24,6 +24,12 @@ module.exports = {
             return;
         }
 
+        const passwordRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
+        if(passwordRegex.test(password) === false){
+            res.status(400).send(`{"error":"invalid password"}`);
+            return;
+        }
+
         // authentication
         let validateUser = await validate(req.cookies.token);
         if(validateUser.level != "admin"){

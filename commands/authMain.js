@@ -16,6 +16,12 @@ module.exports = {
             return;
         }
 
+        const passwordRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
+        if(passwordRegex.test(password) === false){
+            res.status(400).send(`{"error":"invalid password"}`);
+            return;
+        }
+
         let finalBody = {
             approval: false,
             level:"",
@@ -25,6 +31,12 @@ module.exports = {
 
         // compares
         let passwordList = await readDb("main","passwordsTokens")
+
+        if(passwordList === false){
+            res.set(500).send("Unknown error - apologies");
+            return;
+        }
+
         if(bcrypt.compareSync(password,passwordList.crew)){
             finalBody = await generateToken("crew");
         } else if(bcrypt.compareSync(password,passwordList.admin)){

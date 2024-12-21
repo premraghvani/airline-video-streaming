@@ -649,8 +649,134 @@ Types of responses:
 
 ## /authenticate POST
 
+This is the way to get a token from a password
+
+```js
+// request
+let body = {
+    "password": "hello"
+}
+let request = await fetchData("/authenticate", "post", body)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+    "token": "6242511b9ca4b3e32f88054026e80be44c6c7709b322da5e84b205e7fbc465c2",
+    "expiry": 1734775112,
+    "level": "crew",
+    "approval": true
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| password | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The password you want to provide |
+
+This API will give an object in its response on success, with the object containing the following:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| token | String: /^[a-f0-9]{64}+$/ | The approved token, which is what {{token}} is |
+| expiry | Integer: integer > 0 | The unix time (seconds from 01/JNR/1970 00:00 UTC+0) in which the token expires. By default, this is an hour from when the server processed the request |
+| level | String: "crew" or "admin" | The level of authorisation |
+| approval | Boolean | Whether or not this token is allowed |
+
+Note that, if the password is false, `approval` is set to `false` and nothing else is given.
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have given you our verdict |
+| 400 | The password is missing or in the incorrect format |
+| 500 | We couldn't find the password database - server messed up |
+
 ## /authenticate/change POST
 
 > This API is restricted to those with a valid admin token
 
+This is the way to change the password for crew or admin (each can be changed only in separate transactions).
+
+```js
+// request
+let body = {
+    "password": "HelloThere!",
+    "mode": "crew"
+}
+const headers = {
+    "Cookie":"token={{token}}"
+}
+let request = await fetchData("/authenticate/change", "post", body, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+    "message":"Success!"
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| password | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The password you want to change to |
+| mode | String: "crew" or "admin" | The group whose password you want to change |
+
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have changed the password successfully |
+| 400 | The password is missing or in the incorrect format, and/or the mode is missing or isn't "crew" or "admin" |
+| 403 | There is no token, or it is not a current valid token for an admin |
+| 500 | We couldn't find the password database - server messed up |
+
 ## /authenticate/token POST
+
+This is the way to see a token's entitlements. This will only look for tokens in the `Cookie` header.
+
+```js
+// request
+let headers = {
+    "Cookie": "token={{token}}"
+}
+let request = await fetchData("/authenticate/token", "post", null, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+    "token": "6242511b9ca4b3e32f88054026e80be44c6c7709b322da5e84b205e7fbc465c2",
+    "expiry": 1734775112,
+    "level": "crew",
+    "approval": true
+}
+```
+
+This API will give an object in its response on success, with the object containing the following:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| token | String: /^[a-f0-9]{64}+$/ | The approved token, which is what {{token}} is |
+| expiry | Integer: integer > 0 | The unix time (seconds from 01/JNR/1970 00:00 UTC+0) in which the token expires. By default, this is an hour from when the server processed the request |
+| level | String: "crew" or "admin" | The level of authorisation |
+| approval | Boolean | Whether or not this token is allowed |
+
+Note that, if the password is false, `approval` is set to `false` and nothing else is given.
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have given you our verdict |
+| 400 | The token is missing from the cookies, or in the incorrect format |
