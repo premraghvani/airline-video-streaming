@@ -5,15 +5,14 @@ module.exports = {
     page: "/film/category/fetch",
     method: "GET",
     execute: async(req, res) => {
-        // sets response to json
         res.set("Content-Type", "application/json");
 
         // retrieves
-        let films = require("../assets/index.json");
+        let films = await readDb("main","index");
 
         // error case
         if(films === false){
-            res.status(500).send({"error":"Couldn't find the films in the system, sorry."});
+            res.status(500).send({message:"Couldn't find any films - server error"});
             return;
         }
 
@@ -29,7 +28,7 @@ module.exports = {
         let categories = Object.keys(filmsInCategories).sort();
 
         // returns data
-        res.status(200).send(JSON.stringify({categories}));
+        res.status(200).send({categories});
         return;
     }
 };

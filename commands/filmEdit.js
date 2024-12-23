@@ -7,7 +7,6 @@ module.exports = {
     page: "/film/individual/edit",
     method: "POST",
     execute: async(req, res) => {
-        // sets response to json
         res.set("Content-Type", "application/json");
 
         // finds body
@@ -22,25 +21,25 @@ module.exports = {
         // validation
         let validateUser = await validate(req.cookies.token);
         if(validateUser.level != "admin"){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated as an admin"}))
+            res.status(403).send({message:"Must be authenticated as an admin"});
             return;
         }
 
         // gets current metadata
         if(!body.id){
-            res.status(400).send({error:"Must provide movie ID"});
+            res.status(400).send({message:"Must provide movie ID"});
             return;
         }
         let metadata = await readDb("metadata",body.id);
         if(metadata === false){
-            res.status(404).send({error:"Movie not found"});
+            res.status(404).send({message:"Movie not found"});
             return;
         }
         
         // input validation and puts new data
         if(!!body.title){
             if(/^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.title) === false){
-                res.status(400).send({error:"Provided movie title is invalid"});
+                res.status(400).send({message:"Provided movie title is invalid"});
                 return;
             } else {
                 metadata.title = body.title;
@@ -49,7 +48,7 @@ module.exports = {
 
         if(!!body.description){
             if(/^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.description) === false){
-                res.status(400).send({error:"Provided movie description is invalid"});
+                res.status(400).send({message:"Provided movie description is invalid"});
                 return;
             } else {
                 metadata.description = body.description;
@@ -58,7 +57,7 @@ module.exports = {
 
         if(!!body.genre){
             if(/^[A-Za-z]+$/.test(body.genre) === false){
-                res.status(400).send({error:"Provided movie genre is invalid"});
+                res.status(400).send({message:"Provided movie genre is invalid"});
                 return;
             } else {
                 // adjusts capitalisation of genre before adding
@@ -71,7 +70,7 @@ module.exports = {
 
         if(!!body.year){
             if(Number.isInteger(body.year) === false || body.year <= 0){
-                res.status(400).send({error:"Provided movie year is invalid"});
+                res.status(400).send({message:"Provided movie year is invalid"});
                 return;
             } else {
                 metadata.year = body.year;
@@ -80,7 +79,7 @@ module.exports = {
 
         if(!!body.cast){
             if(/^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.cast) === false){
-                res.status(400).send({error:"Provided movie cast is invalid"});
+                res.status(400).send({message:"Provided movie cast is invalid"});
                 return;
             } else {
                 metadata.cast = body.cast;
@@ -89,7 +88,7 @@ module.exports = {
 
         if(!!body.director){
             if(/^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.director) === false){
-                res.status(400).send({error:"Provided movie director is invalid"});
+                res.status(400).send({message:"Provided movie director is invalid"});
                 return;
             } else {
                 metadata.director = body.director;
@@ -126,7 +125,7 @@ module.exports = {
         let currIndex = await readDb("main","index");
 
         if(currIndex === false){
-            res.status(500).send(JSON.stringify({error:"Could not access index - server messed up"}))
+            res.status(500).send({message:"Could not access index - server messed up"});
             return;
         }
 

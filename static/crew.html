@@ -24,7 +24,7 @@
         <div id="auth" class="container">
             <h1>Authentication</h1>
             <p style="text-align: center;">Please authenticate yourself - using either the crew password (which is attached somewhere physically), or the administrator password</p>
-            <form id="authenticationForm" action="/authenticate" method="post">
+            <form id="authenticationForm">
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" placeholder="Enter password">
                 <input type="submit" value="Send" id="passwordsend">
@@ -33,8 +33,9 @@
         <!--crew-->
         <div id="crewPanel" class="container" style="display: none;">
             <h2>Crew Settings</h2>
+            <!--Pax Messages-->
             <h4>Send Message to Passengers</h4>
-            <form id="messageForm" action="/message/send" method="post">
+            <form id="messageForm">
                 <label for="message">Message</label>
                 <textarea id="messageToSend" name="message" cols="80" rows="5" style="width: 100%"></textarea>
                 <input type="submit" value="Send" id="messagesend">
@@ -44,10 +45,19 @@
             <button onclick="prewritten(2)">Arrival</button>
             <button onclick="prewritten(3)">Goodbye</button>
             <button onclick="prewritten(4)">Meals</button>
+
+            <!--Flight Details-->
         </div>
         <!--admin-->
         <div id="adminPanel" class="container" style="display: none;">
             <h2>Admin Settings</h2>
+            <!--Review Approvals-->
+
+            <!--Film Uploads-->
+
+            <!--Film Edits-->
+
+            <!--Password Services-->
         </div>
     </body>
 </html>

@@ -6,7 +6,6 @@ module.exports = {
     page: "/review/send",
     method: "POST",
     execute: async(req, res) => {
-        // sets response to json
         res.set("Content-Type", "application/json");
 
         // finds data
@@ -17,22 +16,23 @@ module.exports = {
             body = {}
         }
 
+        // input validation
         if(!body.review || !body.movieId){
-            res.status(400).send(JSON.stringify({error:"Specify review content and movie ID"}));
+            res.status(400).send({message:"Specify review content and movie ID"});
             return;
         }
 
         // checks review against regex
         const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
         if(reviewRegex.test(body.review) === false){
-            res.status(400).send(JSON.stringify({error:"Review must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"}));
+            res.status(400).send({message:"Review must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"});
             return;
         }
 
         // checks if movie exists
         let reviews = await readDb("reviews",body.movieId); 
         if(reviews === false){
-            res.status(404).send(JSON.stringify({error:"Movie does not exist"}));
+            res.status(404).send({message:"Movie does not exist"});
             return;
         }
 
@@ -52,7 +52,7 @@ module.exports = {
         await writeDb("reviews",body.movieId,reviews)
 
         // confirms
-        res.status(202).send(JSON.stringify({suuccess:"Accepted for Moderation"}));
+        res.status(202).send({message:"Accepted for Moderation"});
         return;
     }
 };

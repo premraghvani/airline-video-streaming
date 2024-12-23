@@ -29,3 +29,4 @@ Please see `API-REFERENCE.md` (in the root directory, same as this file) for inf
 - Mozilla (https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), for providing the HTTP status codes I have used
 - Etihad Airways (https://strapi.wasmenia.com/uploads/Etihad_Airlines_Guideline_5a7d17b7d6.pdf), for the brand guidelines, which I have inspired this project on (I don't know the colour schemes which work best so I used theres)
 - w3schools (https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal), for modal ideas
+- Nodejs fs library (https://nodejs.org/api/fs.html), for help in how the write streams work

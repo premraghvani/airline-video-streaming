@@ -6,7 +6,6 @@ module.exports = {
     page: "/film/individual/new/metadata",
     method: "POST",
     execute: async(req, res) => {
-        // sets response to json
         res.set("Content-Type", "application/json");
 
         // finds body
@@ -19,34 +18,34 @@ module.exports = {
 
         // input validation
         if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.title) === false){
-            res.set(400).send({error:"Invalid / no movie title provided"});
+            res.status(400).send({message:"Invalid / no movie title provided"});
             return;
         }
         if(!body.description || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.description) === false){
-            res.set(400).send({error:"Invalid / no movie description provided"});
+            res.status(400).send({message:"Invalid / no movie description provided"});
             return;
         }
         if(!body.genre || /^[A-Za-z]+$/.test(body.genre) === false){
-            res.set(400).send({error:"Invalid / no genre provided"});
+            res.status(400).send({message:"Invalid / no genre provided"});
             return;
         }
         if(!body.year || Number.isInteger(body.year) === false || body.year <= 0){
-            res.set(400).send({error:"Invalid / no year provided"});
+            res.status(400).send({message:"Invalid / no year provided"});
             return;
         }
         if(!body.cast || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.cast) === false){
-            res.set(400).send({error:"Invalid / no cast provided"});
+            res.status(400).send({message:"Invalid / no cast provided"});
             return;
         }
         if(!body.director || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.director) === false){
-            res.set(400).send({error:"Invalid / no movie director provided"});
+            res.status(400).send({message:"Invalid / no movie director provided"});
             return;
         }
 
         // validation
         let validateUser = await validate(req.cookies.token);
         if(validateUser.level != "admin"){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated as an admin"}))
+            res.status(403).send({message:"Must be authenticated as an admin"});
             return;
         }
 
@@ -60,7 +59,7 @@ module.exports = {
         let currIndex = await readDb("main","index");
 
         if(currIndex === false){
-            res.status(500).send(JSON.stringify({error:"Could not access index - server messed up"}))
+            res.status(500).send({message:"Could not access index - server messed up"});
             return;
         }
 

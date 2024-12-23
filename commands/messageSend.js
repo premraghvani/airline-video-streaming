@@ -6,29 +6,31 @@ module.exports = {
     page: "/message/send",
     method: "POST",
     execute: async(req, res) => {
+        res.set("Content-Type", "application/json");
+
         // finds data
         let validateUser = await validate(req.cookies.token);
         if(validateUser.approval === false){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated"}))
+            res.status(403).send({message:"Must be authenticated"});
             return;
         }
 
         let body;
         try {
-            body = JSON.parse(req.body.toString())
+            body = JSON.parse(req.body.toString());
         } catch(err){
-            body = {}
+            body = {};
         }
 
         if(!body.message){
-            res.status(400).send(JSON.stringify({error:"Please write a message"}));
+            res.status(400).send({message:"Please write a message"});
             return;
         }
 
         // checks review against regex
         const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
         if(reviewRegex.test(body.review) === false){
-            res.status(400).send(JSON.stringify({error:"Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"}));
+            res.status(400).send({message:"Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"});
             return;
         }
 
@@ -45,7 +47,7 @@ module.exports = {
         await writeDb("main","messages",messageList)
 
         // confirms
-        res.status(200).send(JSON.stringify({message:"Success!"}));
+        res.status(200).send({message:"Success!"});
         return;
     }
 };

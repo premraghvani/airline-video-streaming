@@ -5,22 +5,26 @@ module.exports = {
     page: "/authenticate/token",
     method: "POST",
     execute: async(req, res) => {
-        // finds token
+        res.set("Content-Type", "application/json");
+
+        // token validation
         const token = req.cookies.token;
 
         if(!token){
-            res.status(400).send(`{"error":"specify token"}`);
+            res.status(400).send({message:"No token found"});
             return;
         }
 
         const tokenRegex = /^[a-f0-9]{64}$/;
         if(tokenRegex.test(token) === false){
-            res.status(400).send(`{"error":"specify valid token"}`);
+            res.status(400).send({message:"Invalid token"});
             return;
         }
 
-        let validation = await validate(token)
+        // finds and sends token info
 
-        res.status(200).set("Content-Type", "application/json").send(JSON.stringify(validation));
+        let validation = await validate(token);
+
+        res.status(200).send(validation);
     }
 };

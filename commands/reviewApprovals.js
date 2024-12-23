@@ -6,7 +6,6 @@ module.exports = {
     page: "/review/approvals",
     method: "POST",
     execute: async(req, res) => {
-        // sets response to json
         res.set("Content-Type", "application/json");
 
         // finds data
@@ -18,21 +17,21 @@ module.exports = {
         }
         
         if(!body.movieId || (!body.deletion && !body.approvals)){
-            res.status(400).send(JSON.stringify({error:"Specify either deletions, approvals or both, and movie ID"}));
+            res.status(400).send({message:"Specify either deletions, approvals or both, and movie ID"});
             return;
         }
 
         // validation
         let validateUser = await validate(req.cookies.token);
         if(validateUser.level != "admin"){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated as an admin"}))
+            res.status(403).send({message:"Must be authenticated as an admin"});
             return;
         }
 
         // checks if movie exists
         let reviews = await readDb("reviews",body.movieId); 
         if(reviews === false){
-            res.status(404).send(JSON.stringify({error:"Movie does not exist"}));
+            res.status(404).send({message:"Movie does not exist"});
             return;
         }
 
@@ -76,6 +75,6 @@ module.exports = {
 
         // updates reviews
         await writeDb("reviews",body.movieId,reviewsFinal);
-        res.status(200).send(JSON.stringify({success:"Changes made"}))
+        res.status(200).send({message:"Changes made"});
     }
 };

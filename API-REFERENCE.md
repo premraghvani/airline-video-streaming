@@ -14,9 +14,9 @@
 | /plyr.css | text/css | The CSS for Plyr, the video player display |
 | /plyr.js | text/javascript | The JavaScript for Plyr, the video player display |
 
-### All other services
+### All other API services
 
-Please assume that all of these have a `Content-Type` of `application/json` unless otherwise specified. Please note these APIs will be in further detail below.
+Please assume that all of these have a `Content-Type` of `application/json` request body and response body, unless otherwise specified. Please note these APIs will be in further detail below.
 
 | Endpoint | Method | Description |
 | --- | --- | --- |
@@ -42,6 +42,13 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | [/authenticate/token](#authenticatetoken-post) | POST | Checks a token's entitlements |
 
 ## Extra Details on API
+
+The `application/json` request and response applies to everything except:
+- The response on the successful and failed case of [/film/individual/thumbnail](#filmindividualthumbnail-get)
+- The response on the successful case of [/film/individual/video](#filmindividualvideo-get) (failure still provides a json)
+- The request of [/film/individual/new/multimedia](#filmindividualnewmultimedia-put)
+
+Please note that in the response body for errors and select successes, where the response body is `application/json` the following key will always exist: `message` - this will contain more information, such as what has exactly caused the error, or a simple "Success!" if it is a success without anything needing to be passed back to the client. Status codes will always be passed back, with 2xx being successful cases, 4xx being failed (client's fault), and 5xx being failed (server's fault).
 
 This will only apply to services which aren't in the "statics" section.
 Please note that the code examples are in a JavaScript example, where we assume the following command is true:

@@ -6,8 +6,7 @@ module.exports = {
     method: "GET",
     execute: async(req, res) => {
         let body = fs.readFileSync("./static/script.js").toString();
-        res.set("Content-Type", "text/javascript");
-        res.send(body);
+        res.set("Content-Type", "text/javascript").send(body);
         return;
     }
 };

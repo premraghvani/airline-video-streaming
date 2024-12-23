@@ -13,8 +13,7 @@ module.exports = {
             body = body.replaceAll(`{{${key}}}`,flightDetails[key])
         }
 
-        res.set("Content-Type", "text/html");
-        res.send(body);
+        res.set("Content-Type", "text/html").send(body);
         return;
     }
 };

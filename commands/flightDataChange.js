@@ -6,6 +6,8 @@ module.exports = {
     page: "/flight/data",
     method: "POST",
     execute: async(req, res) => {
+        res.set("Content-Type", "application/json");
+
         // finds data
         let body;
         try {
@@ -16,7 +18,7 @@ module.exports = {
 
         let validateUser = await validate(req.cookies.token);
         if(validateUser.approval === false){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated"}))
+            res.status(403).send({message:"Must be authenticated"});
             return;
         }
 
@@ -24,7 +26,7 @@ module.exports = {
         let flightData = await readDb("main","flightData");
 
         if(flightData===false){
-            res.status(500).send({error:"Failure finding flight data"});
+            res.status(500).send({message:"Failure finding flight data"});
             return;
         }
 
@@ -34,7 +36,7 @@ module.exports = {
 
         if(!!body.origin){
             if(otherRegex.test(body.origin) === false){
-                res.status(400).send({error:"Invalid origin"});
+                res.status(400).send({message:"Invalid origin"});
                 return;
             } else {
                 flightData.origin = body.origin;
@@ -43,7 +45,7 @@ module.exports = {
 
         if(!!body.destination){
             if(otherRegex.test(body.destination) === false){
-                res.status(400).send({error:"Invalid destination"});
+                res.status(400).send({message:"Invalid destination"});
                 return;
             } else {
                 flightData.destination = body.destination;
@@ -52,7 +54,7 @@ module.exports = {
 
         if(!!body.flightNum){
             if(otherRegex.test(body.flightNum) === false){
-                res.status(400).send({error:"Invalid flightNum"});
+                res.status(400).send({message:"Invalid flightNum"});
                 return;
             } else {
                 flightData.flightNum = body.flightNum;
@@ -61,7 +63,7 @@ module.exports = {
 
         if(!!body.originCode){
             if(iataRegex.test(body.originCode) === false){
-                res.status(400).send({error:"Invalid originCode"});
+                res.status(400).send({message:"Invalid originCode"});
                 return;
             } else {
                 flightData.originCode = body.originCode.toUpperCase();
@@ -70,7 +72,7 @@ module.exports = {
 
         if(!!body.destinationCode){
             if(iataRegex.test(body.destinationCode) === false){
-                res.status(400).send({error:"Invalid destinationCode"});
+                res.status(400).send({message:"Invalid destinationCode"});
                 return;
             } else {
                 flightData.destinationCode = body.destinationCode.toUpperCase();
@@ -81,7 +83,7 @@ module.exports = {
         await writeDb("main","flightData",flightData)
 
         // confirms
-        res.status(200).send(JSON.stringify({message:"Success!"}));
+        res.status(200).send({message:"Success!"});
         return;
     }
 };

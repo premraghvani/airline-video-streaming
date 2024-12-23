@@ -6,7 +6,9 @@ module.exports = {
     page: "/authenticate",
     method: "POST",
     execute: async(req, res) => {
-        // finds password
+        res.set("Content-Type", "application/json")
+        
+        // gets body
         let body;
         try {
             body = JSON.parse(req.body.toString())
@@ -14,18 +16,20 @@ module.exports = {
             body = {}
         }
         
+        // finds password, input validation
         let password = body.password;
         if(!password){
-            res.status(400).send(`{"error":"specify password"}`);
+            res.status(400).send({message:"Specify Password"});
             return;
         }
 
         const passwordRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
         if(passwordRegex.test(password) === false){
-            res.status(400).send(`{"error":"invalid password"}`);
+            res.status(400).send({message:"Invalid Password"});
             return;
         }
 
+        // gets the final body for approvals
         let finalBody = {
             approval: false,
             level:"",
@@ -37,7 +41,7 @@ module.exports = {
         let passwordList = await readDb("main","passwordsTokens")
 
         if(passwordList === false){
-            res.set(500).send("Unknown error - apologies");
+            res.status(500).send({message:"Unknown server error"});
             return;
         }
 
@@ -47,7 +51,7 @@ module.exports = {
             finalBody = await generateToken("admin");
         }
 
-        res.status(200).set("Content-Type", "application/json").send(JSON.stringify(finalBody));
+        res.status(200).send(JSON.stringify(finalBody));
         return;
     }
 };

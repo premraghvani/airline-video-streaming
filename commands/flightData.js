@@ -9,7 +9,7 @@ module.exports = {
         res.set("Content-Type", "application/json");
 
         if(body === false){
-            res.status(500).send({error:"Couldn't find flight data"})
+            res.status(500).send({message:"Couldn't find flight data"})
         } else {
             res.status(200).send(body);
         }

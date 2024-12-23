@@ -7,7 +7,9 @@ module.exports = {
     page: "/authenticate/change",
     method: "POST",
     execute: async(req, res) => {
-        // finds password
+        res.set("Content-Type", "application/json");
+
+        // gets body
         let body;
         try {
             body = JSON.parse(req.body.toString())
@@ -19,24 +21,24 @@ module.exports = {
         let password = body.password;
         let mode = body.mode;
         if(!password){
-            res.status(400).send(`{"error":"specify password"}`);
+            res.status(400).send({message:"Specify password"});
             return;
         }
         if(!mode || (mode != "admin" && mode != "crew")){
-            res.status(400).send(`{"error":"specify mode (admin or crew)"}`);
+            res.status(400).send({message:"Specify mode"});
             return;
         }
 
         const passwordRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
         if(passwordRegex.test(password) === false){
-            res.status(400).send(`{"error":"invalid password"}`);
+            res.status(400).send({message:"Invalid password"});
             return;
         }
 
         // authentication
         let validateUser = await validate(req.cookies.token);
         if(validateUser.level != "admin"){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated as an admin"}))
+            res.status(403).send({message:"Must be authenticated as an admin"});
             return;
         }
 
@@ -47,7 +49,7 @@ module.exports = {
         // commits changes
         let passwordFile = await readDb("main","passwordsTokens");
         if(passwordFile === false){
-            res.status(500).send(JSON.stringify({error:"Could not find passwords"}))
+            res.status(500).send({message:"Could not find passwords"})
             return;
         }
 
@@ -55,7 +57,7 @@ module.exports = {
 
         await writeDb("main","passwordsTokens",passwordFile)
 
-        res.status(200).set("Content-Type", "application/json").send({message:"Success!"});
+        res.status(200).send({message:"Success!"});
         return;
     }
 };

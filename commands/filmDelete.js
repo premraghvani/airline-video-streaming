@@ -8,7 +8,6 @@ module.exports = {
     page: "/film/individual/delete",
     method: "POST",
     execute: async(req, res) => {
-        // sets response to json
         res.set("Content-Type", "application/json");
 
         // finds data
@@ -21,29 +20,29 @@ module.exports = {
 
         // input validation
         if(!body.id || /^[0-9]+$/.test(body.id) === false){
-            res.status(400).send({error:"Invalid / no movie ID provided"});
+            res.status(400).send({message:"Invalid / no movie ID provided"});
             return;
         }
         if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.title) === false){
-            res.status(400).send({error:"Invalid / no movie title provided"})
+            res.status(400).send({message:"Invalid / no movie title provided"});
             return;
         }
 
         // validation
         let validateUser = await validate(req.cookies.token);
         if(validateUser.level != "admin"){
-            res.status(403).send(JSON.stringify({error:"Must be authenticated as an admin"}))
+            res.status(403).send({message:"Must be authenticated as an admin"});
             return;
         }
         
         // checks if the movie is correct
         let movie = await readDb("metadata",body.id);
         if(movie === false){
-            res.status(404).send(JSON.stringify({error:"Movie does not exist"}))
+            res.status(404).send({message:"Movie does not exist"});
             return;
         }
         if(movie.title != body.title){
-            res.status(406).send(JSON.stringify({error:"Incorrect movie title given"}))
+            res.status(406).send({message:"Incorrect movie title given"})
             return;
         }
 

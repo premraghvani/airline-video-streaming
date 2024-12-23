@@ -6,8 +6,7 @@ module.exports = {
     method: "GET",
     execute: async(req, res) => {
         let body = fs.readFileSync("./static/plyr-3.7.8.css").toString();
-        res.set("Content-Type", "text/css");
-        res.send(body);
+        res.set("Content-Type", "text/css").send(body);
         return;
     }
 };

@@ -5,27 +5,27 @@ module.exports = {
     page: "/film/individual/video",
     method: "GET",
     execute: async(req, res) => {
-        res.set("Content-Type", "text/txt");
+        res.set("Content-Type", "application/json");
 
         const id = req.query.id;
         const videoPath = `./assets/videos/${id}.mp4`;
 
         // checks if id is valid
         if(!id || /^[0-9]+$/.test(id) === false){
-            res.status(400).send("Invalid ID");
+            res.status(400).send({message:"Invalid ID"});
             return;
         }
 
         // check if video file exist
         if (!fs.existsSync(videoPath)) {
-            res.status(404).send("Not Found")
+            res.status(404).send({message:"Not found"})
             return;
         }
 
         // get the range from headers
         const range = req.headers.range;
         if (!range) {
-            res.status(400).send("Range Headers Error");
+            res.status(400).send({message:"Range headers error"});
             return;
         }
 
@@ -39,7 +39,7 @@ module.exports = {
 
         // validate range
         if (start >= videoSize || end >= videoSize || start > end) {
-            res.status(416).send(`not satisfiable, min range: 0, max range: ${videoSize-1}`);
+            res.status(416).send({message:`Not satisfiable, min range: 0, max range: ${videoSize-1}`});
             return;
         }
 
@@ -60,8 +60,8 @@ module.exports = {
         });
 
         videoStream.on("error", (err) => {
-            res.set("Content-Type", "text/txt");
-            res.status(500).send("Error streaming video - sorry, we messed up");
+            res.set("Content-Type", "application/json");
+            res.status(500).send({message:"Error streaming video - server error"});
             return;
         });
 

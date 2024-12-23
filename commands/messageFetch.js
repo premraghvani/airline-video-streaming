@@ -16,7 +16,7 @@ module.exports = {
 
         // checks if there exists the messages
         if(messagesTmp === false){
-            res.status(500).send({"error":"Couldn't find the messages, sorry."});
+            res.status(500).send({message:"Couldn't find the messages, server error."});
             return;
         }
 
@@ -29,7 +29,7 @@ module.exports = {
             }
         }
 
-        res.status(200).send(JSON.stringify({alive:true,messages}));
+        res.status(200).send({alive:true,messages});
         return;
     }
 };

@@ -38,8 +38,7 @@ module.exports = {
         // puts this into the html before sending
         body = body.replaceAll(`{{genres}}`,filmsHtml)
 
-        res.set("Content-Type", "text/html");
-        res.send(body);
+        res.set("Content-Type", "text/html").send(body);
         return;
     }
 };
