@@ -27,9 +27,10 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | [/film/individual/metadata](#filmindividualmetadata-get) | GET | Gets the data for a specified movie |
 | [/film/individual/thumbnail](#filmindividualthumbnail-get) | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
 | [/film/individual/video](#filmindividualvideo-get) | GET | Returns `video/mp4` on success, or `text/txt` on failure, the film content (or an error) |
-| !![/film/individual/new/metadata](#filmindividualnewmetadata-post) | POST | Creates a new film in the database |
-| !![/film/individual/new/multimedia](#filmindividualnewmultimedia-post) | POST | Uploads film's multimedia |
-| !![/film/individual/delete](#filmindividualdelete-post) | POST | Deletes a film |
+| [/film/individual/new/metadata](#filmindividualnewmetadata-post) | POST | Creates a new film in the database |
+| [/film/individual/new/multimedia](#filmindividualnewmultimedia-post) | POST | Uploads film's multimedia |
+| [/film/individual/edit](#filmindividualedit-post) | POST | Edits a film |
+| [/film/individual/delete](#filmindividualdelete-post) | POST | Deletes a film |
 | [/review/fetch](#reviewfetch-get) | GET | Fetches all reviews for a movie, as long as they are approved |
 | [/review/fetch/all](#reviewfetchall-get) | GET | Fetches all reviews for a movie, including those which are not approved |
 | [/review/send](#reviewsend-post) | POST | Sends a review of a movie, which is to be approved |
@@ -360,11 +361,69 @@ Types of responses:
 
 ## /film/individual/new/metadata POST
 
-> This API is restricted to those with a valid admin token
+> This API is restricted to those with a valid admin token. Please also note that calling this API is often a pre-requesite to the new multimedia (unless you're editing a movie's video or thumbnail, in which case the edit API is the pre-requestie.) Please also note that if you do make a new movie by metadata, but do not upload a thumbnail / video by /film/individual/new/multimedia POST, then on the next startup of the server, the metadata will be deleted.
+
+This is the way to approve and/or delete review(s) about a movie. You must do at least one of approvals or deletions, but can do both in the same transaction.
+
+```js
+// request
+let body = {
+    "title":"Into the Matrix",
+    "description":"The matrix is very important, M mxn (Real). Professor Lobb especially needs this, in order to deliver lectures on Linear Algebra.",
+    "year":2025,
+    "genre":"documentary",
+    "cast":"Professor Lobb, T-Shirt Department",
+    "director":"Durham University Mathematical Sciences"
+}
+let headers = {
+    "Cookie": "token={{token}}"
+}
+let request = await fetchData("/film/individual/new/metadata", "post", body, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+  "message": "Success!",
+  "id":4
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The title of the movie |
+| genre | String: /^[A-Za-z]+$/ | The genre of the movie |
+| year | Integer: integer > 0 | The year of the movie's release |
+| description | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The description of the movie |
+| director | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The director of the movie |
+| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The cast members' name(s) of the movie |
+
+This API will give an array of objects in its response on success, with the objects containing the following:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | Integer: integer > 0 | The id the film has been allocated |
+| message | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The system's message (not important on success) |
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have created the metadata |
+| 400 | Any of the following did not exist or wasn't in the correct format in the body: title, genre, year, description, director, cast |
+| 403 | You have not authenticated yourself as an admin |
+| 500 | We could not deliver on your request due to an internal server error |
 
 ## /film/individual/new/multimedia POST
 
 > This API is restricted to those with a valid admin token. Please also beware of the headers that you use - they are described here.
+
+## /film/individual/edit POST
+
+> This API is restricted to those with a valid admin token
 
 ## /film/individual/delete POST
 

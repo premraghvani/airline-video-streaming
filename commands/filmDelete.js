@@ -1,4 +1,5 @@
 const { readDb, writeDb } = require("../commonFunctions/database");
+const { validate } = require("../commonFunctions/validation");
 const fs = require("fs");
 
 // admins to delete the film(s)
@@ -55,7 +56,7 @@ module.exports = {
                 newIndex.push(q);
             }
         }
-        await writeDb("main","index")
+        await writeDb("main","index",newIndex)
 
         // metadata deletion
         if(fs.existsSync(`./assets/metadata/${movieIdInt}.json`)){
