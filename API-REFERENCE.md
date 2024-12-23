@@ -363,7 +363,7 @@ Types of responses:
 
 > This API is restricted to those with a valid admin token. Please also note that calling this API is often a pre-requesite to the new multimedia (unless you're editing a movie's video or thumbnail, in which case the edit API is the pre-requestie.) Please also note that if you do make a new movie by metadata, but do not upload a thumbnail / video by /film/individual/new/multimedia POST, then on the next startup of the server, the metadata will be deleted.
 
-This is the way to approve and/or delete review(s) about a movie. You must do at least one of approvals or deletions, but can do both in the same transaction.
+This is the first steo in the way to make a new movie.
 
 ```js
 // request
@@ -496,7 +496,59 @@ Types of responses:
 
 ## /film/individual/edit POST
 
-> This API is restricted to those with a valid admin token
+> This API is restricted to those with a valid admin token. Please also note that calling this API is often a pre-requesite to the new multimedia if you specify that you want to change the video or thumbnail in this transaction (unless you're making a new movie, in which case the new metadata API is the pre-requestie.) Please also note that if you request to change the thumbnail / video / both, but do not upload a thumbnail / video by /film/individual/new/multimedia POST, then like the new metadata, on the next startup of the server, the entire movie will be deleted. This is because this API will also delete the existing thumbnail / video to make way for the other content.
+
+This is the way to edit an existing movie's metadata, and first step in changing an existing movie's thumbnail or video
+
+```js
+// request
+let body = {
+    "id":3,
+    "cast":"Can, Juicebox, Physics",
+    "newThumbnail":true
+}
+let headers = {
+    "Cookie": "token={{token}}"
+}
+let request = await fetchData("/film/individual/new/metadata", "post", body, headers)
+
+// response
+console.log(request.body)
+```
+
+Expected response on success:
+
+```json
+{
+  "message": "Success!"
+}
+```
+
+This API will only accept the cases where, for the body:
+| Key | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| id | Integer: integer > 0 | The ID of the movie |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The title of the movie |
+| genre | String: /^[A-Za-z]+$/ | The genre of the movie |
+| year | Integer: integer > 0 | The year of the movie's release |
+| description | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The description of the movie |
+| director | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The director of the movie |
+| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]+$/ | The cast members' name(s) of the movie |
+| newVideo | Boolean | Whether or not you want to delete the current video, and use the /film/individual/new/multimedia API to upload a new video |
+| newThumbnail | Boolean | Whether or not you want to delete the current video, and use the /film/individual/new/multimedia API to upload a new video |
+
+Only `id` is required, the rest are optional. If they are not specified, we assume that the content for that key remains the same. We only change anything that is specified.
+
+This API will only give a response body which is important for informational use only.
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have actioned it |
+| 400 | A field that you did specify is in the incorrect format, or there is no id |
+| 403 | You have not authenticated yourself as an admin |
+| 404 | The specified film does not exist |
+| 500 | We could not deliver on your request due to an internal server error |
 
 ## /film/individual/delete POST
 

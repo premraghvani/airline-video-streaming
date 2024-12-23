@@ -7,6 +7,9 @@ module.exports = {
     page: "/film/individual/new/multimedia",
     method: "PUT",
     execute: async(req, res) => {
+        // sets response to json
+        res.set("Content-Type", "application/json");
+        
         const id = req.headers["x-request-id"];
         const content = req.headers["content-type"];
         const segmentRange = req.headers["content-range"];
