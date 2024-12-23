@@ -1,5 +1,6 @@
 const { readDb, writeDb } = require("../commonFunctions/database");
 const { validate } = require("../commonFunctions/validation");
+const { deleteFilmRecord } = require("../commonFunctions/purge")
 const fs = require("fs");
 
 // admins to delete the film(s)
@@ -20,10 +21,12 @@ module.exports = {
 
         // input validation
         if(!body.id || /^[0-9]+$/.test(body.id) === false){
-            res.set(400).send({error:"Invalid / no movie ID provided"})
+            res.status(400).send({error:"Invalid / no movie ID provided"});
+            return;
         }
         if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.title) === false){
-            res.set(400).send({error:"Invalid / no movie title provided"})
+            res.status(400).send({error:"Invalid / no movie title provided"})
+            return;
         }
 
         // validation
@@ -45,38 +48,8 @@ module.exports = {
         }
 
         // starts deleting in order: index, metadata, reviews, thumbmail, movie.
-
-        // index reammendment
-        let newIndex = [];
-        let currIndex = await readDb("main","index");
-        const movieIdInt = parseInt(body.id)
-        for(var i = 0; i < currIndex.length; i++){
-            let q = currIndex[i];
-            if(q.id != movieIdInt){
-                newIndex.push(q);
-            }
-        }
-        await writeDb("main","index",newIndex)
-
-        // metadata deletion
-        if(fs.existsSync(`./assets/metadata/${movieIdInt}.json`)){
-            fs.unlinkSync(`./assets/metadata/${movieIdInt}.json`)
-        }
-
-        // reviews deletion
-        if(fs.existsSync(`./assets/reviews/${movieIdInt}.json`)){
-            fs.unlinkSync(`./assets/reviews/${movieIdInt}.json`)
-        }
-
-        // thumbnail deletion
-        if(fs.existsSync(`./assets/thumbnails/${movieIdInt}.jpg`)){
-            fs.unlinkSync(`./assets/thumbnails/${movieIdInt}.jpg`)
-        }
-
-        // video deletion
-        if(fs.existsSync(`./assets/videos/${movieIdInt}.mp4`)){
-            fs.unlinkSync(`./assets/videos/${movieIdInt}.mp4`)
-        }
+        await deleteFilmRecord(body.id)
+        
 
         res.status(200).send({message:"Success!"})
 

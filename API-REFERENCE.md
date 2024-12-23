@@ -28,7 +28,7 @@ Please assume that all of these have a `Content-Type` of `application/json` unle
 | [/film/individual/thumbnail](#filmindividualthumbnail-get) | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
 | [/film/individual/video](#filmindividualvideo-get) | GET | Returns `video/mp4` on success, or `text/txt` on failure, the film content (or an error) |
 | [/film/individual/new/metadata](#filmindividualnewmetadata-post) | POST | Creates a new film in the database |
-| [/film/individual/new/multimedia](#filmindividualnewmultimedia-post) | POST | Uploads film's multimedia |
+| [/film/individual/new/multimedia](#filmindividualnewmultimedia-put) | PUT | Uploads film's multimedia |
 | [/film/individual/edit](#filmindividualedit-post) | POST | Edits a film |
 | [/film/individual/delete](#filmindividualdelete-post) | POST | Deletes a film |
 | [/review/fetch](#reviewfetch-get) | GET | Fetches all reviews for a movie, as long as they are approved |
@@ -417,9 +417,82 @@ Types of responses:
 | 403 | You have not authenticated yourself as an admin |
 | 500 | We could not deliver on your request due to an internal server error |
 
-## /film/individual/new/multimedia POST
+## /film/individual/new/multimedia PUT
 
-> This API is restricted to those with a valid admin token. Please also beware of the headers that you use - they are described here.
+> This API is restricted to those with a valid admin token. Please also beware of the headers that you use - they are described here. A pre-requesite of this API is either to run /film/individual/new/metadata POST, and taking the id returned as the movie ID, or running /film/individual/edit POST and requesting for a change in thumbnail and/or movie video, and taking the movie ID as the movie ID in this API.
+
+The API will only accept
+1. video/mp4 - if this is given, it will be assumed to be the video
+2. image/jpeg - if this is given, it will be assumed to be the thumbnail
+
+Here are the headers which must be given:
+| Header | Expected Value Type & Format / Regex | Description |
+| --- | --- | --- |
+| Content-Type | String: `video/mp4` or `image/jpeg` | The content type of the content, MP4 or JPEG |
+| X-Request-ID | String: /^[0-9]+$/ | The movie ID |
+| Cookie | String: contains `token={{token}}` | The authentication token, where `{{token}}` is a valid admin token |
+| Content-Range | String: `bytes {{start}}-{{end}}/{{size}}` | The range of the data given |
+
+Please note we accept a maximum 2 MB (2*10^6 Bytes) in the body at once.
+
+These MIMEs must be given in the headers. Here is an example uploading a video:
+
+```js
+const contentPath = "/path/to/content.mp4"
+const fs = require("fs");
+
+let bitEnd = -1;
+let continuation = true;
+let size = fs.statSync(contentPath).size;
+
+// requests
+let headers = {
+    "Cookie": "token={{token}}",
+    "X-Request-ID": "4", // this is the movie's ID, as a string
+    "Content-Type": "video/mp4" // replace with image/jpeg for the thumbnail
+}
+while(continuation){
+    // finds the start and end, such that it is no more than 2MB in size
+    let start = bitEnd + 1;
+    let end = bitEnd + 2000000;
+    
+    // checks if this is the last 2MB packet
+    if(end > (size - 1)){
+        end = size - 1;
+    }
+    if(end == (size - 1)){
+        continuation = false;
+    }
+
+    // updates the end bit, and headers
+    bitEnd = end;
+    headers["Content-Range"] = `bytes ${start}-${end}/${size}`
+
+    // gets the body
+    const body = await new Promise((resolve, reject) => {
+        const chunks = [];
+        const stream = fs.createReadStream(contentPath, { start, end });
+        stream.on("data", chunk => chunks.push(chunk));
+        stream.on("end", () => resolve(Buffer.concat(chunks)));
+        stream.on("error", reject);
+    });
+
+    let request = await fetchData("/film/individual/new/multimedia", "put", body, headers)
+    if(request.status !== 200){
+        console.log("Error at point:",start,end)
+    }
+}
+```
+
+The body must be the binary. Although the system will provide a JSON response with status code, it is not important, and is only useful for error diagnostics.
+
+Types of responses:
+| HTTP Status Code | Description | 
+| --- | --- |
+| 200 | We recieved your request, and have accepted the part given |
+| 400 | The headers we need aren't provided / in the correct format, the size of the body is too big, or `Content-Range` makes no sense (e.g. due to itself, or the body size not matching up) |
+| 403 | You have not authenticated yourself as an admin |
+| 500 | We could not upload the part of the movie for some reason |
 
 ## /film/individual/edit POST
 

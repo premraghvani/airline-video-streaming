@@ -50,6 +50,12 @@ module.exports = {
             return;
         }
 
+        // adjusts capitalisation of genre
+        body.genre = body.genre.toLowerCase()
+        let tmp = body.genre.split("");
+        tmp[0] = tmp[0].toUpperCase();
+        body.genre = tmp.join("")
+
         // gets index, checks for valid number
         let currIndex = await readDb("main","index");
 
@@ -89,7 +95,11 @@ module.exports = {
             year: body.year,
             cast: body.cast,
             director: body.director,
-            description: body.description
+            description: body.description,
+            acceptingChange:{
+                thumbnail:true,
+                video:true
+            }
         }
 
         await writeDb("metadata",metadataObject.id.toString(),metadataObject)
