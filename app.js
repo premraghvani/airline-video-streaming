@@ -4,7 +4,7 @@ const app = express()
 const fs = require("fs");
 app.use(express.raw({ type: '*/*', limit: '10mb' }));
 app.use(cookieParser())
-const {purgeIrrelevantFilms} = require("./commonFunctions/purge")
+const {purgeIrrelevance} = require("./commonFunctions/purge")
 
 // loads up a reference to all commands
 const modules = fs.readdirSync("./commands").map(file => require(`./commands/${file}`))
@@ -16,8 +16,8 @@ for(var i = 0; i < moduleList.length; i++){
     app[module.method.toLowerCase()](module.page, module.execute);
 }
 
-// asks to purge all films with no video or thumbnail
-purgeIrrelevantFilms()
+// asks to purge all films with no video or thumbnail as well as messages
+purgeIrrelevance()
 
 // 404 page
 app.get("*", function(req, res){

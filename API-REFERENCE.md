@@ -1,5 +1,16 @@
 # API Reference: Airline Streaming
 
+## General System Behaviour
+
+This system is written assuming that multimedia content are stored locally, and accessed by fs, alongside the databases (which are flat file). For maintainability, readDb and writeDb are functions which do that, but are asynchronous functions.
+
+On boot up, the system will also
+
+1. Delete movies which do not have an associated thumbnail and/or video - this may include movies which previously had content but were deleted through edit, and not re-uploaded.
+2. Delete all messages.
+
+The system will deliver video, and recieve video only in chunks up to 2 MB (2,000,000 bytes) in size.
+
 ## General Schematic
 
 ### For viewing ("statics") - all are GET methods
@@ -59,7 +70,7 @@ await fetchData(endpoint,method,payload,reqHeaders)
 
 This will act as an API call, where the data is returned, and:
 - `endpoint` is the HTTP endpoint
-- `method` is the method used, either `get` for `GET`, or `post` for `POST`
+- `method` is the method used, could be: `get` for `GET`, `post` for `POST`, or `put` for `PUT`
 - `payload` which may be blank, but is a JSON with the request
 - `reqHeaders` which may be blank, but is any different request headers. This is a JSON with the key being the header name, and value being its content.
 

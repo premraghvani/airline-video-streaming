@@ -3,12 +3,16 @@ const fs = require("fs")
 const { readDb, writeDb } = require("../commonFunctions/database");
 
 // to purge
-async function purgeIrrelevantFilms() {
+async function purgeIrrelevance() {
+    // checks whether to purge the films
     const films = fs.readdirSync("./assets/metadata")
     for(var i = 0; i < films.length; i++){
         let filmId = films[i].split(".")[0];
         await checkFilm(filmId)
-    }    
+    }
+
+    // purges all messages
+    await writeDb("main","messages",[])
 }
 
 // function to check a film
@@ -64,4 +68,4 @@ async function deleteFilmRecord(id){
     return;
 }
 
-module.exports = {purgeIrrelevantFilms, deleteFilmRecord}
+module.exports = {purgeIrrelevance, deleteFilmRecord}
