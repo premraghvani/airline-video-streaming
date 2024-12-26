@@ -1,4 +1,5 @@
 const fs = require("fs");
+const config = require("../config.json")
 
 // simply serves the front html page, replacing elements with the film titles, and the flight details
 module.exports = {
@@ -8,7 +9,8 @@ module.exports = {
         let body = fs.readFileSync("./static/main.html").toString();
 
         // gets flight details, and puts into body
-        let flightDetails = require("../assets/flightData.json")
+        let flightDetails = require("../assets/flightData.json");
+        flightDetails.serviceName = config.serviceName;
         for(key in flightDetails){
             body = body.replaceAll(`{{${key}}}`,flightDetails[key])
         }

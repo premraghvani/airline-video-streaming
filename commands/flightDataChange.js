@@ -57,7 +57,7 @@ module.exports = {
                 res.status(400).send({message:"Invalid flightNum"});
                 return;
             } else {
-                flightData.flightNum = body.flightNum;
+                flightData.flightNum = body.flightNum.toUpperCase().trim();
             }
         }
 
@@ -66,7 +66,7 @@ module.exports = {
                 res.status(400).send({message:"Invalid originCode"});
                 return;
             } else {
-                flightData.originCode = body.originCode.toUpperCase();
+                flightData.originCode = body.originCode.toUpperCase().trim();
             }
         }
 
@@ -75,7 +75,7 @@ module.exports = {
                 res.status(400).send({message:"Invalid destinationCode"});
                 return;
             } else {
-                flightData.destinationCode = body.destinationCode.toUpperCase();
+                flightData.destinationCode = body.destinationCode.toUpperCase().trim();
             }
         }
 

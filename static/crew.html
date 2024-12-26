@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Crew Panel | Airline Streaming Service</title>
+        <title>Crew Panel | Streambox</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
@@ -17,7 +17,7 @@
             <strong style="font-size: 2em;">Crew Panel</strong>
             <span style="font-size: 0.5em;">
                 <br>
-                {{flightNum}} {{originCode}}-{{destinationCode}} | Service Availability: <span id="availabilityStatus" style="color: #880;" id="availability">I don't know</span>
+                <a class="toreplace-flightNum">{{flightNum}}</a> <a class="toreplace-originCode">{{originCode}}</a>-<a class="toreplace-destinationCode">{{destinationCode}}</a> | Service Availability: <span id="availabilityStatus" style="color: #880;" id="availability">I don't know</span>
             </span>
         </div>
         <!--Authentication-->
@@ -47,6 +47,27 @@
             <button onclick="prewritten(4)">Meals</button>
 
             <!--Flight Details-->
+            <h4>Change Flight Details</h4>
+            <p>Correct as of the loading of this page:<br>
+                Origin: <b><a class="toreplace-origin">{{origin}}</a> / <a class="toreplace-originCode">{{originCode}}</a></b><br>
+                Destination: <b><a class="toreplace-destination">{{destination}}</a> / <a class="toreplace-destinationCode">{{destinationCode}}</a></b><br>
+                Flight: <b><a class="toreplace-flightNum">{{flightNum}}</a></b>
+            </p>
+            <blockquote>You can fill in the form below to change the flight information. If any fields are left blank, we will assume the previous value.<br>Origin and destination codes are 3 alphabetical letters only, origin, destination and flight number may only be A-Z, a-z, 0-9, and may contain spaces.</blockquote>
+            <form id="flightInfoForm">
+                <label for="flightNum">Flight Number (Allowed characters: A-Z a-z 0-9 spaces)</label>
+                <input id="flightNum">
+                <label for="originCode">Origin City Code (Allowed characters: A-Z a-z - exactly 3 letters)</label>
+                <input id="originCode">
+                <label for="origin">Origin City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
+                <input id="origin">
+                <label for="destinationCode">Destination City Code (Allowed characters: A-Z a-z - exactly 3 letters)</label>
+                <input id="destinationCode">
+                <label for="destination">Destination City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
+                <input id="destination">
+                <br>
+                <input type="submit" value="Send" id="flightInfoSubmit">
+            </form>
         </div>
         <!--admin-->
         <div id="adminPanel" class="container" style="display: none;">

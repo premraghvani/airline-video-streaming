@@ -1,6 +1,6 @@
-const PORT_NUMBER = 80;
+const config = require("./config.json");
 
 // actually runs the server.
 const {app} = require("./app.js");
 
-app.listen(PORT_NUMBER);
+app.listen(config.port);

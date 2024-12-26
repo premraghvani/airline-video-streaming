@@ -98,6 +98,9 @@ function checkConnection() {
 checkConnection()
 setInterval(checkConnection, 2000);
 
+// checks flight info
+flightInfoLoad()
+
 // open a category's library
 function openCategory(cat){
     disconnectFilm()    
@@ -218,10 +221,16 @@ function relativeTime(timeThen){
 // submit reviews form
 document.getElementById("reviewsend").addEventListener("click", submitReviews, false);
 function submitReviews(event){
+    // sets up basics
     event.preventDefault();
     let review = document.getElementById("review").value;
     let movieId = document.getElementById("movieIdReview").value;
-    
+    // input validation
+    if(/^[A-Za-z0-9 \.,\-!?'"()]+$/.test(review) == false || !review){
+        modalAlert("This review can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+        return;
+    }
+    // sends the request
     fetch("/review/send", {
         method: "POST",
         body: JSON.stringify({review,movieId}),
@@ -229,15 +238,15 @@ function submitReviews(event){
           "Content-type": "application/json; charset=UTF-8"
         }
       }).then((response) => {
-        document.getElementById("review").value = "";
-        document.getElementById("movieIdReview").value = "";
         if(response.status == 202){
             modalAlert("Successfully submitted review!");
-            return;
+            document.getElementById("review").value = "";
+            document.getElementById("movieIdReview").value = "";
+            return null;
         }
         return response.json();
       }).then((json)=>{
-        console.log(json)
+        modalAlert(`Error: ${json.message}`)
       });
 }
 
@@ -249,4 +258,28 @@ function modalAlert(msg){
     modal.style.display = "block";
     closeButton.onclick = function(){modal.style.display = "none"}
     window.onclick = function(event){if(event.target == modal){modal.style.display="none";}}
+}
+
+// changes the flight info on load
+function replaceInDoc(phrase,replacement){
+    const elements = document.querySelectorAll(`.toreplace-${phrase}`);
+    if(elements.length > 0){
+        elements.forEach((element)=>{
+            element.textContent = replacement
+        })
+    }
+}
+function flightInfoLoad(){
+    fetch(`/flight`)
+        .then((response) => {
+            if(response.status != 200){
+                return null;
+            } else {
+                return response.json()
+            }  
+        }).then((json)=>{
+            for(key in json){
+                replaceInDoc(key,json[key])
+            }
+        });
 }

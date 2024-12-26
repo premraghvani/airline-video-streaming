@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Airline Streaming Service</title>
+        <title>Streambox | Entertainment to your Seat</title>
         <link rel="stylesheet" href="plyr.css">
         <link rel="stylesheet" href="style.css">
     </head>
@@ -18,13 +18,13 @@
             <strong style="font-size: 2em;">Streambox</strong>
             <span style="font-size: 0.5em;">
                 <br>
-                {{flightNum}} {{originCode}}-{{destinationCode}} | Service Availability: <span id="availabilityStatus" style="color: #880;" id="availability">I don't know</span>
+                <a class="toreplace-flightNum">{{flightNum}}</a> <a class="toreplace-originCode">{{originCode}}</a>-<a class="toreplace-destinationCode">{{destinationCode}}</a> | Service Availability: <span id="availabilityStatus" style="color: #880;" id="availability">I don't know</span>
             </span>
         </div>
         <!--Categories-->
         <div class="container" id="libraries">
             <h1>Welcome Onboard</h1>
-            <p style="text-align: center;">We hope that you enjoy your flight to {{destination}}, and we also hope that you enjoy the selection of video that we have onboard today.</p>
+            <p style="text-align: center;">We hope that you enjoy your journey to <a class="toreplace-destination">{{destination}}</a>, and we also hope that you enjoy the selection of video that we have onboard today.</p>
             <h2 style="text-align: center;">What would you like to watch?</h2>
             <div class="genreButtons">
                 {{genres}}

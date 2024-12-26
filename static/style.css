@@ -191,9 +191,10 @@ blockquote p {
 .modalContent{
     background-color: #eae8e1;
     margin:auto;
-    padding:40x;
+    padding:40px;
     border:#c4921b 3px solid;
     width:80%;
+    font-size: 1.5em;
 }
 .close{
     color:#2c0e1d;
