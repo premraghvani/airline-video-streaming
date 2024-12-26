@@ -8,13 +8,6 @@ module.exports = {
     execute: async(req, res) => {
         let body = fs.readFileSync("./static/main.html").toString();
 
-        // gets flight details, and puts into body
-        let flightDetails = require("../assets/flightData.json");
-        flightDetails.serviceName = config.serviceName;
-        for(key in flightDetails){
-            body = body.replaceAll(`{{${key}}}`,flightDetails[key])
-        }
-
         // gets all films available, and categories
         let films = require("../assets/index.json");
         let filmsInCategories = {};
