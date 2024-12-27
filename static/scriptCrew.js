@@ -38,9 +38,13 @@ function showItems(){
       .then((json) => {
         if(json.approval == true){
           document.getElementById("auth").style.display = "none";
-          document.getElementById("crewPanel").style.display = "block";
+          document.getElementById("paxMessagePanel").style.display = "block";
+          document.getElementById("flightDetailsPanel").style.display = "block";
           if(json.level == "admin"){
-            document.getElementById("adminPanel").style.display = "block";
+            document.getElementById("approveReviewsPanel").style.display = "block";
+            document.getElementById("uploadFilmPanel").style.display = "block";
+            document.getElementById("editFilmPanel").style.display = "block";
+            document.getElementById("passwordServicePanel").style.display = "block";
           }
         } else {
             return;
@@ -148,6 +152,37 @@ function flightInfoSubmit(event){
             document.getElementById("origin").value = "";
             document.getElementById("destinationCode").value = "";
             document.getElementById("destination").value = "";
+            return null;
+        }
+        return response.json();
+      }).then((json)=>{
+        modalAlert(`Error: ${json.message}`);
+        return;
+      });
+}
+
+// submits the form for password change
+document.getElementById("passwordsSubmit").addEventListener("click", passwordsSubmit, false);
+function passwordsSubmit(event){
+    // sets up basics
+    event.preventDefault();
+    let password = document.getElementById("passwords-new").value;
+    let mode = document.getElementById("passwords-category").value;
+
+    // input validation    
+    if(!password || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(password) == false){
+      modalAlert("New password not accepted - must only include: A-Z a-z 0-9 spaces .,-!?'\"()");
+      return;
+    }
+
+    // sends the request
+    fetch("/authenticate/change", {
+        method: "POST",
+        body: JSON.stringify({mode,password})
+      }).then((response) => {
+        if(response.status == 200){
+            modalAlert(`Successfully changed password for ${mode}`);
+            document.getElementById("passwords-new").value = "";
             return null;
         }
         return response.json();

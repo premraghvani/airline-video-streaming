@@ -30,7 +30,7 @@ async function validate(token){
             passListsFiltered.push(q);
         }
     }
-    passwordList.tokens = passListsFiltered
+    passwordList.tokens = passListsFiltered;
     await writeDb("main","passwordsTokens",passwordList)
 
     // searches for the tokens

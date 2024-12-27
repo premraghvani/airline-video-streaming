@@ -76,16 +76,6 @@ async function generateToken(level){
         }
     }
 
-    // removes expired keys (because we are nice like that)
-    let okayTokens = [];
-    for(var i = 0; i < passwordList.tokens.length; i++){
-        let now = Math.floor(d.getTime() / 1000);
-        if(passwordList.tokens[i].expiry < now){
-            okayTokens.push(passwordList[i])
-        }
-    }
-    passwordList.tokens = okayTokens.splice();
-
     // puts into password tokens
     passwordList.tokens.push({
         token,

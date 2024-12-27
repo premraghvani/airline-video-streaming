@@ -42,17 +42,32 @@ module.exports = {
             return;
         }
 
-        // encrypts password
-        let salt = bcrypt.genSaltSync(12);
-        let passwordHash = bcrypt.hashSync(password,salt);
-
-        // commits changes
+        // retrieves current password list
         let passwordFile = await readDb("main","passwordsTokens");
         if(passwordFile === false){
             res.status(500).send({message:"Could not find passwords"})
             return;
         }
 
+        // prevents the same password in both categories
+        
+        if(mode == "admin"){
+            let currentCrewHash = passwordFile.crew
+            if(bcrypt.compareSync(password,currentCrewHash) === true){
+                res.status(400).send({message:"New admin password must not be the same as crew password"});
+                return;
+            }
+        } else {
+            let currentAdminHash = passwordFile.admin
+            if(bcrypt.compareSync(password,currentAdminHash) === true){
+                res.status(400).send({message:"New crew password must not be the same as admin password"});
+                return;
+            }
+        }
+
+        // encrypts password
+        let salt = bcrypt.genSaltSync(12);
+        let passwordHash = bcrypt.hashSync(password,salt);
         passwordFile[mode] = passwordHash;
 
         await writeDb("main","passwordsTokens",passwordFile)

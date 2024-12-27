@@ -30,23 +30,25 @@
                 <input type="submit" value="Send" id="passwordsend">
             </form>
         </div>
+
         <!--crew-->
-        <div id="crewPanel" class="container" style="display: none;">
-            <h2>Crew Settings</h2>
-            <!--Pax Messages-->
+        <!--pax messages-->
+        <div id="paxMessagePanel" class="container" style="display: none;">
             <h4>Send Message to Passengers</h4>
             <form id="messageForm">
                 <label for="message">Message</label>
                 <textarea id="messageToSend" cols="80" rows="5" style="width: 100%"></textarea>
-                <input type="submit" value="Send" id="messagesend">
+                <input type="submit" value="Send Message" id="messagesend">
             </form>
             <p>Pre-written messages:</p>
             <button onclick="prewritten(1)">Welcome</button>
             <button onclick="prewritten(2)">Arrival</button>
             <button onclick="prewritten(3)">Goodbye</button>
             <button onclick="prewritten(4)">Meals</button>
+        </div>
 
-            <!--Flight Details-->
+        <!--flight details-->
+        <div id="flightDetailsPanel" class="container" style="display: none;">
             <h4>Change Flight Details</h4>
             <p>Correct as of the loading of this page:<br>
                 Origin: <b><a class="toreplace-origin">{{origin}}</a> / <a class="toreplace-originCode">{{originCode}}</a></b><br>
@@ -66,19 +68,41 @@
                 <label for="destination">Destination City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
                 <input id="destination">
                 <br>
-                <input type="submit" value="Send" id="flightInfoSubmit">
+                <input type="submit" value="Submit New Information" id="flightInfoSubmit">
             </form>
         </div>
+
         <!--admin-->
-        <div id="adminPanel" class="container" style="display: none;">
-            <h2>Admin Settings</h2>
-            <!--Review Approvals-->
+        <!--approve reviews-->
+        <div id="approveReviewsPanel" class="container" style="display: none;">
+            <h4>Approve Reviews</h4>
+        </div>
 
-            <!--Film Uploads-->
+        <!--upload films-->
+        <div id="uploadFilmPanel" class="container" style="display: none;">
+            <h4>Upload Film</h4>
+        </div>
 
-            <!--Film Edits-->
+        <!--edit films-->
+        <div id="editFilmPanel" class="container" style="display: none;">
+            <h4>Edit a Film</h4>
+        </div>
 
-            <!--Password Services-->
+        <!--password services-->
+        <div id="passwordServicePanel" class="container" style="display: none;">
+            <h4>Change Passwords</h4>
+            <form id="changePassword">
+                <label for="passwords-new">New Password (Allowed characters: A-Z a-z 0-9 spaces .,-!?'"() )</label>
+                <input id="passwords-new" type="password">
+                <label for="passwords-category">Which group's password will this new password be for?</label>
+                <select id="passwords-category">
+                    <option value="crew">Crew</option>
+                    <option value="admin">Admins</option>
+                </select>
+                <br>
+                <blockquote>Crew and admin may not have the same password.</blockquote>
+                <input type="submit" value="Change Password" id="passwordsSubmit">
+            </form>
         </div>
     </body>
 </html>
