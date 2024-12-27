@@ -41,9 +41,8 @@ function showItems(){
           document.getElementById("paxMessagePanel").style.display = "block";
           document.getElementById("flightDetailsPanel").style.display = "block";
           if(json.level == "admin"){
-            document.getElementById("approveReviewsPanel").style.display = "block";
+            document.getElementById("existingFilmsPanel").style.display = "block";
             document.getElementById("uploadFilmPanel").style.display = "block";
-            document.getElementById("editFilmPanel").style.display = "block";
             document.getElementById("passwordServicePanel").style.display = "block";
           }
         } else {
@@ -190,4 +189,59 @@ function passwordsSubmit(event){
         modalAlert(`Error: ${json.message}`);
         return;
       });
+}
+
+// onload: gets the film categories into the film managers panel
+loadFilmCats()
+function loadFilmCats(){
+  fetch("/film/category/fetch", {
+    method: "GET"
+  }).then((response) => {
+    return response.json();
+  }).then((json)=>{
+    let selectionOptions = "";
+    if(!!json.categories){
+      selectionOptions = `<option value="null">Select a Genre</option>`
+      for(var i = 0; i < json.categories.length; i++){
+        selectionOptions += `<option value="${json.categories[i]}">${json.categories[i].toUpperCase()}</option>`
+      }
+    }
+    document.getElementById("filmCat").innerHTML = selectionOptions;
+  });
+}
+
+// updates when a genre is picked
+function selectedGenre(){
+  let value = document.getElementById("filmCat").value;
+  if(value == "null"){
+    document.getElementById("filmNameBox").style.display = "none";
+    return;
+  }
+  document.getElementById("filmNameBox").style.display = "block";
+
+  fetch(`/film/categoryfilter/fetch?category=${value}`, {
+    method: "GET"
+  }).then((response) => {
+    return response.json();
+  }).then((json)=>{
+    let selectionOptions = "";
+    if(json.length != undefined){
+      selectionOptions = `<option value="null">Select a Film</option>`
+      for(var i = 0; i < json.length; i++){
+        selectionOptions += `<option value="${json[i].id}">(#${json[i].id}) ${json[i].title}</option>`
+      }
+    }
+    document.getElementById("filmCollection").innerHTML = selectionOptions;
+  });
+}
+
+// updates when a film is selected
+function selectedFilm(){
+  let value = document.getElementById("filmCollection").value;
+  if(value == "null"){
+    document.getElementById("filmSelBox").style.display = "none";
+    return;
+  }
+  document.getElementById("filmSelBox").style.display = "block";
+  document.getElementById("filmSelImg").src = `/film/individual/thumbnail?id=${value}`
 }

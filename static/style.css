@@ -220,3 +220,11 @@ blockquote p {
 #paxMessagePanel button:hover{
     background-color: #2c0e1d;
 }
+#filmSelImg {
+    max-width: 200px; 
+    width: 100%; 
+    height: auto;
+    border: #c4921b 5px solid;
+    border-radius: 10px;
+    margin-top: 10px;
+}

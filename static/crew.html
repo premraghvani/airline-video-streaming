@@ -73,19 +73,23 @@
         </div>
 
         <!--admin-->
-        <!--approve reviews-->
-        <div id="approveReviewsPanel" class="container" style="display: none;">
-            <h4>Approve Reviews</h4>
+        <!--approve reviews, edits films-->
+        <div id="existingFilmsPanel" class="container" style="display: none;">
+            <h4>Manage Existing Films</h4>
+            <label for="filmCat">Select a Genre</label>
+            <select id="filmCat" onchange="selectedGenre()"></select>
+            <div id="filmNameBox" style="display: none;">
+                <label for="filmCollection">Select a Genre</label>
+                <select id="filmCollection" onchange="selectedFilm()"></select>
+            </div>
+            <div id="filmSelBox" style="display: none;">
+                <img id="filmSelImg">
+            </div>
         </div>
 
         <!--upload films-->
         <div id="uploadFilmPanel" class="container" style="display: none;">
             <h4>Upload Film</h4>
-        </div>
-
-        <!--edit films-->
-        <div id="editFilmPanel" class="container" style="display: none;">
-            <h4>Edit a Film</h4>
         </div>
 
         <!--password services-->

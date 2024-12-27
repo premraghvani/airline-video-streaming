@@ -219,7 +219,6 @@ function relativeTime(timeThen){
 }
 
 // submit reviews form
-document.getElementById("reviewsend").addEventListener("click", submitReviews, false);
 function submitReviews(event){
     // sets up basics
     event.preventDefault();
