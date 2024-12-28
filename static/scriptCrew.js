@@ -213,6 +213,7 @@ function loadFilmCats(){
 // updates when a genre is picked
 function selectedGenre(){
   let value = document.getElementById("filmCat").value;
+  document.getElementById("filmSelBox").style.display = "none"; 
   if(value == "null"){
     document.getElementById("filmNameBox").style.display = "none";
     return;
@@ -243,5 +244,13 @@ function selectedFilm(){
     return;
   }
   document.getElementById("filmSelBox").style.display = "block";
-  document.getElementById("filmSelImg").src = `/film/individual/thumbnail?id=${value}`
+
+  fetch(`/film/individual/metadata?id=${value}`, {
+    method: "GET"
+  }).then((response) => {
+    return response.json();
+  }).then((json)=>{
+    document.getElementById("filmSelImg").src = `/film/individual/thumbnail?id=${value}`;
+    document.getElementById("filmSelDetails").innerHTML = `<b>${json.title}</b><br>${json.description}<br>Cast: ${json.cast}<br>${json.director} | ${json.genre} | ${json.year}`
+  });
 }

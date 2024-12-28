@@ -44,7 +44,8 @@ function goBack(){
     disconnectFilm()
 }
 
-// function to check the connection and update page accordingly, and messages
+// function to check the connection and update page accordingly, and messages - puts modal if disconnected for more than 20 seconds
+let disconnectedTicks = 0;
 function checkConnection() {
     let current = document.getElementById("availabilityStatus");
     const controller = new AbortController()
@@ -58,10 +59,12 @@ function checkConnection() {
                     current.innerHTML = "Unavailable";
                     current.style = "color: #800;";
                 }
+                disconnectedTicks += 1;
             } else {
                 if (current.innerHTML !== "Available") {
                     current.innerHTML = "Available";
                     current.style = "color: #080;";
+                    disconnectedTicks = 0;
                 }
             }
             return response.json();
@@ -86,12 +89,16 @@ function checkConnection() {
             }
         })
         .catch((error) => {
-            console.error("Error fetching connection status:", error);
             if (current.innerHTML !== "Unavailable") {
                 current.innerHTML = "Unavailable";
                 current.style = "color: #800;";
             }
+            disconnectedTicks += 1
         });
+
+    if(disconnectedTicks == 10){
+        modalAlert("<b>Disconnection</b><br>The connection with the server has been lost for more than 20 seconds, however if it is back, the top bar will say 'Available' in green for service availability. This does mean you aren't able to view any content until the connection is available. This may be due to you being disconnected from our Wi-Fi, or our server being down.")
+    }
 }
 
 // check connection with the server every 2 seconds
