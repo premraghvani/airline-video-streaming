@@ -34,146 +34,158 @@
         <!--crew-->
         <!--pax messages-->
         <div id="paxMessagePanel" class="container" style="display: none;">
-            <h4>Send Message to Passengers</h4>
-            <form id="messageForm">
-                <label for="message">Message</label>
-                <textarea id="messageToSend" cols="80" rows="5" style="width: 100%"></textarea>
-                <input type="submit" value="Send Message" id="messagesend">
-            </form>
-            <p>Pre-written messages:</p>
-            <button onclick="prewritten(1)">Welcome</button>
-            <button onclick="prewritten(2)">Arrival</button>
-            <button onclick="prewritten(3)">Goodbye</button>
-            <button onclick="prewritten(4)">Meals</button>
+            <h4 onclick="togglePanel('message')" id="messagePanelToggle">Send Message to Passengers (click to show)</h4>
+            <div id="messagePanelInner" style="display: none;">
+                <form id="messageForm">
+                    <label for="message">Message</label>
+                    <textarea id="messageToSend" cols="80" rows="5" style="width: 100%"></textarea>
+                    <input type="submit" value="Send Message" id="messagesend">
+                </form>
+                <p>Pre-written messages:</p>
+                <button onclick="prewritten(1)">Welcome</button>
+                <button onclick="prewritten(2)">Arrival</button>
+                <button onclick="prewritten(3)">Goodbye</button>
+                <button onclick="prewritten(4)">Meals</button>
+            </div>
         </div>
 
         <!--flight details-->
         <div id="flightDetailsPanel" class="container" style="display: none;">
-            <h4>Change Flight Details</h4>
-            <p>Correct as of the loading of this page:<br>
-                Origin: <b><a class="toreplace-origin">{{origin}}</a> / <a class="toreplace-originCode">{{originCode}}</a></b><br>
-                Destination: <b><a class="toreplace-destination">{{destination}}</a> / <a class="toreplace-destinationCode">{{destinationCode}}</a></b><br>
-                Flight: <b><a class="toreplace-flightNum">{{flightNum}}</a></b>
-            </p>
-            <blockquote>You can fill in the form below to change the flight information. If any fields are left blank, we will assume the previous value.<br>Origin and destination codes are 3 alphabetical letters only, origin, destination and flight number may only be A-Z, a-z, 0-9, and may contain spaces.</blockquote>
-            <form id="flightInfoForm">
-                <label for="flightNum">Flight Number (Allowed characters: A-Z a-z 0-9 spaces)</label>
-                <input id="flightNum">
-                <label for="originCode">Origin City Code (Allowed characters: A-Z a-z - exactly 3 letters)</label>
-                <input id="originCode">
-                <label for="origin">Origin City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
-                <input id="origin">
-                <label for="destinationCode">Destination City Code (Allowed characters: A-Z a-z - exactly 3 letters)</label>
-                <input id="destinationCode">
-                <label for="destination">Destination City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
-                <input id="destination">
-                <br>
-                <input type="submit" value="Submit New Information" id="flightInfoSubmit">
-            </form>
+            <h4 onclick="togglePanel('flight')" id="flightPanelToggle">Change Flight Details (click to show)</h4>
+            <div id="flightPanelInner" style="display: none;">
+                <p>Correct as of the loading of this page:<br>
+                    Origin: <b><a class="toreplace-origin">{{origin}}</a> / <a class="toreplace-originCode">{{originCode}}</a></b><br>
+                    Destination: <b><a class="toreplace-destination">{{destination}}</a> / <a class="toreplace-destinationCode">{{destinationCode}}</a></b><br>
+                    Flight: <b><a class="toreplace-flightNum">{{flightNum}}</a></b>
+                </p>
+                <blockquote>You can fill in the form below to change the flight information. If any fields are left blank, we will assume the previous value.<br>Origin and destination codes are 3 alphabetical letters only, origin, destination and flight number may only be A-Z, a-z, 0-9, and may contain spaces.</blockquote>
+                <form id="flightInfoForm">
+                    <label for="flightNum">Flight Number (Allowed characters: A-Z a-z 0-9 spaces)</label>
+                    <input id="flightNum">
+                    <label for="originCode">Origin City Code (Allowed characters: A-Z a-z - exactly 3 letters)</label>
+                    <input id="originCode">
+                    <label for="origin">Origin City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
+                    <input id="origin">
+                    <label for="destinationCode">Destination City Code (Allowed characters: A-Z a-z - exactly 3 letters)</label>
+                    <input id="destinationCode">
+                    <label for="destination">Destination City Name (Allowed characters: A-Z a-z 0-9 spaces)</label>
+                    <input id="destination">
+                    <br>
+                    <input type="submit" value="Submit New Information" id="flightInfoSubmit">
+                </form>
+            </div>
         </div>
 
         <!--admin-->
         <!--approve reviews, edits films-->
         <div id="existingFilmsPanel" class="container" style="display: none;">
-            <h4>Manage Existing Films</h4>
-            <label for="filmCat">Select a Genre</label>
-            <select id="filmCat" onchange="selectedGenre()"></select>
-            <div id="filmNameBox" style="display: none;">
-                <label for="filmCollection">Select a Genre</label>
-                <select id="filmCollection" onchange="selectedFilm()"></select>
-            </div>
-            <div id="filmSelBox" style="display: none;">
-                <img id="filmSelImg">
-                <p id="filmSelDetails"></p>
-                <br>
+            <h4 onclick="togglePanel('exFilm')" id="exFilmPanelToggle">Manage Existing Films (click to show)</h4>
+            <div id="exFilmPanelInner" style="display: none;">
+                <label for="filmCat">Select a Genre</label>
+                <select id="filmCat" onchange="selectedGenre()"></select>
+                <div id="filmNameBox" style="display: none;">
+                    <label for="filmCollection">Select a Genre</label>
+                    <select id="filmCollection" onchange="selectedFilm()"></select>
+                </div>
+                <div id="filmSelBox" style="display: none;">
+                    <img id="filmSelImg">
+                    <p id="filmSelDetails"></p>
+                    <br>
 
-                <h4>Edit Film</h4>
-                <blockquote>You can fill in the form below to change the film's information. If any fields are left blank, we will assume the previous value.<br>All written values may only be A-Z, a-z, 0-9, .,-!?'\() and may contain spaces, except for genre (A-Z, a-z only), and the year of the movie (0-9).</blockquote>
-                <form id="editFilmForm">
-                    <label for="editFilmTitle">Title</label>
-                    <input id="editFilmTitle">
-                    <label for="editFilmDescription">Description</label>
-                    <textarea id="editFilmDescription" style="width: 100%;"></textarea>
-                    <label for="editFilmGenre">Genre (this field is restricted to A-Z, a-z only)</label>
-                    <input id="editFilmGenre">
-                    <label for="editFilmCast">Cast Members</label>
-                    <input id="editFilmCast">
-                    <label for="editFilmDirector">Film Director</label>
-                    <input id="editFilmDirector">
-                    <label for="editFilmYear">Film Year of Release (this field is restricted to 0-9 only)</label>
-                    <input id="editFilmYear">
+                    <h4>Edit Film</h4>
+                    <blockquote>You can fill in the form below to change the film's information. If any fields are left blank, we will assume the previous value.<br>All written values may only be A-Z, a-z, 0-9, .,-!?'\() and may contain spaces, except for genre (A-Z, a-z only), and the year of the movie (0-9).</blockquote>
+                    <form id="editFilmForm">
+                        <label for="editFilmTitle">Title</label>
+                        <input id="editFilmTitle">
+                        <label for="editFilmDescription">Description</label>
+                        <textarea id="editFilmDescription" style="width: 100%;"></textarea>
+                        <label for="editFilmGenre">Genre (this field is restricted to A-Z, a-z only)</label>
+                        <input id="editFilmGenre">
+                        <label for="editFilmCast">Cast Members</label>
+                        <input id="editFilmCast">
+                        <label for="editFilmDirector">Film Director</label>
+                        <input id="editFilmDirector">
+                        <label for="editFilmYear">Film Year of Release (this field is restricted to 0-9 only)</label>
+                        <input id="editFilmYear">
+                        <br>
+                        <label for="editFilmThumbnail">Change the thumbnail?</label>
+                        <input type="checkbox" id="editFilmThumbnail" style="width: auto;">
+                        <br>
+                        <label for="editFilmVideo">Change the movie video?</label>
+                        <input type="checkbox" id="editFilmVideo" style="width:auto;">
+                        <br>
+                        <input type="hidden" id="editFilmId">
+                        <input type="submit" value="Edit Film" id="editFilmSubmit">
+                    </form>
                     <br>
-                    <label for="editFilmThumbnail">Change the thumbnail?</label>
-                    <input type="checkbox" id="editFilmThumbnail" style="width: auto;">
-                    <br>
-                    <label for="editFilmVideo">Change the movie video?</label>
-                    <input type="checkbox" id="editFilmVideo" style="width:auto;">
-                    <br>
-                    <input type="hidden" id="editFilmId">
-                    <input type="submit" value="Edit Film" id="editFilmSubmit">
-                </form>
-                <br>
 
-                <h4>Delete Film</h4>
-                <form id="filmDeleteForm">
-                    <label for="filmDeleteConfirm">To Confirm: Please write the movie's title</label>
-                    <input id="filmDeleteConfirm">
-                    <input id="filmDeleteId" type="hidden">
-                    <input type="submit" value="Delete Film" id="filmDeleteButton">
-                </form>
+                    <h4>Delete Film</h4>
+                    <form id="filmDeleteForm">
+                        <label for="filmDeleteConfirm">To Confirm: Please write the movie's title</label>
+                        <input id="filmDeleteConfirm">
+                        <input id="filmDeleteId" type="hidden">
+                        <input type="submit" value="Delete Film" id="filmDeleteButton">
+                    </form>
+                </div>
             </div>
         </div>
 
         <!--new films-->
         <div id="newFilmPanel" class="container" style="display: none;">
-            <h4>New Film</h4>
-            <blockquote>You can fill in the form below to change the film's information.<br>All written values may only be A-Z, a-z, 0-9, .,-!?'\() and may contain spaces, except for genre (A-Z, a-z only), and the year of the movie (0-9).</blockquote>
-            <form id="newFilmForm">
-                <label for="newFilmTitle">Title</label>
-                <input id="newFilmTitle">
-                <label for="newFilmDescription">Description</label>
-                <textarea id="newFilmDescription" style="width: 100%;"></textarea>
-                <label for="newFilmGenre">Genre (this field is restricted to A-Z, a-z only)</label>
-                <input id="newFilmGenre">
-                <label for="newFilmCast">Cast Members</label>
-                <input id="newFilmCast">
-                <label for="newFilmDirector">Film Director</label>
-                <input id="newFilmDirector">
-                <label for="newFilmYear">Film Year of Release (this field is restricted to 0-9 only)</label>
-                <input id="newFilmYear">
-                <input type="submit" value="New Film" id="newFilmSubmit">
-            </form>
+            <h4 onclick="togglePanel('newFilm')" id="newFilmPanelToggle">New Film (click to show)</h4>
+            <div id="newFilmPanelInner" style="display: none;">
+                <blockquote>You can fill in the form below to change the film's information.<br>All written values may only be A-Z, a-z, 0-9, .,-!?'\() and may contain spaces, except for genre (A-Z, a-z only), and the year of the movie (0-9).</blockquote>
+                <form id="newFilmForm">
+                    <label for="newFilmTitle">Title</label>
+                    <input id="newFilmTitle">
+                    <label for="newFilmDescription">Description</label>
+                    <textarea id="newFilmDescription" style="width: 100%;"></textarea>
+                    <label for="newFilmGenre">Genre (this field is restricted to A-Z, a-z only)</label>
+                    <input id="newFilmGenre">
+                    <label for="newFilmCast">Cast Members</label>
+                    <input id="newFilmCast">
+                    <label for="newFilmDirector">Film Director</label>
+                    <input id="newFilmDirector">
+                    <label for="newFilmYear">Film Year of Release (this field is restricted to 0-9 only)</label>
+                    <input id="newFilmYear">
+                    <input type="submit" value="New Film" id="newFilmSubmit">
+                </form>
+            </div>
         </div>
 
         <!--password services-->
         <div id="passwordServicePanel" class="container" style="display: none;">
-            <h4>Change Passwords</h4>
-            <form id="changePassword">
-                <label for="passwords-new">New Password (Allowed characters: A-Z a-z 0-9 spaces .,-!?'"() )</label>
-                <input id="passwords-new" type="password">
-                <label for="passwords-category">Which group's password will this new password be for?</label>
-                <select id="passwords-category">
-                    <option value="crew">Crew</option>
-                    <option value="admin">Admins</option>
-                </select>
-                <br>
-                <blockquote>Crew and admin may not have the same password.</blockquote>
-                <input type="submit" value="Change Password" id="passwordsSubmit">
-            </form>
+            <h4 onclick="togglePanel('password')" id="passwordPanelToggle">Change Passwords (click to show)</h4>
+            <div id="passwordPanelInner" style="display: none;">
+                <form id="changePassword">
+                    <label for="passwords-new">New Password (Allowed characters: A-Z a-z 0-9 spaces .,-!?'"() )</label>
+                    <input id="passwords-new" type="password">
+                    <label for="passwords-category">Which group's password will this new password be for?</label>
+                    <select id="passwords-category">
+                        <option value="crew">Crew</option>
+                        <option value="admin">Admins</option>
+                    </select>
+                    <br>
+                    <blockquote>Crew and admin may not have the same password.</blockquote>
+                    <input type="submit" value="Change Password" id="passwordsSubmit">
+                </form>
+            </div>
         </div>
 
         <!--Upload content-->
         <div id="uploadContentPanel" class="container" style="display: none;">
-            <h4>Upload Content</h4>
-            <blockquote>Please use this panel if and only if you have edited a movie and specified you want to change the video or thumbnail, or if you have made a new movie. You must specify the ID. If you have not got the ID, you can find it in the "edit" panel by searching for the film. In the selection panel, the title will start with (#ID) where ID is the id number.
-                <br><br>
-                We only accept:
-                <ul>
-                    <li>video/mp4 for videos</li>
-                    <li>image/jpeg for thumbnails</li>
-                </ul>
-                We suggest that thumbnails are in the aspect ratio 3:4 (width:height).
-            </blockquote>
+            <h4 onclick="togglePanel('upload')" id="uploadPanelToggle">Upload Content (click to show)</h4>
+            <div id="uploadPanelInner" style="display: none;">
+                <blockquote>Please use this panel if and only if you have edited a movie and specified you want to change the video or thumbnail, or if you have made a new movie. You must specify the ID. If you have not got the ID, you can find it in the "edit" panel by searching for the film. In the selection panel, the title will start with (#ID) where ID is the id number.
+                    <br><br>
+                    We only accept:
+                    <ul>
+                        <li>video/mp4 for videos</li>
+                        <li>image/jpeg for thumbnails</li>
+                    </ul>
+                    We suggest that thumbnails are in the aspect ratio 3:4 (width:height).
+                </blockquote>
+            </div>
         </div>
     </body>
 </html>

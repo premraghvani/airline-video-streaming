@@ -1,6 +1,5 @@
 // password submit button, authenticates password with server
 document.getElementById("passwordsend").addEventListener("click", passwordToToken, false);
-
 function passwordToToken(event){
     event.preventDefault();
     let password = document.getElementById("password").value
@@ -23,6 +22,19 @@ function passwordToToken(event){
         }
       });
       
+}
+
+// toggles a panel to full view
+function togglePanel(panelName){
+  let button = document.getElementById(`${panelName}PanelToggle`);
+  let section = document.getElementById(`${panelName}PanelInner`);
+  if(button.innerHTML.includes("show")){
+    section.style.display = "block";
+    button.innerHTML = button.innerHTML.replace("show","hide")
+  } else {
+    section.style.display = "none";
+    button.innerHTML = button.innerHTML.replace("hide","show")
+  }
 }
 
 // authenticates token, and changes what is shown
