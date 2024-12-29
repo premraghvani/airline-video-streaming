@@ -1,9 +1,1 @@
-{
-    "id":1,
-    "title":"Can goes on a Journey",
-    "description":"This 7up can is going on a voyage, I wonder, will it get to its destination safely?",
-    "cast":"Can",
-    "director":"Evil Developer",
-    "year":2024,
-    "genre":"Autobiography"
-}
+{"id":1,"title":"Can Goes on a Journey","description":"This 7up can is going on a voyage, I wonder, will it get to its destination safely?","cast":"Can","director":"Evil Developer","year":2024,"genre":"Autobiography"}

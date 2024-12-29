@@ -85,12 +85,64 @@
             <div id="filmSelBox" style="display: none;">
                 <img id="filmSelImg">
                 <p id="filmSelDetails"></p>
+                <br>
+
+                <h4>Edit Film</h4>
+                <blockquote>You can fill in the form below to change the film's information. If any fields are left blank, we will assume the previous value.<br>All written values may only be A-Z, a-z, 0-9, .,-!?'\() and may contain spaces, except for genre (A-Z, a-z only), and the year of the movie (0-9).</blockquote>
+                <form id="editFilmForm">
+                    <label for="editFilmTitle">Title</label>
+                    <input id="editFilmTitle">
+                    <label for="editFilmDescription">Description</label>
+                    <textarea id="editFilmDescription" style="width: 100%;"></textarea>
+                    <label for="editFilmGenre">Genre (this field is restricted to A-Z, a-z only)</label>
+                    <input id="editFilmGenre">
+                    <label for="editFilmCast">Cast Members</label>
+                    <input id="editFilmCast">
+                    <label for="editFilmDirector">Film Director</label>
+                    <input id="editFilmDirector">
+                    <label for="editFilmYear">Film Year of Release (this field is restricted to 0-9 only)</label>
+                    <input id="editFilmYear">
+                    <br>
+                    <label for="editFilmThumbnail">Change the thumbnail?</label>
+                    <input type="checkbox" id="editFilmThumbnail" style="width: auto;">
+                    <br>
+                    <label for="editFilmVideo">Change the movie video?</label>
+                    <input type="checkbox" id="editFilmVideo" style="width:auto;">
+                    <br>
+                    <input type="hidden" id="editFilmId">
+                    <input type="submit" value="Edit Film" id="editFilmSubmit">
+                </form>
+                <br>
+
+                <h4>Delete Film</h4>
+                <form id="filmDeleteForm">
+                    <label for="filmDeleteConfirm">To Confirm: Please write the movie's title</label>
+                    <input id="filmDeleteConfirm">
+                    <input id="filmDeleteId" type="hidden">
+                    <input type="submit" value="Delete Film" id="filmDeleteButton">
+                </form>
             </div>
         </div>
 
-        <!--upload films-->
-        <div id="uploadFilmPanel" class="container" style="display: none;">
-            <h4>Upload Film</h4>
+        <!--new films-->
+        <div id="newFilmPanel" class="container" style="display: none;">
+            <h4>New Film</h4>
+            <blockquote>You can fill in the form below to change the film's information.<br>All written values may only be A-Z, a-z, 0-9, .,-!?'\() and may contain spaces, except for genre (A-Z, a-z only), and the year of the movie (0-9).</blockquote>
+            <form id="newFilmForm">
+                <label for="newFilmTitle">Title</label>
+                <input id="newFilmTitle">
+                <label for="newFilmDescription">Description</label>
+                <textarea id="newFilmDescription" style="width: 100%;"></textarea>
+                <label for="newFilmGenre">Genre (this field is restricted to A-Z, a-z only)</label>
+                <input id="newFilmGenre">
+                <label for="newFilmCast">Cast Members</label>
+                <input id="newFilmCast">
+                <label for="newFilmDirector">Film Director</label>
+                <input id="newFilmDirector">
+                <label for="newFilmYear">Film Year of Release (this field is restricted to 0-9 only)</label>
+                <input id="newFilmYear">
+                <input type="submit" value="New Film" id="newFilmSubmit">
+            </form>
         </div>
 
         <!--password services-->
@@ -108,6 +160,20 @@
                 <blockquote>Crew and admin may not have the same password.</blockquote>
                 <input type="submit" value="Change Password" id="passwordsSubmit">
             </form>
+        </div>
+
+        <!--Upload content-->
+        <div id="uploadContentPanel" class="container" style="display: none;">
+            <h4>Upload Content</h4>
+            <blockquote>Please use this panel if and only if you have edited a movie and specified you want to change the video or thumbnail, or if you have made a new movie. You must specify the ID. If you have not got the ID, you can find it in the "edit" panel by searching for the film. In the selection panel, the title will start with (#ID) where ID is the id number.
+                <br><br>
+                We only accept:
+                <ul>
+                    <li>video/mp4 for videos</li>
+                    <li>image/jpeg for thumbnails</li>
+                </ul>
+                We suggest that thumbnails are in the aspect ratio 3:4 (width:height).
+            </blockquote>
         </div>
     </body>
 </html>

@@ -228,3 +228,9 @@ blockquote p {
     border-radius: 10px;
     margin-top: 10px;
 }
+#filmDeleteButton{
+    background-color: #800;
+}
+#filmDeleteButton:hover{
+    background-color: #2c0e1d;
+}

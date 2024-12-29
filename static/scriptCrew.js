@@ -42,7 +42,8 @@ function showItems(){
           document.getElementById("flightDetailsPanel").style.display = "block";
           if(json.level == "admin"){
             document.getElementById("existingFilmsPanel").style.display = "block";
-            document.getElementById("uploadFilmPanel").style.display = "block";
+            document.getElementById("newFilmPanel").style.display = "block";
+            document.getElementById("uploadContentPanel").style.display = "block";
             document.getElementById("passwordServicePanel").style.display = "block";
           }
         } else {
@@ -251,6 +252,183 @@ function selectedFilm(){
     return response.json();
   }).then((json)=>{
     document.getElementById("filmSelImg").src = `/film/individual/thumbnail?id=${value}`;
-    document.getElementById("filmSelDetails").innerHTML = `<b>${json.title}</b><br>${json.description}<br>Cast: ${json.cast}<br>${json.director} | ${json.genre} | ${json.year}`
+    document.getElementById("filmSelDetails").innerHTML = `<b>${json.title}</b><br>${json.description}<br>Cast: ${json.cast}<br>${json.director} | ${json.genre} | ${json.year}`;
+    document.getElementById("filmDeleteId").value = value;
+    document.getElementById("editFilmId").value = value;
   });
+}
+
+// delete a film
+document.getElementById("filmDeleteButton").addEventListener("click", deleteFilm, false);
+function deleteFilm(event){
+    event.preventDefault();
+    let title = document.getElementById("filmDeleteConfirm").value;
+    let id = document.getElementById("filmDeleteId").value;
+    if(/^[A-Za-z0-9 \.,\-!?'"()]+$/.test(title) == false || !title){
+        modalAlert("This title can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+        return;
+    }
+
+    fetch("/film/individual/delete", {
+        method: "POST",
+        body: JSON.stringify({title,id}),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then((response) => {
+        document.getElementById("filmDeleteConfirm").value = "";
+        if(response.status == 200){
+            modalAlert("Successfully deleted film! It may still appear in people's panels until the page has been refreshed.");
+            document.getElementById("filmDeleteId").value = "";
+            return null;
+        }
+        return response.json()
+      }).then((json) => {
+        modalAlert(`Error: ${json.message}`)
+      });
+}
+
+// edit a film
+document.getElementById("editFilmSubmit").addEventListener("click", editFilm, false);
+function editFilm(event){
+    event.preventDefault();
+    let title = document.getElementById("editFilmTitle").value;
+    let description = document.getElementById("editFilmDescription").value;
+    let genre = document.getElementById("editFilmGenre").value;
+    let cast = document.getElementById("editFilmCast").value;
+    let director = document.getElementById("editFilmDirector").value;
+    let year = document.getElementById("editFilmYear").value;
+    let id = document.getElementById("editFilmId").value;
+    let newVideo = document.getElementById("editFilmVideo").checked;
+    let newThumbnail = document.getElementById("editFilmThumbnail").checked;
+
+    const mainRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/
+
+    // input vaildation
+    if(!!title && mainRegex.test(title) == false){
+        modalAlert("This title can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+        return;
+    }
+    if(!!description && mainRegex.test(description) == false){
+      modalAlert("This description can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+      return;
+    }
+    if(!!cast && mainRegex.test(cast) == false){
+      modalAlert("This cast list can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+      return;
+    }
+    if(!!director && mainRegex.test(director) == false){
+      modalAlert("This director name can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+      return;
+    }
+    if(!!genre && /^[A-Za-z]+$/.test(genre) == false){
+      modalAlert("This genre can not be accepted, as we only allow letters (A-Z, a-z) only");
+      return;
+    }
+    if(!!year && /^[0-9]+$/.test(year) == false){
+      modalAlert("This year can not be accepted, as we only allow integers (0-9) only");
+      return;
+    }
+
+    if(!!year){
+      year = parseInt(year);
+    }
+
+    fetch("/film/individual/edit", {
+        method: "POST",
+        body: JSON.stringify({id,title,description,genre,cast,year,newVideo,newThumbnail,director}),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then((response) => {
+        if(response.status == 200){
+            modalAlert(`Successfully edited film!
+              <br><br>If you have specified you want to upload a new thumbnail and/or video, please scroll down to the bottom of this page to upload.
+              <br>You will need the film's ID number, which is <b>${id}</b>
+              <br>You specified - New video: ${newVideo}, New thumbnail: ${newThumbnail}`);
+            document.getElementById("editFilmTitle").value = "";
+            document.getElementById("editFilmDescription").value = "";
+            document.getElementById("editFilmCast").value = "";
+            document.getElementById("editFilmDirector").value = "";
+            document.getElementById("editFilmYear").value = "";
+            document.getElementById("editFilmGenre").value = "";
+            document.getElementById("editFilmId").value = "";
+            document.getElementById("editFilmVideo").checked = false;
+            document.getElementById("editFilmThumbnail").checked = false;
+            return null;
+        }
+        return response.json()
+      }).then((json) => {
+        modalAlert(`Error: ${json.message}`)
+      });
+}
+
+// makes a new film (metadata)
+document.getElementById("newFilmSubmit").addEventListener("click", newFilm, false);
+function newFilm(event){
+    event.preventDefault();
+    let title = document.getElementById("newFilmTitle").value;
+    let description = document.getElementById("newFilmDescription").value;
+    let genre = document.getElementById("newFilmGenre").value;
+    let cast = document.getElementById("newFilmCast").value;
+    let director = document.getElementById("newFilmDirector").value;
+    let year = document.getElementById("newFilmYear").value;
+
+    const mainRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/
+
+    // input vaildation
+    if(!title || mainRegex.test(title) == false){
+        modalAlert("This title can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+        return;
+    }
+    if(!description || mainRegex.test(description) == false){
+      modalAlert("This description can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+      return;
+    }
+    if(!cast || mainRegex.test(cast) == false){
+      modalAlert("This cast list can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+      return;
+    }
+    if(!director || mainRegex.test(director) == false){
+      modalAlert("This director name can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"()");
+      return;
+    }
+    if(!genre || /^[A-Za-z]+$/.test(genre) == false){
+      modalAlert("This genre can not be accepted, as we only allow letters (A-Z, a-z) only");
+      return;
+    }
+    if(!year || /^[0-9]+$/.test(year) == false){
+      modalAlert("This year can not be accepted, as we only allow integers (0-9) only");
+      return;
+    } else {
+      year = parseInt(year)
+    }
+
+    let success = false;
+    fetch("/film/individual/new/metadata", {
+        method: "POST",
+        body: JSON.stringify({title,description,genre,cast,year,director}),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then((response) => {
+        if(response.status == 200){
+            success = true;
+            document.getElementById("newFilmTitle").value = "";
+            document.getElementById("newFilmDescription").value = "";
+            document.getElementById("newFilmCast").value = "";
+            document.getElementById("newFilmDirector").value = "";
+            document.getElementById("newFilmYear").value = "";
+            document.getElementById("newFilmGenre").value = "";
+        }
+        return response.json()
+      }).then((json) => {
+        if(success){
+          modalAlert(`Successfully created new film!
+            <br><br>Now, please scroll down to the bottom of this page to upload the thumbnail and video.
+            <br>You will need the film's ID number, which is <b>${json.id}</b>`);
+        } else {
+           modalAlert(`Error: ${json.message}`);
+        }
+      });
 }
