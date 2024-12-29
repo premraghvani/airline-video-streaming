@@ -176,15 +176,23 @@
         <div id="uploadContentPanel" class="container" style="display: none;">
             <h4 onclick="togglePanel('upload')" id="uploadPanelToggle">Upload Content (click to show)</h4>
             <div id="uploadPanelInner" style="display: none;">
-                <blockquote>Please use this panel if and only if you have edited a movie and specified you want to change the video or thumbnail, or if you have made a new movie. You must specify the ID. If you have not got the ID, you can find it in the "edit" panel by searching for the film. In the selection panel, the title will start with (#ID) where ID is the id number.
+                <blockquote>Please use this panel if and only if you have edited a movie and specified you want to change the video or thumbnail, or if you have made a new movie. You must specify the ID. If you have not got the ID, you can find it in the "edit" panel by searching for the film. In the manage movies panel, the title will start with (#ID) where ID is the id number.
                     <br><br>
                     We only accept:
                     <ul>
                         <li>video/mp4 for videos</li>
                         <li>image/jpeg for thumbnails</li>
                     </ul>
-                    We suggest that thumbnails are in the aspect ratio 3:4 (width:height).
+                    We suggest that thumbnails are in the aspect ratio 3:4 (width:height). We will automatically determine if its a thumbnail or video based on the file type.
                 </blockquote>
+
+                <form id="fileUpload">
+                    <label for="fileInput">Choose a file:</label>
+                    <input type="file" id="fileInput" accept=".mp4,.jpeg,.jpg">
+                    <label for="fileId">Movie ID:</label>
+                    <input type="number" id="fileId">
+                    <input type="submit" id="fileSubmit" value="Upload">
+                </form>
             </div>
         </div>
     </body>

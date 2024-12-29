@@ -444,3 +444,73 @@ function newFilm(event){
         }
       });
 }
+
+// script to upload a file
+document.getElementById("fileSubmit").addEventListener("click", async(event) => {event.preventDefault; await fileSubmit(event)}, false);
+async function fileSubmit(event){
+  event.preventDefault();
+  const maxFileChunk = 2*10**6;
+  let file = document.getElementById("fileInput").files[0];
+  let id = document.getElementById("fileId").value;
+
+  // input validation
+  if(!file){
+    modalAlert("Must include a file");
+    return;
+  }
+  if(["video/mp4","image/jpeg"].includes(file.type) == false){
+    modalAlert("File must be MP4 or JPEG");
+    return;
+  }
+  if(!id || /^[0-9]+$/.test(id) == false){
+    modalAlert("Invalid file ID");
+    return;
+  }
+
+  // uploading
+  let size = file.size;
+  let start = 0;
+
+  while(start < size){
+    let end = Math.min(start+maxFileChunk, size);
+    let chunkToSend = file.slice(start,end);
+
+    const headers = {
+      "Content-Type":file.type,
+      "X-Request-ID":id,
+      "Content-Range":`bytes ${start}-${end-1}/${size}`
+    }
+
+    const body = await chunkToSend.arrayBuffer();
+
+    try {
+      const resp = await fetch("/film/individual/new/multimedia",{
+        method:"PUT",
+        headers,
+        body
+      });
+
+
+      let text = await resp.text()
+      let textJson = JSON.parse(text)
+
+      if(resp.status != 200){
+        modalAlert(`Error: ${textJson.message}`);
+        return;
+      }
+    } catch(err) {
+      console.log(err)
+      modalAlert("Err: could not upload file");
+      return;
+    }
+
+    start = end;
+  }
+
+  // finished
+  modalAlert("Successfully uploaded file")
+
+  // clears items
+  document.getElementById("fileInput").value = "";
+  document.getElementById("fileId").value = "";
+}
