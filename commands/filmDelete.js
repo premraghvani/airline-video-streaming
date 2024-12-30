@@ -23,7 +23,7 @@ module.exports = {
             res.status(400).send({message:"Invalid / no movie ID provided"});
             return;
         }
-        if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.title) === false){
+        if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/.test(body.title) === false){
             res.status(400).send({message:"Invalid / no movie title provided"});
             return;
         }

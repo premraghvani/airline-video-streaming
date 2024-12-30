@@ -28,9 +28,9 @@ module.exports = {
         }
 
         // checks review against regex
-        const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]+$/;
+        const reviewRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,512}+$/;
         if(reviewRegex.test(body.message) === false){
-            res.status(400).send({message:"Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only"});
+            res.status(400).send({message:"Message must contain alphanumeric characters, a space, or the special characters: .,-!?'\"() only - up to 512 characters"});
             return;
         }
 

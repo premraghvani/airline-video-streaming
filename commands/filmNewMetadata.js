@@ -17,15 +17,15 @@ module.exports = {
         }
 
         // input validation
-        if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.title) === false){
+        if(!body.title || /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/.test(body.title) === false){
             res.status(400).send({message:"Invalid / no movie title provided"});
             return;
         }
-        if(!body.description || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.description) === false){
+        if(!body.description || /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/.test(body.description) === false){
             res.status(400).send({message:"Invalid / no movie description provided"});
             return;
         }
-        if(!body.genre || /^[A-Za-z]+$/.test(body.genre) === false){
+        if(!body.genre || /^[A-Za-z]{1,16}+$/.test(body.genre) === false){
             res.status(400).send({message:"Invalid / no genre provided"});
             return;
         }
@@ -33,11 +33,11 @@ module.exports = {
             res.status(400).send({message:"Invalid / no year provided"});
             return;
         }
-        if(!body.cast || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.cast) === false){
+        if(!body.cast || /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/.test(body.cast) === false){
             res.status(400).send({message:"Invalid / no cast provided"});
             return;
         }
-        if(!body.director || /^[A-Za-z0-9 \.,\-!?'"()]+$/.test(body.director) === false){
+        if(!body.director || /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/.test(body.director) === false){
             res.status(400).send({message:"Invalid / no movie director provided"});
             return;
         }
