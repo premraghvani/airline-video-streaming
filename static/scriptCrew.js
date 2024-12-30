@@ -86,7 +86,7 @@ document.getElementById("messagesend").addEventListener("click", submitMessage, 
 function submitMessage(event){
     event.preventDefault();
     let message = document.getElementById("messageToSend").value;
-    if(/^[A-Za-z0-9 \.,\-!?'"()]{1,512}+$/.test(message) == false || !message){
+    if(/^[A-Za-z0-9 \.,\-!?'"()]{1,512}$/.test(message) == false || !message){
         modalAlert("This message can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 512 characters long");
         return;
     }
@@ -121,7 +121,7 @@ function flightInfoSubmit(event){
     // input validation
     const regexCodes = /^[A-Z]{3}/
     
-    if(!!flightNum && /^[A-Za-z0-9 ]{1,8}+$/.test(flightNum) == false){
+    if(!!flightNum && /^[A-Za-z0-9 ]{1,8}$/.test(flightNum) == false){
       modalAlert("Flight number not accepted - must only include: A-Z, a-z, 0-9 or spaces - up to 8 characters");
       return;
     }
@@ -172,7 +172,7 @@ function passwordsSubmit(event){
     let mode = document.getElementById("passwords-category").value;
 
     // input validation    
-    if(!password || /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/.test(password) == false){
+    if(!password || /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/.test(password) == false){
       modalAlert("New password not accepted - must only include: A-Z a-z 0-9 spaces .,-!?'\"() - up to 64 characters");
       return;
     }
@@ -267,7 +267,7 @@ function deleteFilm(event){
     event.preventDefault();
     let title = document.getElementById("filmDeleteConfirm").value;
     let id = document.getElementById("filmDeleteId").value;
-    if(/^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/.test(title) == false || !title){
+    if(/^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/.test(title) == false || !title){
         modalAlert("This title can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 64 characters");
         return;
     }
@@ -302,14 +302,14 @@ function editFilm(event){
     let newVideo = document.getElementById("editFilmVideo").checked;
     let newThumbnail = document.getElementById("editFilmThumbnail").checked;
 
-    const mainRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/
+    const mainRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/
 
     // input vaildation
     if(!!title && mainRegex.test(title) == false){
         modalAlert("This title can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 64 characters");
         return;
     }
-    if(!!description && /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/.test(description) == false){
+    if(!!description && /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/.test(description) == false){
       modalAlert("This description can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 512 characters");
       return;
     }
@@ -321,7 +321,7 @@ function editFilm(event){
       modalAlert("This director name can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 64 characters");
       return;
     }
-    if(!!genre && /^[A-Za-z]{1,16}+$/.test(genre) == false){
+    if(!!genre && /^[A-Za-z]{1,16}$/.test(genre) == false){
       modalAlert("This genre can not be accepted, as we only allow letters (A-Z, a-z) only - up to 16 characters");
       return;
     }
@@ -371,14 +371,14 @@ function newFilm(event){
     let director = document.getElementById("newFilmDirector").value;
     let year = document.getElementById("newFilmYear").value;
 
-    const mainRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/
+    const mainRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/
 
     // input vaildation
     if(!title || mainRegex.test(title) == false){
         modalAlert("This title can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 64 characters");
         return;
     }
-    if(!description || /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/.test(description) == false){
+    if(!description || /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/.test(description) == false){
       modalAlert("This description can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 256 characters");
       return;
     }

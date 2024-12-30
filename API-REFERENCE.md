@@ -84,7 +84,7 @@ Assume that the code examples are running in an async environment.
 
 The expectation is that the payload to POST requests are only in application/json (or are left blank), and any information for GET requests are given as a querystring.
 
-Please note that `{{token}}` will refer to a token, either given by the server, or something which is provided back to the server, usually via the Cookie header. By default, tokens expire 60 minutes after issue. A token will adhere to the following regex: `^[a-f0-9]{64}+$`
+Please note that `{{token}}` will refer to a token, either given by the server, or something which is provided back to the server, usually via the Cookie header. By default, tokens expire 60 minutes after issue. A token will adhere to the following regex: `^[a-f0-9]{64}$`
 
 ## /message/fetch GET
 
@@ -116,7 +116,7 @@ Expected response on success:
 This API will only give the messages from the last 30 seconds, and it is an array of JSONs, where:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| message | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,512}+$/ | The actual message body |
+| message | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,512}$/ | The actual message body |
 | timestamp | Integer: integer > 0 | The unix timestamp the server recieved the message (seconds from 01/JNR/1970 00:00 UTC+0) |
 
 Types of responses:
@@ -156,7 +156,7 @@ Expected response on success:
 This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| message | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,512}+$/ | The actual message body |
+| message | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,512}$/ | The actual message body |
 
 Types of responses:
 | HTTP Status Code | Description | 
@@ -231,14 +231,14 @@ Expected response on success:
 The API will expect the following items in the querystring:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| category | String: /^[A-Za-z]{1,16}+$/ | Category name (case insensitive) |
+| category | String: /^[A-Za-z]{1,16}$/ | Category name (case insensitive) |
 
 This API will give an array of objects in its response on success, with the object containing the following:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | Integer: integer > 0 | The unique numerical ID of a given film |
-| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The title of the movie |
-| genre | String: /^[A-Za-z]{1,16}+$/ | The genre of the movie |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The title of the movie |
+| genre | String: /^[A-Za-z]{1,16}$/ | The genre of the movie |
 | year | Integer: integer > 0 | The year of the movie's release |
 
 
@@ -285,12 +285,12 @@ This API will give an object in its response on success, with the object contain
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | Integer: integer > 0 | The unique numerical ID of a given film (this is the string passed in, but parsed as an integer) |
-| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The title of the movie |
-| genre | String: /^[A-Za-z]{1,16}+$/ | The genre of the movie |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The title of the movie |
+| genre | String: /^[A-Za-z]{1,16}$/ | The genre of the movie |
 | year | Integer: integer > 0 | The year of the movie's release |
-| description | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/ | The description of the movie |
-| director | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The director of the movie |
-| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The cast members' name(s) of the movie |
+| description | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/ | The description of the movie |
+| director | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The director of the movie |
+| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The cast members' name(s) of the movie |
 
 Types of responses:
 | HTTP Status Code | Description | 
@@ -414,18 +414,18 @@ Expected response on success:
 This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The title of the movie |
-| genre | String: /^[A-Za-z]{1,16}+$/ | The genre of the movie |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The title of the movie |
+| genre | String: /^[A-Za-z]{1,16}$/ | The genre of the movie |
 | year | Integer: integer > 0 | The year of the movie's release |
-| description | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/ | The description of the movie |
-| director | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The director of the movie |
-| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The cast members' name(s) of the movie |
+| description | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/ | The description of the movie |
+| director | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The director of the movie |
+| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The cast members' name(s) of the movie |
 
 This API will give an array of objects in its response on success, with the objects containing the following:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | Integer: integer > 0 | The id the film has been allocated |
-| message | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,512}+$/ | The system's message (not important on success) |
+| message | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,512}$/ | The system's message (not important on success) |
 
 Types of responses:
 | HTTP Status Code | Description | 
@@ -546,12 +546,12 @@ This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | Integer: integer > 0 | The ID of the movie |
-| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The title of the movie |
-| genre | String: /^[A-Za-z]{1,16}+$/ | The genre of the movie |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The title of the movie |
+| genre | String: /^[A-Za-z]{1,16}$/ | The genre of the movie |
 | year | Integer: integer > 0 | The year of the movie's release |
-| description | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/ | The description of the movie |
-| director | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The director of the movie |
-| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The cast members' name(s) of the movie |
+| description | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/ | The description of the movie |
+| director | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The director of the movie |
+| cast | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The cast members' name(s) of the movie |
 | newVideo | Boolean | Whether or not you want to delete the current video, and use the /film/individual/new/multimedia API to upload a new video |
 | newThumbnail | Boolean | Whether or not you want to delete the current video, and use the /film/individual/new/multimedia API to upload a new video |
 
@@ -601,7 +601,7 @@ This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | String: /^[0-9]+$/ | The id of the movie you want to delete |
-| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The title of the movie you want to delete |
+| title | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The title of the movie you want to delete |
 
 Please note that the title is also required, as a protection measure (especially if you are making requests via cURL).
 
@@ -650,9 +650,9 @@ This API will give an array of objects in its response on success, with the obje
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | String: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ | The unique UUID of the review |
-| flight | String: /^[A-Za-z0-9 ]{1,8}+$/ | The flight number this review was reviewed on |
+| flight | String: /^[A-Za-z0-9 ]{1,8}$/ | The flight number this review was reviewed on |
 | timestamp | Integer: integer > 0 | The timestamp of the review, in unix (seconds from 01/JNR/1970 00:00 UTC+0) |
-| review | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/ | The review's content |
+| review | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/ | The review's content |
 | approved | Boolean | Whether or not the review has been approved |
 
 Types of responses:
@@ -710,9 +710,9 @@ This API will give an array of objects in its response on success, with the obje
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
 | id | String: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ | The unique UUID of the review |
-| flight | String: /^[A-Za-z0-9 ]{1,8}+$/ | The flight number this review was reviewed on |
+| flight | String: /^[A-Za-z0-9 ]{1,8}$/ | The flight number this review was reviewed on |
 | timestamp | Integer: integer > 0 | The timestamp of the review, in unix (seconds from 01/JNR/1970 00:00 UTC+0) |
-| review | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/ | The review's content |
+| review | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/ | The review's content |
 | approved | Boolean | Whether or not the review has been approved |
 
 Types of responses:
@@ -750,7 +750,7 @@ Expected response on success:
 This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| review | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/ | The actual message body |
+| review | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/ | The actual message body |
 | movieId | String: /^[0-9]+$/ | The movie's ID |
 
 Types of responses:
@@ -835,11 +835,11 @@ Expected response on success:
 This API will give an object in its response on success, with the object containing the following:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| origin | String: /^[A-Za-z0-9 ]{1,16}+$/ | The flight's origin (city name) |
-| destination | String: /^[A-Za-z0-9 ]{1,16}+$/ | The flight's destination (city name) |
+| origin | String: /^[A-Za-z0-9 ]{1,16}$/ | The flight's origin (city name) |
+| destination | String: /^[A-Za-z0-9 ]{1,16}$/ | The flight's destination (city name) |
 | originCode | String: /^[A-Za-z]{3}$/ | The flight's origin (IATA code) |
 | destinationCode | String: /^[A-Za-z]{3}$/ | The flight's destination (IATA code) |
-| flightNum | String: /^[A-Za-z0-9 ]{1,8}+$/ | The flight number |
+| flightNum | String: /^[A-Za-z0-9 ]{1,8}$/ | The flight number |
 
 Types of responses:
 | HTTP Status Code | Description | 
@@ -882,11 +882,11 @@ Expected response on success:
 This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| origin | String: /^[A-Za-z0-9 ]{1,16}+$/ | The flight's origin (city name) |
-| destination | String: /^[A-Za-z0-9 ]{1,16}+$/ | The flight's destination (city name) |
+| origin | String: /^[A-Za-z0-9 ]{1,16}$/ | The flight's origin (city name) |
+| destination | String: /^[A-Za-z0-9 ]{1,16}$/ | The flight's destination (city name) |
 | originCode | String: /^[A-Z]{3}$/ | The flight's origin (IATA code) |
 | destinationCode | String: /^[A-Z]{3}$/ | The flight's destination (IATA code) |
-| flightNum | String: /^[A-Za-z0-9 ]{1,8}+$/ | The flight number |
+| flightNum | String: /^[A-Za-z0-9 ]{1,8}$/ | The flight number |
 
 Please note that all items in the request are optional. If they are not provided, the previous data is kept.
 
@@ -927,7 +927,7 @@ Expected response on success:
 This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| password | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The password you want to provide |
+| password | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The password you want to provide |
 
 This API will give an object in its response on success, with the object containing the following:
 | Key | Expected Value Type & Format / Regex | Description |
@@ -978,7 +978,7 @@ Expected response on success:
 This API will only accept the cases where, for the body:
 | Key | Expected Value Type & Format / Regex | Description |
 | --- | --- | --- |
-| password | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/ | The password you want to change to |
+| password | String: /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/ | The password you want to change to |
 | mode | String: "crew" or "admin" | The group whose password you want to change |
 
 

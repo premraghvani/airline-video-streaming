@@ -29,7 +29,7 @@ module.exports = {
             return;
         }
 
-        const passwordRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,64}+$/;
+        const passwordRegex = /^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/;
         if(passwordRegex.test(password) === false){
             res.status(400).send({message:"Invalid password"});
             return;

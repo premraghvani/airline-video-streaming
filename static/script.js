@@ -226,13 +226,14 @@ function relativeTime(timeThen){
 }
 
 // submit reviews form
+document.getElementById("reviewsend").addEventListener("click", submitReviews, false);
 function submitReviews(event){
     // sets up basics
     event.preventDefault();
     let review = document.getElementById("review").value;
     let movieId = document.getElementById("movieIdReview").value;
     // input validation
-    if(/^[A-Za-z0-9 \.,\-!?'"()]{1,256}+$/.test(review) == false || !review){
+    if(/^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/.test(review) == false || !review){
         modalAlert("This review can not be accepted, as we only allow letters (A-Z, a-z), numbers (0-9), spaces, or the following symbols: .,-!?'\"() - up to 256 characters");
         return;
     }

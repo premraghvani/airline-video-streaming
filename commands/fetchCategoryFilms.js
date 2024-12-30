@@ -9,7 +9,7 @@ module.exports = {
 
         // gets the categories stuff from querystring, input validation
         let category = req.query.category;
-        if(!category || /^[A-Za-z]{1,16}+$/.test(category) === false){
+        if(!category || /^[A-Za-z]{1,16}$/.test(category) === false){
             res.status(400).send([]); // sends empty set in error
             return;
         } else {
