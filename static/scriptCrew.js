@@ -125,11 +125,11 @@ function flightInfoSubmit(event){
       modalAlert("Flight number not accepted - must only include: A-Z, a-z, 0-9 or spaces - up to 8 characters");
       return;
     }
-    if(!!origin && regexMain.test(origin) == false){
+    if(!!origin && /[A-Za-z0-9 ]{1,16}/.test(origin) == false){
       modalAlert("Origin city name not accepted - must only include: A-Z, a-z, 0-9 or spaces - up to 16 characters");
       return;
     }
-    if(!!destination && regexMain.test(destination) == false){
+    if(!!destination && /[A-Za-z0-9 ]{1,16}/.test(destination) == false){
       modalAlert("Destination city name not accepted - must only include: A-Z, a-z, 0-9 or spaces - up to 16 characters");
       return;
     }
