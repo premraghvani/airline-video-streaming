@@ -234,3 +234,20 @@ blockquote p {
 #filmDeleteButton:hover{
     background-color: #2c0e1d;
 }
+
+/* Crew panel progress bar */
+#progressContainer {
+    width: 100%;
+    background-color: #eae8e1;
+    border: 2px solid #2c0e1d;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+#progressBar {
+    width: 0;
+    height: 50px;
+    background-color: #c4921b;
+    border-radius: 5px;
+    text-align: center;
+    color: #eae8e1;
+}

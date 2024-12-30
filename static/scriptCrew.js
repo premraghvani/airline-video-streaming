@@ -467,6 +467,8 @@ async function fileSubmit(event){
     return;
   }
 
+  modalAlert(`Uploading...<div id="progressContainer"><div id="progressBar">0%</div></div>`)
+
   // uploading
   let size = file.size;
   let start = 0;
@@ -498,6 +500,11 @@ async function fileSubmit(event){
         modalAlert(`Error: ${textJson.message}`);
         return;
       }
+
+      // updates progress bar
+      let percentageDone = (end*100/size).toFixed(2);
+      document.getElementById("progressBar").innerHTML = `${percentageDone} %`;
+      document.getElementById("progressBar").style.width = `${percentageDone}%`
     } catch(err) {
       console.log(err)
       modalAlert("Err: could not upload file");
