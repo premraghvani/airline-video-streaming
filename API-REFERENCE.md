@@ -780,7 +780,7 @@ let body = {
 let headers = {
     "Cookie": "token={{token}}"
 }
-let request = await fetchData("/message/send", "post", body, headers)
+let request = await fetchData("/review/approvals", "post", body, headers)
 
 // response
 console.log(request.body)

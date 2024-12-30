@@ -5,10 +5,7 @@ function passwordToToken(event){
     let password = document.getElementById("password").value
     fetch("/authenticate", {
         method: "POST",
-        body: JSON.stringify({password}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
+        body: JSON.stringify({password})
       }).then((response) => response.json())
       .then((json) => {
         if(json.approval == true){
@@ -42,10 +39,7 @@ function showItems(){
     let cookies = document.cookie;
     fetch("/authenticate/token", {
         method: "POST",
-        body: JSON.stringify({cookies}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
+        body: JSON.stringify({cookies})
       }).then((response) => response.json())
       .then((json) => {
         if(json.approval == true){
@@ -99,10 +93,7 @@ function submitMessage(event){
 
     fetch("/message/send", {
         method: "POST",
-        body: JSON.stringify({message}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
+        body: JSON.stringify({message})
       }).then((response) => {
         document.getElementById("messageToSend").value = "";
         if(response.status == 200){
@@ -267,6 +258,7 @@ function selectedFilm(){
     document.getElementById("filmSelDetails").innerHTML = `<b>${json.title}</b><br>${json.description}<br>Cast: ${json.cast}<br>${json.director} | ${json.genre} | ${json.year}`;
     document.getElementById("filmDeleteId").value = value;
     document.getElementById("editFilmId").value = value;
+    displayReviewApprovals(value);
   });
 }
 
@@ -283,10 +275,7 @@ function deleteFilm(event){
 
     fetch("/film/individual/delete", {
         method: "POST",
-        body: JSON.stringify({title,id}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
+        body: JSON.stringify({title,id})
       }).then((response) => {
         document.getElementById("filmDeleteConfirm").value = "";
         if(response.status == 200){
@@ -348,10 +337,7 @@ function editFilm(event){
 
     fetch("/film/individual/edit", {
         method: "POST",
-        body: JSON.stringify({id,title,description,genre,cast,year,newVideo,newThumbnail,director}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
+        body: JSON.stringify({id,title,description,genre,cast,year,newVideo,newThumbnail,director})
       }).then((response) => {
         if(response.status == 200){
             modalAlert(`Successfully edited film!
@@ -419,10 +405,7 @@ function newFilm(event){
     let success = false;
     fetch("/film/individual/new/metadata", {
         method: "POST",
-        body: JSON.stringify({title,description,genre,cast,year,director}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
+        body: JSON.stringify({title,description,genre,cast,year,director})
       }).then((response) => {
         if(response.status == 200){
             success = true;
@@ -520,4 +503,135 @@ async function fileSubmit(event){
   // clears items
   document.getElementById("fileInput").value = "";
   document.getElementById("fileId").value = "";
+}
+
+// review approvals: display
+function displayReviewApprovals(id){
+  let success = false;
+  const box = document.getElementById("reviewApprovals");
+  fetch(`/review/fetch/all?id=${id}`, {
+        method: "GET"
+      }).then((response) => {
+        if(response.status == 200){
+            success = true;
+        }
+        return response.json()
+      }).then((json) => {
+        if(success){
+          if(json.length == 0){
+            box.innerHTML = "<i>There exists no reviews</i>"
+          } else {
+            reviewApprovalsPrettifier(json,id);
+          }
+        } else {
+          box.innerHTML = `<i>Error fetching reviews: ${json.message}</i>`
+        }
+      });
+}
+
+// review approvals: displays it
+function reviewApprovalsPrettifier(json,movieId){
+  const box = document.getElementById("reviewApprovals");
+  
+  // filters
+  let toApprove = [];
+  let approved = [];
+  for(var i = 0; i < json.length; i++){
+    if(json[i].approved){
+      approved.push(json[i]);
+    } else {
+      toApprove.push(json[i]);
+    }
+  }
+
+  // puts it in: to be approved
+  let toPut = `<h5 id="toApprovePanelToggle" onclick="togglePanel('toApprove')">Reviews to approve (click to show)</h5><div id="toApprovePanelInner" style="display: none;">`;
+  if(toApprove.length == 0){
+    toPut += "<i>Nothing to approve</i>";
+  } else {
+    for(var i = 0; i < toApprove.length; i++){
+      let q = toApprove[i];
+      toPut += `<div class="reviewApp"><p>${q.review}</p><button id="ap${q.id}" onclick="reviewAction('approve','${q.id}')">Approve</button> <button id="rm${q.id}" onclick="reviewAction('remove','${q.id}')">Remove</button></div>`
+    }
+  }
+
+  // puts it in: approved
+  toPut += `</div><h5 id="approvedRevPanelToggle" onclick="togglePanel('approvedRev')">Reviews already approved (click to show)</h5><div id="approvedRevPanelInner" style="display: none;">`;
+  if(approved.length == 0){
+    toPut += "<i>Nothing has been approved</i>";
+  } else {
+    for(var i = 0; i < approved.length; i++){
+      let q = approved[i];
+      toPut += `<div class="reviewApp"><p>${q.review}</p><button id="rm${q.id}" onclick="reviewAction('remove','${q.id}')">Remove</button></div>`
+    }
+  }
+  toPut += "</div>";
+
+  // adds section with the form
+  toPut += `<form><input type="hidden" id="reviewFormApprovals"><input type="hidden" id="reviewFormRemovals"><input type="hidden" id="reviewFormId" value="${movieId}"><input type="submit" id="reviewFormSubmit" value="Commit Review Changes" style="display:none;"></form>`
+
+  box.innerHTML = toPut;
+
+  document.getElementById("reviewFormSubmit").addEventListener("click", commitReviewChanges, false);
+
+}
+
+// review approvals: action buttons
+function reviewAction(mode,id){
+  document.getElementById("reviewFormSubmit").style.display = "block";
+
+  let inpBox;
+  let inpButton;
+  if(mode == "approve"){
+    inpBox = document.getElementById("reviewFormApprovals");
+    inpButton = document.getElementById(`ap${id}`);
+  } else {
+    inpBox = document.getElementById("reviewFormRemovals");
+    inpButton = document.getElementById(`rm${id}`);
+  }
+
+  let alreadyIn = false;
+  if(inpBox.value.includes(id)){
+    alreadyIn = true;
+  }
+
+  if(alreadyIn == true){
+    inpBox.value = inpBox.value.replace(`${id},`,"");
+    inpButton.style.backgroundColor = "";
+  } else {
+    inpBox.value = `${inpBox.value}${id},`;
+    if(mode == "approve"){
+      inpButton.style.backgroundColor = "green";
+    } else {
+      inpButton.style.backgroundColor = "red";
+    }
+  }
+}
+
+// commits review changes
+function commitReviewChanges(event){
+  event.preventDefault();
+
+  const approved = document.getElementById("reviewFormApprovals").value;
+  const removals = document.getElementById("reviewFormRemovals").value;
+  const movieId = document.getElementById("reviewFormId").value;
+
+  let approvals = [];
+  let deletion = [];
+  if(!!approved){approvals = approved.split(",")};
+  if(!!removals){deletion = removals.split(",")};
+
+  fetch("/review/approvals", {
+    method: "POST",
+    body: JSON.stringify({movieId,approvals,deletion})
+  }).then((response) => {
+    if(response.status == 200){
+      modalAlert("Approved and deleted reviews as specified.");
+      displayReviewApprovals(movieId);
+      return null;
+    }
+    return response.json()
+  }).then((json) => {
+    modalAlert(`Error: ${json.message}`);
+  });
 }

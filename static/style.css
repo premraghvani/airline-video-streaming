@@ -234,6 +234,23 @@ blockquote p {
 #filmDeleteButton:hover{
     background-color: #2c0e1d;
 }
+.reviewApp{
+    border: 1px solid #2c0e1d;
+    padding: 3px;
+    border-radius: 3px;
+    margin-top: 2px;
+}
+.reviewApp button{
+    width: 25%;
+    padding: 3px;
+    border-radius: 5px;
+    background-color: #c4921b;
+    border:none;
+    color: #eae8e1
+}
+.reviewApp button:hover{
+    background-color: #2c0e1d;
+}
 
 /* Crew panel progress bar */
 #progressContainer {
