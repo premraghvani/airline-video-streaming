@@ -7,9 +7,24 @@ This project can be used on trains too, with similar services being used on UK t
 ## Requirements
 
 This app was made on node version `v20.16.0` with npm version `10.8.1`
-To install, run `npm install`, and then `npm start` to start the server. It will run on port 80, so you can simply go to your browser and enter `http://localhost` to start the main app, or `http://localhost/crew` to see the crew/admin panel.
+To install:
+```bash
+npm install
+```
 
-If your port 80 is already being used, please change the port number in line 2 / `port` of `config.json` from `80` to whatever you desire, and please update the url to `http://localhost:[PORT]` or `http://localhost:[PORT]/crew`, where `[PORT]` is the port number you have selected.
+To start:
+```bash
+npm start
+```
+
+It will run on port 80, so you can simply go to your browser and enter:
+- `http://localhost` to start the main app, or 
+- `http://localhost/crew` to see the crew/admin panel.
+
+If your port 80 is already being used, please change the port number in line 2 / `port` of `config.json` from `80` to whatever you desire, and please update the url to:
+- `http://localhost:[PORT]`, or 
+- `http://localhost:[PORT]/crew`
+where `[PORT]` is the port number you have selected.
 
 The server will not need to be connected to the global internet for this to work, as all CSS and JavaScript packages used have been downloaded and will be fulfilled by the server. It can be connected to an intranet with devices that will connect to it.
 
