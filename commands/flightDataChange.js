@@ -33,7 +33,7 @@ module.exports = {
         // data validation
         const iataRegex = /^[A-Za-z]{3}$/
 
-        if(!!body.origin){
+        if(body.origin){
             if(/^[A-Za-z0-9 ]{1,16}$/.test(body.origin) === false){
                 res.status(400).send({message:"Invalid origin"});
                 return;
@@ -42,7 +42,7 @@ module.exports = {
             }
         }
 
-        if(!!body.destination){
+        if(body.destination){
             if(/^[A-Za-z0-9 ]{1,16}$/.test(body.destination) === false){
                 res.status(400).send({message:"Invalid destination"});
                 return;
@@ -51,7 +51,7 @@ module.exports = {
             }
         }
 
-        if(!!body.flightNum){
+        if(body.flightNum){
             if(/^[A-Za-z0-9 ]{1,8}$/.test(body.flightNum) === false){
                 res.status(400).send({message:"Invalid flightNum"});
                 return;
@@ -60,7 +60,7 @@ module.exports = {
             }
         }
 
-        if(!!body.originCode){
+        if(body.originCode){
             if(iataRegex.test(body.originCode) === false){
                 res.status(400).send({message:"Invalid originCode"});
                 return;
@@ -69,7 +69,7 @@ module.exports = {
             }
         }
 
-        if(!!body.destinationCode){
+        if(body.destinationCode){
             if(iataRegex.test(body.destinationCode) === false){
                 res.status(400).send({message:"Invalid destinationCode"});
                 return;

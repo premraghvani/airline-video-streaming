@@ -10,7 +10,6 @@ app.use(cookieParser())
 
 // loads all local modules and config
 const {purgeIrrelevance} = require("./commonFunctions/purge")
-const config = require("./config.json")
 
 // loads up a reference to all commands
 const modules = fs.readdirSync("./commands").map(file => require(`./commands/${file}`))

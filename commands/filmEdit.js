@@ -37,7 +37,7 @@ module.exports = {
         }
         
         // input validation and puts new data
-        if(!!body.title){
+        if(body.title){
             if(/^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/.test(body.title) === false){
                 res.status(400).send({message:"Provided movie title is invalid"});
                 return;
@@ -46,7 +46,7 @@ module.exports = {
             }
         } 
 
-        if(!!body.description){
+        if(body.description){
             if(/^[A-Za-z0-9 \.,\-!?'"()]{1,256}$/.test(body.description) === false){
                 res.status(400).send({message:"Provided movie description is invalid"});
                 return;
@@ -55,7 +55,7 @@ module.exports = {
             }
         } 
 
-        if(!!body.genre){
+        if(body.genre){
             if(/^[A-Za-z]{1,16}$/.test(body.genre) === false){
                 res.status(400).send({message:"Provided movie genre is invalid"});
                 return;
@@ -68,7 +68,7 @@ module.exports = {
             }
         }
 
-        if(!!body.year){
+        if(body.year){
             if(Number.isInteger(body.year) === false || body.year <= 0){
                 res.status(400).send({message:"Provided movie year is invalid"});
                 return;
@@ -77,7 +77,7 @@ module.exports = {
             }
         }
 
-        if(!!body.cast){
+        if(body.cast){
             if(/^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/.test(body.cast) === false){
                 res.status(400).send({message:"Provided movie cast is invalid"});
                 return;
@@ -86,7 +86,7 @@ module.exports = {
             }
         } 
 
-        if(!!body.director){
+        if(body.director){
             if(/^[A-Za-z0-9 \.,\-!?'"()]{1,64}$/.test(body.director) === false){
                 res.status(400).send({message:"Provided movie director is invalid"});
                 return;

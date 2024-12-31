@@ -10,7 +10,7 @@ function passwordToToken(event){
         document.cookie = `token=${resp.body.token}; expires=${expiry};`
         showItems();
       } else {
-        modalAlert("Incorrect Password")
+        modalAlert(`Error: ${resp.body.message}`);
       }
     });
       
@@ -176,13 +176,17 @@ function loadFilmCats(){
   apiCall(`/film/category/fetch`,"GET",undefined,undefined,function(resp){
     let json = resp.body;
     let selectionOptions = "";
-    if(!!json.categories){
+    if(json.categories){
       selectionOptions = `<option value="null">Select a Genre</option>`
       for(var i = 0; i < json.categories.length; i++){
         selectionOptions += `<option value="${json.categories[i]}">${json.categories[i].toUpperCase()}</option>`
       }
     }
     document.getElementById("filmCat").innerHTML = selectionOptions;
+
+    if(resp.status != 200){
+      modalAlert(`We had an error loading part of this page, due to: ${resp.body.message}`);
+    }
   });
 }
 
@@ -206,6 +210,9 @@ function selectedGenre(){
       }
     }
     document.getElementById("filmCollection").innerHTML = selectionOptions;
+    if(resp.status != 200){
+      modalAlert(`We are sorry but we could not load the names of movies in genre "${value}", due to: ${resp.body.message}`);
+    }
   });
 }
 
@@ -219,6 +226,11 @@ function selectedFilm(){
   document.getElementById("filmSelBox").style.display = "block";
 
   apiCall(`/film/individual/metadata?id=${value}`,"GET",undefined,undefined,function(resp){
+    if(resp.status != 200){
+      modalAlert(`We are sorry but we could not load that movie's details, due to: ${resp.body.message}`);
+      return;
+    }
+    let json = resp.body;
     document.getElementById("filmSelImg").src = `/film/individual/thumbnail?id=${value}`;
     document.getElementById("filmSelDetails").innerHTML = `<b>${json.title}</b><br>${json.description}<br>Cast: ${json.cast}<br>${json.director} | ${json.genre} | ${json.year}`;
     document.getElementById("filmDeleteId").value = value;
@@ -291,7 +303,7 @@ function editFilm(event){
       return;
     }
 
-    if(!!year){
+    if(year){
       year = parseInt(year);
     }
 
@@ -557,8 +569,8 @@ function commitReviewChanges(event){
 
   let approvals = [];
   let deletion = [];
-  if(!!approved){approvals = approved.split(",")};
-  if(!!removals){deletion = removals.split(",")};
+  if(approved){approvals = approved.split(",")};
+  if(removals){deletion = removals.split(",")};
 
   apiCall(`/review/approvals`,"POST",{movieId,approvals,deletion},undefined,function(resp){
     if(resp.status == 200){

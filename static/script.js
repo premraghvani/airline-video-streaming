@@ -73,6 +73,8 @@ function selectMovie(id){
             source.src = `film/individual/video?id=${id}`;
             source.type = "video/mp4"
             document.getElementById("filmVideo").appendChild(source);
+        } else {
+            modalAlert(`We are sorry but we could not load that movie, due to: ${resp.body.message}`);
         }
     });
     currentMovie = id;
@@ -161,6 +163,8 @@ function openCategory(cat){
                 document.getElementById("movieContainer").innerHTML = body;
                 document.getElementById("movieTop").innerHTML = top;
             }
+        } else {
+            modalAlert(`We are sorry but we could not load the genre, due to: ${resp.body.message}`);
         }
     });
 }
