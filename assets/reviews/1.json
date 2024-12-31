@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "timestamp": 1735639595,
+        "flight": "EK 020",
+        "review": "I want to drink 7up now!",
+        "approved": true,
+        "id": "03eb0b01-cedc-4d01-b5a4-616403f6e616"
+    },
+    {
+        "timestamp": 1735639676,
+        "flight": "EK 020",
+        "review": "Did you know?",
+        "approved": false,
+        "id": "a1183759-489f-4ae7-b5e8-5f568a2b2860"
+    }
+]

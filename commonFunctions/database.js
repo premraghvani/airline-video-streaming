@@ -1,50 +1,50 @@
 // common function to read and write in a database, in the current case it is a JSON file but to be changed
-const fs = require("fs")
+const fs = require("fs");
 
 // to read
-async function readDb(tableName,key) {
-    // fail safe: no items specified
-    if(!tableName || !key){
-        return false;
-    }
+async function readDb(tableName, key) {
+  // fail safe: no items specified
+  if (!tableName || !key) {
+    return false;
+  }
 
-    // gets a json path
-    let path = ""
-    if(tableName == "main"){
-        path = `./assets/${key}.json`
-    } else {
-        path = `./assets/${tableName}/${key}.json`
-    }
+  // gets a json path
+  let path = "";
+  if (tableName == "main") {
+    path = `./assets/${key}.json`;
+  } else {
+    path = `./assets/${tableName}/${key}.json`;
+  }
 
-    // checks if resource exists
-    let fileExists = fs.existsSync(path);
-    
-    if(fileExists){
-        return JSON.parse(fs.readFileSync(path).toString());
-    } else {
-        return false
-    }
+  // checks if resource exists
+  let fileExists = fs.existsSync(path);
+
+  if (fileExists) {
+    return JSON.parse(fs.readFileSync(path).toString());
+  } else {
+    return false;
+  }
 }
 
 // to write
-async function writeDb(tableName,key,body) {
-    // fail safe: no items specified
-    if(!tableName || !key || !body){
-        return false;
-    }
+async function writeDb(tableName, key, body) {
+  // fail safe: no items specified
+  if (!tableName || !key || !body) {
+    return false;
+  }
 
-    // makes a json path
-    let path = ""
-    if(tableName == "main"){
-        path = `./assets/${key}.json`
-    } else {
-        path = `./assets/${tableName}/${key}.json`
-    }
+  // makes a json path
+  let path = "";
+  if (tableName == "main") {
+    path = `./assets/${key}.json`;
+  } else {
+    path = `./assets/${tableName}/${key}.json`;
+  }
 
-    // writes to it
-    fs.writeFileSync(path,JSON.stringify(body))
+  // writes to it
+  fs.writeFileSync(path, JSON.stringify(body));
 
-    return true;
+  return true;
 }
 
-module.exports = {readDb, writeDb}
+module.exports = { readDb, writeDb };

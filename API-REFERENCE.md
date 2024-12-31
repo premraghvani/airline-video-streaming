@@ -109,7 +109,7 @@ Expected response on success:
     {
         "message":"Testing 4 5 6",
         "timestamp":1734630620
-    },
+    }
 ]
 ```
 
