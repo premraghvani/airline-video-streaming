@@ -1,38 +1,80 @@
 let currentMovie = 0;
 let lastRead = 0;
 
+// generic function which calls API using AJAX - for JSON in, JSON out
+function apiCall(endpoint,method,body={},headers={},callback){
+    // set up
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function(){
+        if(this.readyState === 4){
+            let respText = this.responseText;
+            if(!respText){
+                respText = "{}";
+            }
+            callback({status:this.status,body:JSON.parse(respText)})
+        }
+    }
+
+    // header values
+    let headerKeys = Object.keys(headers);
+    for(key in headerKeys){
+        xhttp.setRequestHeader(key,headers[key]);
+    }
+
+    // timeout, and error cases (when server down or unreachable)
+    xhttp.onerror = function () {
+        callback({
+            status: 0,
+            body:{
+                message: "Network error or server unreachable"
+            } 
+        });
+    };
+    xhttp.timeout = 2000;
+    xhttp.ontimeout = function () {
+        callback({
+            status: 0,
+            body: {
+                message: "Request timed out - perhaps the server is unreachable"
+            }
+        });
+    };
+
+    // send
+    xhttp.open(method,endpoint,true);
+    
+    if(endpoint == "GET"){
+        xhttp.send()
+    } else {
+        xhttp.send(JSON.stringify(body));
+    }
+}
+
 // function to select movie, close menu and open the movie
 function selectMovie(id){
     // attempts to retrieve metadata
-    fetch(`/film/individual/metadata?id=${id}`)
-        .then((response) => {
-            if(response.status != 200){
-                return false
-            } else {
-                return response.json()
-            }  
-        }).then((json)=>{
-            if(json==false){
-                return
-            } else {
-                // show movie block
-                document.getElementById("libraries").style.display = "none";
-                document.getElementById("content").style.display = "block";
-                document.getElementById("categoryLibrary").style.display = "none";
-                // add its metadata on the screen
-                document.getElementById("filmTitle").innerHTML = json.title;
-                document.getElementById("filmDescription").innerHTML = json.description;
-                document.getElementById("filmYearGenre").innerHTML = `${json.year} | ${json.genre}`;
-                document.getElementById("filmCast").innerHTML = `Directed by ${json.director}<br>Cast: ${json.cast}`;
-                document.getElementById("backFilm").setAttribute( "onClick", `openCategory("${json.genre}")`);
+    apiCall(`/film/individual/metadata?id=${id}`,"GET",undefined,undefined,function(resp){
+        if(resp.status == 200){
+            let json = resp.body;
+            
+            // show movie block
+            document.getElementById("libraries").style.display = "none";
+            document.getElementById("content").style.display = "block";
+            document.getElementById("categoryLibrary").style.display = "none";
+            // add its metadata on the screen
+            document.getElementById("filmTitle").innerHTML = json.title;
+            document.getElementById("filmDescription").innerHTML = json.description;
+            document.getElementById("filmYearGenre").innerHTML = `${json.year} | ${json.genre}`;
+            document.getElementById("filmCast").innerHTML = `Directed by ${json.director}<br>Cast: ${json.cast}`;
+            document.getElementById("backFilm").setAttribute( "onClick", `openCategory("${json.genre}")`);
 
-                // adds video
-                var source = document.createElement('source');
-                source.src = `film/individual/video?id=${id}`;
-                source.type = "video/mp4"
-                document.getElementById("filmVideo").appendChild(source);
-            }
-        })
+            // adds video
+            var source = document.createElement('source');
+            source.src = `film/individual/video?id=${id}`;
+            source.type = "video/mp4"
+            document.getElementById("filmVideo").appendChild(source);
+        }
+    });
     currentMovie = id;
 }
 
@@ -48,54 +90,35 @@ function goBack(){
 let disconnectedTicks = 0;
 function checkConnection() {
     let current = document.getElementById("availabilityStatus");
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 500);
 
-    fetch(`/message/fetch`,{signal:controller.signal})
-        .then((response) => {
-            clearTimeout(timeout);
-            if (response.status !== 200) {
-                if (current.innerHTML !== "Unavailable") {
-                    current.innerHTML = "Unavailable";
-                    current.style = "color: #800;";
-                }
-                disconnectedTicks += 1;
-            } else {
-                if (current.innerHTML !== "Available") {
-                    current.innerHTML = "Available";
-                    current.style = "color: #080;";
-                    disconnectedTicks = 0;
-                }
-            }
-            return response.json();
-        })
-        .then((json) => {
-            if (json.messages.length === 0) {
-                return;
-            } else {
-                // Displays messages
-                let messageToShow = [];
-                for (var i = 0; i < json.messages.length; i++) {
-                    if (lastRead < json.messages[i].timestamp) {
-                        messageToShow.push(json.messages[i].message);
-                        lastRead = json.messages[i].timestamp;
-                    }
-                }
-
-                // Actually shows if any
-                if (messageToShow.length > 0) {
-                    modalAlert(`<b>Message from Crew:</b><br><br>${messageToShow.join("<br>")}`);
-                }
-            }
-        })
-        .catch((error) => {
+    apiCall(`/message/fetch`,"GET",undefined,undefined,function(resp){
+        if(resp.status !== 200){
             if (current.innerHTML !== "Unavailable") {
                 current.innerHTML = "Unavailable";
                 current.style = "color: #800;";
             }
-            disconnectedTicks += 1
-        });
+            disconnectedTicks += 1;
+        } else {
+            if (current.innerHTML !== "Available") {
+                current.innerHTML = "Available";
+                current.style = "color: #080;";
+                disconnectedTicks = 0;
+            }
 
+            if(resp.body.messages.length != 0){
+                let messageToShow = [];
+                for (var i = 0; i < resp.body.messages.length; i++) {
+                    if (lastRead < resp.body.messages[i].timestamp) {
+                        messageToShow.push(resp.body.messages[i].message);
+                        lastRead = resp.body.messages[i].timestamp;
+                    }
+                }
+                if(messageToShow.length > 0) {
+                    modalAlert(`<b>Message from Crew:</b><br><br>${messageToShow.join("<br>")}`);
+                }
+            }
+        }
+    });
     if(disconnectedTicks == 10){
         modalAlert("<b>Disconnection</b><br>The connection with the server has been lost for more than 20 seconds, however if it is back, the top bar will say 'Available' in green for service availability. This does mean you aren't able to view any content until the connection is available. This may be due to you being disconnected from our Wi-Fi, or our server being down.")
     }
@@ -112,14 +135,9 @@ flightInfoLoad()
 function openCategory(cat){
     disconnectFilm()    
     // attempts to get category films
-    fetch(`/film/categoryfilter/fetch?category=${cat}`)
-        .then((response) => {
-            if(response.status != 200){
-                return false
-            } else {
-                return response.json()
-            }  
-        }).then((json)=>{
+    apiCall(`/film/categoryfilter/fetch?category=${cat}`,"GET",undefined,undefined,function(resp){
+        if(resp.status == 200){
+            let json = resp.body;
             if(json.length == 0){
                 return
             } else {
@@ -143,7 +161,8 @@ function openCategory(cat){
                 document.getElementById("movieContainer").innerHTML = body;
                 document.getElementById("movieTop").innerHTML = top;
             }
-        })
+        }
+    });
 }
 
 // disconnects a film
@@ -172,32 +191,29 @@ function toggleFilmReviews(){
         writeReviewId.value =  currentMovie;
 
         // fetches the reviews
-        fetch(`/review/fetch?id=${currentMovie}`)
-        .then((response) => {
-            if(response.status != 200){
-                filmReviewContent.innerHTML = "<i>No Reviews</i>"
-                return false;
-            } else {
-                return response.json()
-            }  
-        }).then((json)=>{
-            if(json.length == 0){
-                filmReviewContent.innerHTML = "<i>No Reviews</i>"
-                return
-            } else {
-                // generates the content
-                let reviewContent = "";
-                for(var i = 0; i < json.length; i++){
-                    let review = json[i];
-                    reviewContent += `<div class="review">
-                        <blockquote class="reviewItem">${review.review}</blockquote>
-                        <p class="reviewCaption">Reviewed on flight ${review.flight} about ${relativeTime(review.timestamp)} ago</p>
-                    </div>`
+        apiCall(`/review/fetch?id=${currentMovie}`,"GET",undefined,undefined,function(resp){
+            if(resp.status == 200){
+                let json = resp.body;
+                if(json.length == 0){
+                    filmReviewContent.innerHTML = "<i>No Reviews</i>"
+                    return
+                } else {
+                    // generates the content
+                    let reviewContent = "";
+                    for(var i = 0; i < json.length; i++){
+                        let review = json[i];
+                        reviewContent += `<div class="review">
+                            <blockquote class="reviewItem">${review.review}</blockquote>
+                            <p class="reviewCaption">Reviewed on flight ${review.flight} about ${relativeTime(review.timestamp)} ago</p>
+                        </div>`
+                    }
+                    // embeds the review
+                    filmReviewContent.innerHTML = reviewContent;
                 }
-                // embeds the review
-                filmReviewContent.innerHTML = reviewContent;
+            } else {
+                filmReviewContent.innerHTML = "<i>No Reviews</i>"
             }
-        })
+        });
 
     // if there is a review box
     } else {
@@ -238,23 +254,15 @@ function submitReviews(event){
         return;
     }
     // sends the request
-    fetch("/review/send", {
-        method: "POST",
-        body: JSON.stringify({review,movieId}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
-      }).then((response) => {
-        if(response.status == 202){
+    apiCall(`/review/send`,"POST",{review,movieId},undefined,function(resp){
+        if(resp.status == 202){
             modalAlert("Successfully submitted review!");
             document.getElementById("review").value = "";
             document.getElementById("movieIdReview").value = "";
-            return null;
+        } else {
+            modalAlert(`Error: ${json.message}`)
         }
-        return response.json();
-      }).then((json)=>{
-        modalAlert(`Error: ${json.message}`)
-      });
+    });
 }
 
 // modal alert
@@ -277,16 +285,11 @@ function replaceInDoc(phrase,replacement){
     }
 }
 function flightInfoLoad(){
-    fetch(`/flight`)
-        .then((response) => {
-            if(response.status != 200){
-                return null;
-            } else {
-                return response.json()
-            }  
-        }).then((json)=>{
-            for(key in json){
-                replaceInDoc(key,json[key])
+    apiCall(`/flight`,"GET",undefined,undefined,function(resp){
+        if(resp.status == 200){
+            for(key in resp.body){
+                replaceInDoc(key,resp.body[key])
             }
-        });
+        }
+    });
 }

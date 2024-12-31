@@ -2,22 +2,17 @@
 document.getElementById("passwordsend").addEventListener("click", passwordToToken, false);
 function passwordToToken(event){
     event.preventDefault();
-    let password = document.getElementById("password").value
-    fetch("/authenticate", {
-        method: "POST",
-        body: JSON.stringify({password})
-      }).then((response) => response.json())
-      .then((json) => {
-        if(json.approval == true){
-            document.getElementById("password").value = "";
-            let expiry = new Date(json.expiry*1000)
-            document.cookie = `token=${json.token}; expires=${expiry};`
-            showItems();
-        } else {
-            document.getElementById("password").value = "";
-            modalAlert("Incorrect Password")
-        }
-      });
+    let password = document.getElementById("password").value;
+    apiCall(`/authenticate`,"POST",{password},undefined,function(resp){
+      document.getElementById("password").value = "";
+      if(resp.body.approval === true){
+        let expiry = new Date(resp.body.expiry*1000)
+        document.cookie = `token=${resp.body.token}; expires=${expiry};`
+        showItems();
+      } else {
+        modalAlert("Incorrect Password")
+      }
+    });
       
 }
 
@@ -37,25 +32,23 @@ function togglePanel(panelName){
 // authenticates token, and changes what is shown
 function showItems(){
     let cookies = document.cookie;
-    fetch("/authenticate/token", {
-        method: "POST",
-        body: JSON.stringify({cookies})
-      }).then((response) => response.json())
-      .then((json) => {
-        if(json.approval == true){
-          document.getElementById("auth").style.display = "none";
-          document.getElementById("paxMessagePanel").style.display = "block";
-          document.getElementById("flightDetailsPanel").style.display = "block";
-          if(json.level == "admin"){
-            document.getElementById("existingFilmsPanel").style.display = "block";
-            document.getElementById("newFilmPanel").style.display = "block";
-            document.getElementById("uploadContentPanel").style.display = "block";
-            document.getElementById("passwordServicePanel").style.display = "block";
-          }
-        } else {
-            return;
+
+    apiCall(`/authenticate/token`,"POST",{cookies},undefined,function(resp){
+      let json = resp.body;
+      if(json.approval == true){
+        document.getElementById("auth").style.display = "none";
+        document.getElementById("paxMessagePanel").style.display = "block";
+        document.getElementById("flightDetailsPanel").style.display = "block";
+        if(json.level == "admin"){
+          document.getElementById("existingFilmsPanel").style.display = "block";
+          document.getElementById("newFilmPanel").style.display = "block";
+          document.getElementById("uploadContentPanel").style.display = "block";
+          document.getElementById("passwordServicePanel").style.display = "block";
         }
-      });
+      } else {
+          return;
+      }
+    });
 }
 
 showItems()
@@ -91,20 +84,15 @@ function submitMessage(event){
         return;
     }
 
-    fetch("/message/send", {
-        method: "POST",
-        body: JSON.stringify({message})
-      }).then((response) => {
-        document.getElementById("messageToSend").value = "";
-        if(response.status == 200){
+    apiCall(`/message/send`,"POST",{message},undefined,function(resp){
+      document.getElementById("messageToSend").value = "";
+        if(resp.status == 200){
             modalAlert("Successfully submitted message!");
             document.getElementById("messageToSend").value = "";
-            return null;
+        } else {
+          modalAlert(`Error: ${resp.body.message}`)
         }
-        return response.json()
-      }).then((json) => {
-        modalAlert(`Error: ${json.message}`)
-      });
+    });
 }
 
 // submits the form for flight info change
@@ -143,24 +131,18 @@ function flightInfoSubmit(event){
     }
 
     // sends the request
-    fetch("/flight/data", {
-        method: "POST",
-        body: JSON.stringify({flightNum,origin,destination,originCode,destinationCode})
-      }).then((response) => {
-        if(response.status == 200){
-            modalAlert("Successfully submitted flight information!");
-            document.getElementById("flightNum").value = "";
-            document.getElementById("originCode").value = "";
-            document.getElementById("origin").value = "";
-            document.getElementById("destinationCode").value = "";
-            document.getElementById("destination").value = "";
-            return null;
-        }
-        return response.json();
-      }).then((json)=>{
-        modalAlert(`Error: ${json.message}`);
-        return;
-      });
+    apiCall(`/flight/data`,"POST",{flightNum,origin,destination,originCode,destinationCode},undefined,function(resp){
+      if(resp.status == 200){
+        modalAlert("Successfully submitted flight information!");
+        document.getElementById("flightNum").value = "";
+        document.getElementById("originCode").value = "";
+        document.getElementById("origin").value = "";
+        document.getElementById("destinationCode").value = "";
+        document.getElementById("destination").value = "";
+      } else {
+        modalAlert(`Error: ${resp.body.message}`);
+      }
+    });
 }
 
 // submits the form for password change
@@ -178,30 +160,21 @@ function passwordsSubmit(event){
     }
 
     // sends the request
-    fetch("/authenticate/change", {
-        method: "POST",
-        body: JSON.stringify({mode,password})
-      }).then((response) => {
-        if(response.status == 200){
-            modalAlert(`Successfully changed password for ${mode}`);
-            document.getElementById("passwords-new").value = "";
-            return null;
-        }
-        return response.json();
-      }).then((json)=>{
-        modalAlert(`Error: ${json.message}`);
-        return;
-      });
+    apiCall(`/authenticate/change`,"POST",{mode,password},undefined,function(resp){
+      if(resp.status == 200){
+        modalAlert(`Successfully changed password for ${mode}`);
+        document.getElementById("passwords-new").value = "";
+      } else {
+        modalAlert(`Error: ${resp.body.message}`);
+      }
+    });
 }
 
 // onload: gets the film categories into the film managers panel
 loadFilmCats()
 function loadFilmCats(){
-  fetch("/film/category/fetch", {
-    method: "GET"
-  }).then((response) => {
-    return response.json();
-  }).then((json)=>{
+  apiCall(`/film/category/fetch`,"GET",undefined,undefined,function(resp){
+    let json = resp.body;
     let selectionOptions = "";
     if(!!json.categories){
       selectionOptions = `<option value="null">Select a Genre</option>`
@@ -223,11 +196,8 @@ function selectedGenre(){
   }
   document.getElementById("filmNameBox").style.display = "block";
 
-  fetch(`/film/categoryfilter/fetch?category=${value}`, {
-    method: "GET"
-  }).then((response) => {
-    return response.json();
-  }).then((json)=>{
+  apiCall(`/film/categoryfilter/fetch?category=${value}`,"GET",undefined,undefined,function(resp){
+    let json = resp.body;
     let selectionOptions = "";
     if(json.length != undefined){
       selectionOptions = `<option value="null">Select a Film</option>`
@@ -248,11 +218,7 @@ function selectedFilm(){
   }
   document.getElementById("filmSelBox").style.display = "block";
 
-  fetch(`/film/individual/metadata?id=${value}`, {
-    method: "GET"
-  }).then((response) => {
-    return response.json();
-  }).then((json)=>{
+  apiCall(`/film/individual/metadata?id=${value}`,"GET",undefined,undefined,function(resp){
     document.getElementById("filmSelImg").src = `/film/individual/thumbnail?id=${value}`;
     document.getElementById("filmSelDetails").innerHTML = `<b>${json.title}</b><br>${json.description}<br>Cast: ${json.cast}<br>${json.director} | ${json.genre} | ${json.year}`;
     document.getElementById("filmDeleteId").value = value;
@@ -272,20 +238,15 @@ function deleteFilm(event){
         return;
     }
 
-    fetch("/film/individual/delete", {
-        method: "POST",
-        body: JSON.stringify({title,id})
-      }).then((response) => {
-        document.getElementById("filmDeleteConfirm").value = "";
-        if(response.status == 200){
-            modalAlert("Successfully deleted film! It may still appear in people's panels until the page has been refreshed.");
-            document.getElementById("filmDeleteId").value = "";
-            return null;
-        }
-        return response.json()
-      }).then((json) => {
-        modalAlert(`Error: ${json.message}`)
-      });
+    apiCall(`/film/individual/delete`,"POST",{title,id},undefined,function(resp){
+      document.getElementById("filmDeleteConfirm").value = "";
+      if(resp.status == 200){
+          modalAlert("Successfully deleted film! It may still appear in people's panels until the page has been refreshed.");
+          document.getElementById("filmDeleteId").value = "";
+      } else {
+        modalAlert(`Error: ${resp.body.message}`)
+      }
+    });
 }
 
 // edit a film
@@ -334,30 +295,25 @@ function editFilm(event){
       year = parseInt(year);
     }
 
-    fetch("/film/individual/edit", {
-        method: "POST",
-        body: JSON.stringify({id,title,description,genre,cast,year,newVideo,newThumbnail,director})
-      }).then((response) => {
-        if(response.status == 200){
-            modalAlert(`Successfully edited film!
-              <br><br>If you have specified you want to upload a new thumbnail and/or video, please scroll down to the bottom of this page to upload.
-              <br>You will need the film's ID number, which is <b>${id}</b>
-              <br>You specified - New video: ${newVideo}, New thumbnail: ${newThumbnail}`);
-            document.getElementById("editFilmTitle").value = "";
-            document.getElementById("editFilmDescription").value = "";
-            document.getElementById("editFilmCast").value = "";
-            document.getElementById("editFilmDirector").value = "";
-            document.getElementById("editFilmYear").value = "";
-            document.getElementById("editFilmGenre").value = "";
-            document.getElementById("editFilmId").value = "";
-            document.getElementById("editFilmVideo").checked = false;
-            document.getElementById("editFilmThumbnail").checked = false;
-            return null;
-        }
-        return response.json()
-      }).then((json) => {
-        modalAlert(`Error: ${json.message}`)
-      });
+    apiCall(`/film/individual/edit`,"POST",{id,title,description,genre,cast,year,newVideo,newThumbnail,director},undefined,function(resp){
+      if(resp.status == 200){
+        modalAlert(`Successfully edited film!
+          <br><br>If you have specified you want to upload a new thumbnail and/or video, please scroll down to the bottom of this page to upload.
+          <br>You will need the film's ID number, which is <b>${id}</b>
+          <br>You specified - New video: ${newVideo}, New thumbnail: ${newThumbnail}`);
+        document.getElementById("editFilmTitle").value = "";
+        document.getElementById("editFilmDescription").value = "";
+        document.getElementById("editFilmCast").value = "";
+        document.getElementById("editFilmDirector").value = "";
+        document.getElementById("editFilmYear").value = "";
+        document.getElementById("editFilmGenre").value = "";
+        document.getElementById("editFilmId").value = "";
+        document.getElementById("editFilmVideo").checked = false;
+        document.getElementById("editFilmThumbnail").checked = false;
+      } else {
+        modalAlert(`Error: ${resp.body.message}`)
+      }
+    });
 }
 
 // makes a new film (metadata)
@@ -401,30 +357,21 @@ function newFilm(event){
       year = parseInt(year)
     }
 
-    let success = false;
-    fetch("/film/individual/new/metadata", {
-        method: "POST",
-        body: JSON.stringify({title,description,genre,cast,year,director})
-      }).then((response) => {
-        if(response.status == 200){
-            success = true;
-            document.getElementById("newFilmTitle").value = "";
-            document.getElementById("newFilmDescription").value = "";
+    apiCall(`/film/individual/new/metadata`,"POST",{title,description,genre,cast,year,director},undefined,function(resp){
+      if(resp.status == 200){
+        document.getElementById("newFilmTitle").value = "";
+        document.getElementById("newFilmDescription").value = "";
             document.getElementById("newFilmCast").value = "";
             document.getElementById("newFilmDirector").value = "";
             document.getElementById("newFilmYear").value = "";
             document.getElementById("newFilmGenre").value = "";
-        }
-        return response.json()
-      }).then((json) => {
-        if(success){
-          modalAlert(`Successfully created new film!
-            <br><br>Now, please scroll down to the bottom of this page to upload the thumbnail and video.
-            <br>You will need the film's ID number, which is <b>${json.id}</b>`);
-        } else {
-           modalAlert(`Error: ${json.message}`);
-        }
-      });
+            modalAlert(`Successfully created new film!
+              <br><br>Now, please scroll down to the bottom of this page to upload the thumbnail and video.
+              <br>You will need the film's ID number, which is <b>${resp.body.id}</b>`);
+      } else {
+        modalAlert(`Error: ${resp.body.message}`);
+      }
+    });
 }
 
 // script to upload a file
@@ -506,26 +453,19 @@ async function fileSubmit(event){
 
 // review approvals: display
 function displayReviewApprovals(id){
-  let success = false;
   const box = document.getElementById("reviewApprovals");
-  fetch(`/review/fetch/all?id=${id}`, {
-        method: "GET"
-      }).then((response) => {
-        if(response.status == 200){
-            success = true;
-        }
-        return response.json()
-      }).then((json) => {
-        if(success){
-          if(json.length == 0){
-            box.innerHTML = "<i>There exists no reviews</i>"
-          } else {
-            reviewApprovalsPrettifier(json,id);
-          }
-        } else {
-          box.innerHTML = `<i>Error fetching reviews: ${json.message}</i>`
-        }
-      });
+  apiCall(`/review/fetch/all?id=${id}`,"GET",undefined,undefined,function(resp){
+    let json = resp.body;
+    if(resp.status == 200){
+      if(json.length == 0){
+        box.innerHTML = "<i>There exists no reviews</i>"
+      } else {
+        reviewApprovalsPrettifier(json,id);
+      }
+    } else {
+      box.innerHTML = `<i>Error fetching reviews: ${json.message}</i>`
+    }
+  });
 }
 
 // review approvals: displays it
@@ -620,17 +560,12 @@ function commitReviewChanges(event){
   if(!!approved){approvals = approved.split(",")};
   if(!!removals){deletion = removals.split(",")};
 
-  fetch("/review/approvals", {
-    method: "POST",
-    body: JSON.stringify({movieId,approvals,deletion})
-  }).then((response) => {
-    if(response.status == 200){
+  apiCall(`/review/approvals`,"POST",{movieId,approvals,deletion},undefined,function(resp){
+    if(resp.status == 200){
       modalAlert("Approved and deleted reviews as specified.");
       displayReviewApprovals(movieId);
-      return null;
+    } else {
+      modalAlert(`Error: ${resp.body.message}`);
     }
-    return response.json()
-  }).then((json) => {
-    modalAlert(`Error: ${json.message}`);
   });
 }
