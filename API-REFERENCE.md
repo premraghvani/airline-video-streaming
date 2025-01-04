@@ -13,7 +13,9 @@ The system will deliver video, and recieve video only in chunks up to 2 MB (2,00
 
 ## General Schematic
 
-### For viewing ("statics") - all are GET methods
+### Frontend Pages ("statics")
+
+> These are static pages which are sent back to the client, to view the content. The JavaScript included will utilise the provided APIs to fetch content. These are not tested in the app.test.js at all, but have been manually tested.
 
 | Endpoint | Response Content-Type | Description |
 | --- | --- | --- |
