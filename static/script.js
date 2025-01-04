@@ -111,17 +111,19 @@ function checkConnection() {
     if (resp.status !== 200) {
       if (current.innerHTML !== "Unavailable") {
         current.innerHTML = "Unavailable";
-        current.style = "color: #800;";
+        current.style = "color: red;";
+        document.getElementById("topbar").style = "box-shadow: 0px 5px 10px red;"
       }
       disconnectedTicks += 1;
     } else {
       if (current.innerHTML !== "Available") {
         current.innerHTML = "Available";
-        current.style = "color: #080;";
+        current.style = "color: green;";
+        document.getElementById("topbar").style = "box-shadow: 0px 5px 10px green;"
         disconnectedTicks = 0;
       }
 
-      if (resp.body.messages.length != 0) {
+      if (resp.body.length != 0) {
         let messageToShow = [];
         for (var i = 0; i < resp.body.length; i++) {
           if (lastRead < resp.body[i].timestamp) {
