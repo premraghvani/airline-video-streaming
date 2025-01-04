@@ -39,7 +39,7 @@ Please assume that all of these have a `Content-Type` of `application/json` requ
 | [/film/categoryfilter/fetch](#fimcategoryfilterfetch-get) | GET | Fetches a list of all movies in a specified category |
 | [/film/individual/metadata](#filmindividualmetadata-get) | GET | Gets the data for a specified movie |
 | [/film/individual/thumbnail](#filmindividualthumbnail-get) | GET | Returns `image/jpeg`, the thumbnail of a specified movie |
-| [/film/individual/video](#filmindividualvideo-get) | GET | Returns `video/mp4` on success, or `text/txt` on failure, the film content (or an error) |
+| [/film/individual/video](#filmindividualvideo-get) | GET | Returns `video/mp4` on success with a segment of the film, or `text/txt` on failure with a brief error message |
 | [/film/individual/new/metadata](#filmindividualnewmetadata-post) | POST | Creates a new film in the database |
 | [/film/individual/new/multimedia](#filmindividualnewmultimedia-put) | PUT | Uploads film's multimedia |
 | [/film/individual/edit](#filmindividualedit-post) | POST | Edits a film |
@@ -58,7 +58,7 @@ Please assume that all of these have a `Content-Type` of `application/json` requ
 
 The `application/json` request and response applies to everything except:
 - The response on the successful and failed case of [/film/individual/thumbnail](#filmindividualthumbnail-get)
-- The response on the successful case of [/film/individual/video](#filmindividualvideo-get) (failure still provides a json)
+- The response on the successful and failed case of [/film/individual/video](#filmindividualvideo-get)
 - The request of [/film/individual/new/multimedia](#filmindividualnewmultimedia-put)
 
 Please note that in the response body for errors and select successes, where the response body is `application/json` the following key will always exist: `message` - this will contain more information, such as what has exactly caused the error, or a simple "Success!" if it is a success without anything needing to be passed back to the client. Status codes will always be passed back, with 2xx being successful cases, 4xx being failed (client's fault), and 5xx being failed (server's fault).
@@ -338,11 +338,11 @@ In the example below, `{{start}}` is a required integer to indicate the start of
 
 In this system, 2 MB means 2 * 10^6 Bytes.
 
-In the example below, assume `{{start}}` to be 0.
+In the example below, assume `{{start}}` to be `0`. However, you will need to keep fetching, shifting the start bit up in order to be able to reconstruct the content in full.
 
 ```js
 // request
-let movie = 1
+let movie = 3
 let headers = {
     "Range":"bytes={{start}}-"
 }
@@ -355,14 +355,12 @@ console.log(request.headers)
 Response headers:
 ```json
 {
-    "Content-Range":"bytes 0-499999/1244043",
+    "Content-Range":"bytes 0-1999999/3812726",
     "Accept-Ranges":"bytes",
     "Content-Type":"video/mp4",
-    "Content-Length":500000
+    "Content-Length":2000000
 }
 ```
-
-Please note that the above example was for when only 500 KB could be sent back (500,000 bytes). In reality, this will be 2 MB (2,000,000 bytes).
 
 The way Content-Range works, means that the format of the response is: `bytes {{start}}-{{end}}/{{size}}`
 
@@ -377,7 +375,7 @@ Types of responses:
 | 416 | The range is invalid |
 | 500 | The server messed up in fulfilling your request |
 
-*This will however be the response even if the entire video is less than 500KB, but your checks where `{{end}}+1 == {{size}}` is true should catch this as the end anyways.
+*This will however be the response even if the entire video is less than 2MB, but your checks where `{{end}}+1 == {{size}}` is true should catch this as the end anyways.
 
 ## /film/individual/new/metadata POST
 
