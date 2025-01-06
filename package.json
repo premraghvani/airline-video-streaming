@@ -1,12 +1,12 @@
 {
   "name": "airline-video-streaming",
   "version": "1.0.0",
-  "main": " device) ",
+  "main": "server.js",
   "scripts": {
     "test": "jest",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Prem Raghvani",
   "license": "ISC",
   "description": "A video streaming platform similar to those available onboard certain aircraft (stream to your own device)",
   "devDependencies": {
