@@ -26,6 +26,7 @@ The system will deliver video, and recieve video only in chunks up to 2 MB (2,00
 | /scriptCrew.js | text/javascript | The JavaScript which goes behind the crew page only, frontend |
 | /plyr.css | text/css | The CSS for Plyr, the video player display |
 | /plyr.js | text/javascript | The JavaScript for Plyr, the video player display |
+| /favicon.ico | image/x-icon | The favicon displayed in the browser tab |
 
 ### All other API services
 
