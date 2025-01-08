@@ -70,13 +70,13 @@ function prewritten(num) {
 function findPrewrittenMsg(num) {
   switch (num) {
     case 1:
-      return "Welcome onboard this airline's service to Manchester Airport, our flight however is actually a train, so we will be calling at- Bramley, New Pudsey, Bradford Interchange, Low Moor, Halifax, Sowerby Bridge, Mytholmroyd, Hebden Bridge, Todmorden, Littleborough, Rochdale, Mills Hill, Manchester Victoria, Manchester Oxford Road, Manchester Piccadilly, Gatley, and Manchester Airport. We hope you enjoy this flight - please feel free to explore our wonderful entertainment collection here only at Streambox!";
+      return "Welcome onboard this service! Please explore our wonderful entertainment collection here only at Streambox! We hope you enjoy your journey with us today.";
     case 2:
-      return "We have arrived at Manchester Airport - we hope you enjoyed your train-plane with us. Please mind the gap between the plane and the aerobridge edge.";
+      return "We have now arrived at our destination. Please ensure you have taken all belongings with you before alighting here.";
     case 3:
-      return "Please rate us 5 stars on UberPlanes! I mean bye.";
+      return "We hope that you have enjoyed your journey with us, and if you have a connecting journey, we wish you a good journey.";
     case 4:
-      return "Our meal service is now available, and our cabin crew will be distributing food, as long as you pay (we're bringing out our inner Ryanair haha)";
+      return "Our meal service is now available, and our crew members will be in the aisles distributing food.";
     default:
       return "";
   }
