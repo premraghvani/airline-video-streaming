@@ -333,6 +333,40 @@ function modalAlert(msg) {
   };
 }
 
+// categories
+function updateCategories(){
+  // attempts to get categories
+  apiCall(
+    `/film/category/fetch`,
+    "GET",
+    undefined,
+    undefined,
+    function (resp) {
+      if (resp.status == 200) {
+        let json = resp.body;
+        if (json.categories.length == 0) {
+          return;
+        } else {
+          let container = document.getElementById("genreContainer");
+          let filmsHtml = "";
+          let categories = json.categories;
+          for (i in categories) {
+            let category = categories[i].toLowerCase().split("");
+            category[0] = category[0].toUpperCase();
+            category = category.join("");
+            filmsHtml += `<button onclick="openCategory('${category}')">${category}</button> `;
+          }
+          container.innerHTML = filmsHtml;
+        }
+      } else {
+        modalAlert(
+          `We are sorry but we could not load the genres, due to: ${resp.body.message}`
+        );
+      }
+    }
+  );
+}
+
 // changes the flight info on load
 function replaceInDoc(phrase, replacement) {
   const elements = document.querySelectorAll(`.toreplace-${phrase}`);

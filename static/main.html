@@ -26,7 +26,7 @@
             <h1>Welcome Onboard</h1>
             <p style="text-align: center;">We hope that you enjoy your journey to <a class="toreplace-destination">{{destination}}</a>, and we also hope that you enjoy the selection of video that we have onboard today.</p>
             <h2 style="text-align: center;">What would you like to watch?</h2>
-            <div class="genreButtons">
+            <div class="genreButtons" id="genreContainer">
                 {{genres}}
             </div>
         </div>
@@ -78,4 +78,5 @@
     const player = new Plyr('#filmVideo', {
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen']
     });
+    updateCategories();
 </script>

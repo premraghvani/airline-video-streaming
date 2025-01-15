@@ -1,16 +1,1 @@
-[
-    {
-        "timestamp": 1735639595,
-        "flight": "EK 020",
-        "review": "I want to drink 7up now!",
-        "approved": true,
-        "id": "03eb0b01-cedc-4d01-b5a4-616403f6e616"
-    },
-    {
-        "timestamp": 1735639676,
-        "flight": "EK 020",
-        "review": "Did you know?",
-        "approved": false,
-        "id": "a1183759-489f-4ae7-b5e8-5f568a2b2860"
-    }
-]
+[{"timestamp":1735639595,"flight":"EK 020","review":"I want to drink 7up now!","approved":true,"id":"03eb0b01-cedc-4d01-b5a4-616403f6e616"},{"timestamp":1735639676,"flight":"EK 020","review":"Did you know?","approved":false,"id":"a1183759-489f-4ae7-b5e8-5f568a2b2860"},{"timestamp":1736890434,"flight":"EK 020","review":"Amazing movie! Top Stuff!!","approved":false,"id":"13fc5c64-d998-454a-b831-24bf9c8c8ac7"}]
