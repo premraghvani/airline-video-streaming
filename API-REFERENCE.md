@@ -11,6 +11,12 @@ On boot up, the system will also
 
 The system will deliver video, and recieve video only in chunks up to 2 MB (2,000,000 bytes) in size.
 
+## Authentication
+
+As the system works on browsers, it uses tokens embeded in the cookie. The token can be issued upon receipt of a valid password (see [/authenticate](#authenticate-post)). You can validate a token's validity too (see [/authenticate/token](#authenticatetoken-post)).
+
+Tokens will only last, at most, an hour. The two different restrictions are `crew` and `admin`, with all crew entitlements being a subset of all admin entitlements. Many API endpoints do not have any restrictions.
+
 ## General Schematic
 
 ### Frontend Pages ("statics")
