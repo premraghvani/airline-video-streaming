@@ -295,3 +295,13 @@ blockquote p {
     text-align: center;
     color: #d0d0d0;
 }
+
+/* refresh */
+.refreshLink{
+    text-decoration: none;
+    color:gray;
+    font-size: large;
+}
+.refreshLink:hover{
+    color: #103060
+}

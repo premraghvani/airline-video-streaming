@@ -231,6 +231,9 @@ function loadFilmCats() {
         `We had an error loading part of this page, due to: ${resp.body.message}`
       );
     }
+
+    // refreshes the other panels - in case this was refreshed
+    selectedGenre();
   });
 }
 
@@ -335,6 +338,9 @@ function deleteFilm(event) {
       }
     }
   );
+
+  // reloads all categories just in case of changes
+  loadFilmCats();
 }
 
 // edit a film
@@ -516,6 +522,9 @@ function newFilm(event) {
       }
     }
   );
+
+  // reloads all categories just in case of changes
+  loadFilmCats();
 }
 
 // script to upload a file
