@@ -1,5 +1,4 @@
 const fs = require("fs");
-const config = require("../config.json");
 
 // simply serves the crew's html page
 module.exports = {

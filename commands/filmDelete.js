@@ -1,7 +1,6 @@
-const { readDb, writeDb } = require("../commonFunctions/database");
+const { readDb } = require("../commonFunctions/database");
 const { validate } = require("../commonFunctions/validation");
 const { deleteFilmRecord } = require("../commonFunctions/purge");
-const fs = require("fs");
 
 // admins to delete the film(s)
 module.exports = {

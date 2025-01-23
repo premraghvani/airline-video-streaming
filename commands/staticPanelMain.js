@@ -1,5 +1,4 @@
 const fs = require("fs");
-const config = require("../config.json");
 
 // simply serves the front html page
 module.exports = {
